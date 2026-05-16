@@ -1,0 +1,14 @@
+.DS_Store
+.build/
+.swiftpm/
+DerivedData/
+xcuserdata/
+*.xcuserstate
+
+.env
+.env.*
+!.env.example
+Config/Secrets.xcconfig
+Config/*.local.xcconfig
+
+SupabaseFunctions/.supabase/

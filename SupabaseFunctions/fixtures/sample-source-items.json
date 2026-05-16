@@ -1,0 +1,26 @@
+[
+  {
+    "source_name": "ESPN",
+    "source_url": "https://example.com/veteran-qb-benched",
+    "headline": "Veteran QB benched amid playoff push",
+    "summary": "A longtime starter was benched after a rough stretch, dividing fans and teammates.",
+    "published_at": "2026-05-16T12:00:00Z",
+    "categories": ["nfl", "national"]
+  },
+  {
+    "source_name": "Yahoo Sports",
+    "source_url": "https://example.com/rival-star-sounds-off",
+    "headline": "Rival star calls benching disrespectful before Sunday matchup",
+    "summary": "A star on this week's opponent criticized the move and added fuel to the matchup.",
+    "published_at": "2026-05-16T13:00:00Z",
+    "categories": ["nfl", "pop_culture"]
+  },
+  {
+    "source_name": "AP",
+    "source_url": "https://example.com/undrafted-qb-story",
+    "headline": "Undrafted replacement was working warehouse shifts 2 years ago",
+    "summary": "The new starter has become a feel-good story after an unlikely climb.",
+    "published_at": "2026-05-16T14:00:00Z",
+    "categories": ["nfl", "national"]
+  }
+]

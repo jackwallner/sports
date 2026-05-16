@@ -1,0 +1,42 @@
+import Foundation
+import Shared
+import XCTest
+
+final class BriefingDecodingTests: XCTestCase {
+    func testDecodesSupabaseBriefingContract() throws {
+        let json = """
+        [{
+          "id": "11111111-1111-1111-1111-111111111111",
+          "persona": "cocktail_party",
+          "scope": "national",
+          "refresh_window": "daily",
+          "headline": "What everyone's arguing about this week",
+          "tl_dr": "A beloved veteran quarterback got benched, the internet is melting down, and his replacement is a 23-year-old nobody had heard of last month.",
+          "bullets": [{
+            "id": "22222222-2222-2222-2222-222222222222",
+            "talking_point": "The team benched their longtime starter, and fans are split.",
+            "tie_in": "His wife posted a cryptic quote about loyalty.",
+            "tag": "drama",
+            "tag_reason": "Locker-room sources are frustrated.",
+            "source_headline": "Veteran QB benched amid playoff push - The Athletic",
+            "source_url": "https://example.com/story"
+          }],
+          "suggested_question": "Do you think they made the right call?",
+          "source_count": 1,
+          "generated_at": "2026-05-16T12:00:00Z",
+          "expires_at": "2026-05-17T12:00:00Z"
+        }]
+        """.data(using: .utf8)!
+
+        let briefings = try JSONDecoder.sideline.decode([Briefing].self, from: json)
+
+        XCTAssertEqual(briefings.first?.persona, .cocktailParty)
+        XCTAssertEqual(briefings.first?.bullets.first?.tag, .drama)
+        XCTAssertEqual(briefings.first?.sourceCount, 1)
+    }
+
+    func testSampleBriefingHasRequiredSourceLinks() throws {
+        XCTAssertFalse(Briefing.sample.bullets.isEmpty)
+        XCTAssertTrue(Briefing.sample.bullets.allSatisfy { $0.sourceURL.scheme == "https" })
+    }
+}

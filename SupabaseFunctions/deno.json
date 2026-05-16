@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "lib": ["deno.window", "dom", "dom.iterable"]
+  },
+  "tasks": {
+    "check": "deno check ingest-rss/index.ts generate-briefings/index.ts briefings-api/index.ts",
+    "fmt": "deno fmt"
+  },
+  "imports": {
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2"
+  }
+}
