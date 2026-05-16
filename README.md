@@ -22,7 +22,7 @@ Backend functions:
 - `SUPABASE_SERVICE_ROLE_KEY`
 - `GEMINI_API_KEY`
 - `CRON_SECRET`
-- `GEMINI_MODEL` optional, defaults to `gemini-1.5-flash`
+- `GEMINI_MODEL` optional, use `gemini-3-flash-preview` when available
 - `GEMINI_MIN_INTERVAL_MS` optional, defaults to `4500`
 
 iOS app:

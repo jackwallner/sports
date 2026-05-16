@@ -4,6 +4,7 @@
     "https://esm.sh/@supabase/supabase-js@2": "https://esm.sh/@supabase/supabase-js@2.105.4"
   },
   "remote": {
-    "https://esm.sh/@supabase/supabase-js@2.105.4": "92cda3ff3af2e241766bc1d53b87167b4d6376d43a0e2f31ddcd6d41a58d09f9"
+    "https://esm.sh/@supabase/supabase-js@2.105.4": "92cda3ff3af2e241766bc1d53b87167b4d6376d43a0e2f31ddcd6d41a58d09f9",
+    "https://esm.sh/fast-xml-parser@4.5.0": "dda1468785f0f4b2aa19b52d3bc32decb360f632628d5648b06737b4a3bc3a0a"
   }
 }

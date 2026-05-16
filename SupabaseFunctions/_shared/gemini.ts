@@ -19,7 +19,7 @@ export async function generateBriefingWithGemini(
     throw new Error("Missing GEMINI_API_KEY");
   }
 
-  const model = Deno.env.get("GEMINI_MODEL") ?? "gemini-1.5-flash";
+  const model = Deno.env.get("GEMINI_MODEL") ?? "gemini-flash-latest";
   const prompt = buildPrompt(target, sourceItems);
   const requestPayload = {
     contents: [

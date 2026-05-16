@@ -27,6 +27,7 @@ Deno.serve(async (request) => {
     let failedFeeds = 0;
     let parsedItems = 0;
     let upsertedItems = 0;
+    const failures: Array<{ feed_name: string; feed_url: string; error: Record<string, unknown> }> = [];
 
     for (const feed of (feeds ?? []) as SourceFeed[]) {
       try {
@@ -79,6 +80,11 @@ Deno.serve(async (request) => {
           .eq("id", feed.id);
       } catch (error) {
         failedFeeds += 1;
+        failures.push({
+          feed_name: feed.name,
+          feed_url: feed.url,
+          error: normalizeError(error),
+        });
         logError(trace_id, "feed_failed", error, {
           feed_id: feed.id,
           feed_name: feed.name,
@@ -107,6 +113,7 @@ Deno.serve(async (request) => {
       parsed_items: parsedItems,
       upserted_items: upsertedItems,
       clusters,
+      failures,
       duration_ms: durationMs,
     });
 
@@ -117,6 +124,7 @@ Deno.serve(async (request) => {
       parsed_items: parsedItems,
       upserted_items: upsertedItems,
       clusters,
+      failures,
       duration_ms: durationMs,
     });
   } catch (error) {

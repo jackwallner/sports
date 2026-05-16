@@ -1,3 +1,4 @@
+import { XMLParser } from "https://esm.sh/fast-xml-parser@4.5.0";
 import type { SourceFeed, SourceItemInput } from "./types.ts";
 
 const POP_CULTURE_TERMS = [
@@ -23,33 +24,30 @@ const POP_CULTURE_TERMS = [
 ];
 
 export async function parseFeed(feed: SourceFeed, xml: string): Promise<SourceItemInput[]> {
-  const document = new DOMParser().parseFromString(xml, "application/xml");
-  if (!document) {
-    throw new Error(`Failed to parse XML for ${feed.name}`);
-  }
-
-  const parseErrors = document.querySelectorAll("parsererror");
-  if (parseErrors.length > 0) {
-    throw new Error(`RSS parser error for ${feed.name}: ${parseErrors[0].textContent ?? "unknown error"}`);
-  }
-
-  const nodes = [...document.querySelectorAll("item")];
-  const atomNodes = nodes.length > 0 ? [] : [...document.querySelectorAll("entry")];
-  const allNodes = nodes.length > 0 ? nodes : atomNodes;
+  const parser = new XMLParser({
+    ignoreAttributes: false,
+    attributeNamePrefix: "@_",
+    textNodeName: "#text",
+    cdataPropName: "#cdata",
+  });
+  const parsed = parser.parse(xml);
+  const rssItems = toArray(parsed?.rss?.channel?.item);
+  const atomItems = rssItems.length > 0 ? [] : toArray(parsed?.feed?.entry);
+  const allNodes = rssItems.length > 0 ? rssItems : atomItems;
 
   const items: SourceItemInput[] = [];
   for (const node of allNodes) {
-    const headline = text(node, "title");
+    const headline = textValue(node.title);
     const sourceUrl = link(node);
 
     if (!headline || !sourceUrl) {
       continue;
     }
 
-    const summary = text(node, "description") ?? text(node, "summary") ?? text(node, "content");
-    const published = text(node, "pubDate") ?? text(node, "published") ?? text(node, "updated");
-    const author = text(node, "author") ?? text(node, "dc\\:creator");
-    const categories = [...new Set([...feed.categories, ...nodeCategories(node)])];
+    const summary = textValue(node.description) ?? textValue(node.summary) ?? textValue(node.content);
+    const published = textValue(node.pubDate) ?? textValue(node.published) ?? textValue(node.updated);
+    const author = textValue(node.author) ?? textValue(node["dc:creator"]);
+    const categories = [...new Set([...feed.categories, ...nodeCategories(node)].map((value) => value.toLowerCase()))];
     const dedupeKey = normalizeDedupeKey(headline);
     const urlHash = await sha256(sourceUrl);
 
@@ -88,24 +86,50 @@ export function normalizeDedupeKey(value: string): string {
     .join("-");
 }
 
-function text(node: Element, selector: string): string | null {
-  return node.querySelector(selector)?.textContent?.trim() || null;
-}
-
-function link(node: Element): string | null {
-  const rssLink = text(node, "link");
+function link(node: Record<string, unknown>): string | null {
+  const rssLink = textValue(node.link);
   if (rssLink && isHTTPURL(rssLink)) {
     return rssLink;
   }
 
-  const atomLink = node.querySelector("link[href]")?.getAttribute("href");
+  const atomLink = toArray(node.link)
+    .map((value) => isRecord(value) ? textValue(value["@_href"]) : null)
+    .find((value): value is string => Boolean(value));
   return atomLink && isHTTPURL(atomLink) ? atomLink : null;
 }
 
-function nodeCategories(node: Element): string[] {
-  return [...node.querySelectorAll("category")]
-    .map((category) => category.textContent?.trim().toLowerCase())
+function nodeCategories(node: Record<string, unknown>): string[] {
+  return toArray(node.category)
+    .map((category) => textValue(category) ?? (isRecord(category) ? textValue(category["@_term"]) : null))
     .filter((value): value is string => Boolean(value));
+}
+
+function textValue(value: unknown): string | null {
+  if (typeof value === "string" || typeof value === "number") {
+    return cleanText(String(value));
+  }
+
+  if (isRecord(value)) {
+    return textValue(value["#text"]) ?? textValue(value["#cdata"]);
+  }
+
+  return null;
+}
+
+function toArray(value: unknown): Record<string, unknown>[] {
+  if (!value) {
+    return [];
+  }
+
+  if (Array.isArray(value)) {
+    return value.filter(isRecord);
+  }
+
+  return isRecord(value) ? [value] : [];
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 function cleanText(value: string): string {

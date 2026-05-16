@@ -56,7 +56,7 @@ async function generateOne(
   target: GenerationTarget,
   sourceItems: SourceItemRow[],
 ) {
-  const model = Deno.env.get("GEMINI_MODEL") ?? "gemini-1.5-flash";
+  const model = Deno.env.get("GEMINI_MODEL") ?? "gemini-flash-latest";
   const run = await createRun(supabase, trace_id, target, sourceItems, model);
 
   try {
