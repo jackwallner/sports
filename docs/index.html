@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="256x256" href="icon_256.png">
+    <link rel="apple-touch-icon" href="icon_256.png">
+    <title>The Sideline - Sports Talking Points for Non-Fans</title>
+    <meta name="description" content="The Sideline gives non-sports people quick, plain-English sports pop culture talking points. Read one short briefing, ask one good question, and walk in ready.">
+    <link rel="canonical" href="https://jackwallner.github.io/sports/">
+    <meta name="keywords" content="sports talking points, sports news, sports pop culture, NFL, NBA, MLB, NHL, sports briefing, non sports fan">
+    <meta property="og:title" content="The Sideline - Sports Talking Points for Non-Fans">
+    <meta property="og:description" content="Conversation fuel for people who do not follow sports but still need to talk to people who do.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://jackwallner.github.io/sports/">
+    <meta property="og:image" content="https://jackwallner.github.io/sports/icon_256.png">
+    <meta property="og:site_name" content="The Sideline">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="The Sideline">
+    <meta name="twitter:description" content="Sports conversation fuel for people who do not follow sports.">
+    <meta name="twitter:image" content="https://jackwallner.github.io/sports/icon_256.png">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "The Sideline",
+        "operatingSystem": "iOS",
+        "applicationCategory": "SportsApplication",
+        "offers": [
+            {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD",
+                "description": "Free Cocktail Party briefing with daily national sports conversation points"
+            },
+            {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD",
+                "description": "Optional Pro subscription planned for all contexts, 3 daily refreshes, and Local Team"
+            }
+        ],
+        "description": "Quick sports pop culture briefings for people who do not follow sports but still want to be included in sports conversations.",
+        "url": "https://jackwallner.github.io/sports/",
+        "author": {
+            "@type": "Person",
+            "name": "Jack Wallner"
+        }
+    }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
+            color: #18221d;
+            background: #fbfaf7;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        nav {
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(31, 92, 69, 0.10);
+            background: rgba(251, 250, 247, 0.86);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        nav .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #18221d;
+        }
+
+        .nav-brand img {
+            width: 32px;
+            height: 32px;
+            border-radius: 7px;
+        }
+
+        .nav-brand span {
+            font-size: 15px;
+            font-weight: 650;
+        }
+
+        .nav-link {
+            font-size: 14px;
+            text-decoration: none;
+            background: #1f5c45;
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 980px;
+            font-weight: 600;
+            transition: opacity 0.15s;
+        }
+
+        .nav-link:hover { opacity: 0.85; }
+
+        .hero {
+            text-align: center;
+            padding: 100px 24px 64px;
+        }
+
+        .hero h1 {
+            font-size: 52px;
+            font-weight: 760;
+            letter-spacing: -1.5px;
+            line-height: 1.08;
+            margin-bottom: 16px;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, #1f5c45, #e0a21a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero .tagline {
+            font-size: 19px;
+            color: #607067;
+            line-height: 1.5;
+            max-width: 500px;
+            margin: 0 auto 12px;
+        }
+
+        .hero .platforms {
+            font-size: 13px;
+            color: #7c8981;
+            letter-spacing: 0.3px;
+            margin-bottom: 36px;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: #1f5c45;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 14px 36px;
+            border-radius: 980px;
+            text-decoration: none;
+            transition: opacity 0.15s;
+        }
+
+        .download-btn:hover { opacity: 0.85; }
+
+        .showcase {
+            padding: 0 0 80px;
+        }
+
+        .showcase-scroll {
+            display: flex;
+            gap: 24px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            padding: 0 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+            scrollbar-width: none;
+        }
+
+        .showcase-scroll::-webkit-scrollbar { display: none; }
+
+        .showcase-card {
+            flex: 0 0 300px;
+            min-height: 520px;
+            scroll-snap-align: center;
+            border-radius: 26px;
+            overflow: hidden;
+            background: #fff;
+            border: 1px solid rgba(31, 92, 69, 0.10);
+            box-shadow: 0 2px 8px rgba(31, 92, 69, 0.05), 0 16px 48px rgba(31, 92, 69, 0.10);
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .phone-card-label {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #7c8981;
+            margin-bottom: 12px;
+        }
+
+        .phone-card h2 {
+            font-size: 22px;
+            letter-spacing: -0.3px;
+            line-height: 1.15;
+            margin-bottom: 12px;
+        }
+
+        .phone-card p {
+            font-size: 15px;
+            line-height: 1.5;
+            color: #607067;
+        }
+
+        .briefing-preview {
+            background: #f4f1e8;
+            border-radius: 18px;
+            padding: 16px;
+            margin-top: 24px;
+        }
+
+        .briefing-preview .pill {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            color: #fff;
+            background: #b4452f;
+            padding: 5px 9px;
+            border-radius: 999px;
+            margin-bottom: 10px;
+        }
+
+        .briefing-preview p {
+            color: #18221d;
+            font-size: 14px;
+        }
+
+        .features {
+            padding: 80px 0;
+            background: #fff;
+            border-top: 1px solid rgba(31, 92, 69, 0.10);
+            border-bottom: 1px solid rgba(31, 92, 69, 0.10);
+        }
+
+        .features-header {
+            text-align: center;
+            margin-bottom: 56px;
+        }
+
+        .features-header h2 {
+            font-size: 36px;
+            font-weight: 740;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+
+        .features-header p {
+            font-size: 17px;
+            color: #607067;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: rgba(31, 92, 69, 0.10);
+            border-top: 1px solid rgba(31, 92, 69, 0.10);
+            border-bottom: 1px solid rgba(31, 92, 69, 0.10);
+        }
+
+        .feature-card {
+            background: #fff;
+            padding: 36px 32px;
+        }
+
+        .feature-card .label {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #7c8981;
+            margin-bottom: 10px;
+        }
+
+        .feature-card .label.pro {
+            color: #b57a00;
+        }
+
+        .feature-card h3 {
+            font-size: 20px;
+            font-weight: 650;
+            letter-spacing: -0.2px;
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            color: #607067;
+            line-height: 1.55;
+        }
+
+        .privacy {
+            padding: 80px 0;
+        }
+
+        .privacy .container {
+            max-width: 640px;
+            text-align: center;
+        }
+
+        .privacy .lockup {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: #f4f1e8;
+            margin-bottom: 20px;
+        }
+
+        .privacy .lockup svg {
+            width: 22px;
+            height: 22px;
+            fill: none;
+            stroke: #1f5c45;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .privacy h2 {
+            font-size: 32px;
+            font-weight: 740;
+            letter-spacing: -0.5px;
+            margin-bottom: 12px;
+        }
+
+        .privacy p {
+            font-size: 17px;
+            color: #607067;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .privacy a {
+            font-size: 15px;
+            color: #1f5c45;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .privacy a:hover { text-decoration: underline; }
+
+        .more-info {
+            padding: 64px 24px;
+            background: #fff;
+            border-top: 1px solid rgba(31, 92, 69, 0.10);
+        }
+
+        .more-info-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .more-info-header h2 {
+            font-size: 32px;
+            font-weight: 740;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+
+        .more-info-header p {
+            font-size: 17px;
+            color: #607067;
+        }
+
+        .more-info-content {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .more-info-section {
+            margin-bottom: 40px;
+        }
+
+        .more-info-section h3 {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #7c8981;
+            margin-bottom: 12px;
+        }
+
+        .more-info-section p {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #18221d;
+            margin-bottom: 12px;
+        }
+
+        .more-info-section p:last-child {
+            margin-bottom: 0;
+        }
+
+        .more-info-section strong {
+            font-weight: 650;
+        }
+
+        .specs-table {
+            width: 100%;
+            font-size: 14px;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+
+        .specs-table td {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(31, 92, 69, 0.10);
+        }
+
+        .specs-table td:first-child {
+            color: #7c8981;
+            width: 140px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .cta {
+            text-align: center;
+            padding: 64px 24px 80px;
+            background: #fff;
+            border-top: 1px solid rgba(31, 92, 69, 0.10);
+        }
+
+        .cta h2 {
+            font-size: 32px;
+            font-weight: 740;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+        }
+
+        .cta p {
+            font-size: 15px;
+            color: #7c8981;
+            margin-bottom: 28px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px 24px;
+            font-size: 12px;
+            color: #7c8981;
+        }
+
+        footer a {
+            color: #7c8981;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        footer a:hover { color: #18221d; }
+
+        footer .divider { margin: 4px 0; }
+
+        @media (max-width: 768px) {
+            .hero { padding: 72px 20px 48px; }
+            .hero h1 { font-size: 36px; letter-spacing: -1px; }
+            .hero .tagline { font-size: 17px; }
+            .showcase-card { flex-basis: 280px; min-height: 460px; }
+            .features-grid { grid-template-columns: 1fr; }
+            .features-header h2 { font-size: 28px; }
+            .privacy h2, .cta h2 { font-size: 26px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="container">
+            <a class="nav-brand" href="./">
+                <img src="icon_256.png" alt="The Sideline">
+                <span>The Sideline</span>
+            </a>
+            <a class="nav-link" href="#notify">Coming soon</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>Sound like you follow <span>sports</span></h1>
+        <p class="tagline">The Sideline gives non-fans quick sports pop culture talking points before they walk into the room.</p>
+        <p class="platforms">iPhone · Sports briefing · No account required</p>
+        <a class="download-btn" href="#notify">Coming soon to iPhone</a>
+    </section>
+
+    <section class="showcase">
+        <div class="showcase-scroll">
+            <div class="showcase-card phone-card">
+                <div>
+                    <div class="phone-card-label">Today's briefing</div>
+                    <h2>One line you can say out loud.</h2>
+                    <p>A plain-English TL;DR leads every briefing, so you know the thing to say before the conversation starts.</p>
+                </div>
+                <div class="briefing-preview">
+                    <span class="pill">Drama</span>
+                    <p>A veteran quarterback got benched, the internet is melting down, and the replacement is suddenly everyone's favorite underdog.</p>
+                </div>
+            </div>
+            <div class="showcase-card phone-card">
+                <div>
+                    <div class="phone-card-label">Conversation fuel</div>
+                    <h2>3 to 6 talking points, then you are done.</h2>
+                    <p>No scores, standings, betting lines, or stat tables. Just the stories people may actually bring up.</p>
+                </div>
+                <div class="briefing-preview">
+                    <span class="pill">Nice guy</span>
+                    <p>The backup was working a normal job 2 years ago and donated his first big check to his old high school.</p>
+                </div>
+            </div>
+            <div class="showcase-card phone-card">
+                <div>
+                    <div class="phone-card-label">Ask them this</div>
+                    <h2>A good question does half the work.</h2>
+                    <p>Every briefing ends with one open question you can ask a fan to keep the conversation going.</p>
+                </div>
+                <div class="briefing-preview">
+                    <span class="pill">Question</span>
+                    <p>Do you think they made the right call, or did they just blow up their season?</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <div class="features-header">
+                <h2>Built for the person on the sideline</h2>
+                <p>Fast, finite, source-cited briefings for people who do not want a sports app.</p>
+            </div>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="label">Free</span>
+                <h3>Cocktail Party</h3>
+                <p>A daily national briefing with broad, witty sports stories that can work in almost any room.</p>
+            </div>
+            <div class="feature-card">
+                <span class="label">Sources</span>
+                <h3>Links on every point</h3>
+                <p>Every talking point includes a source headline and link, so you can check the original reporting in one tap.</p>
+            </div>
+            <div class="feature-card">
+                <span class="label">Offline</span>
+                <h3>Last briefing cached</h3>
+                <p>The app keeps the last successful briefing on-device, so you are not stuck if the elevator has no signal.</p>
+            </div>
+            <div class="feature-card">
+                <span class="label pro">Pro</span>
+                <h3>All 5 contexts</h3>
+                <p>Office Watercooler, Date Night, Sports Talk for Moms, Cocktail Party, and Local Team.</p>
+            </div>
+            <div class="feature-card">
+                <span class="label pro">Pro</span>
+                <h3>Fresh 3 times a day</h3>
+                <p>Morning, midday, and evening refreshes for when the sports world moves faster than your group chat.</p>
+            </div>
+            <div class="feature-card">
+                <span class="label pro">Pro</span>
+                <h3>Local Team</h3>
+                <p>Personalized conversation fuel for the teams people around you actually care about.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="privacy">
+        <div class="container">
+            <div class="lockup">
+                <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <h2>No account, no social feed</h2>
+            <p>The Sideline does not need your email, contacts, comments, or follows. The app fetches cached briefings and uses RevenueCat only for Pro entitlement status.</p>
+            <a href="privacy-policy.html">Privacy Policy &rarr;</a>
+        </div>
+    </section>
+
+    <section class="more-info">
+        <div class="container">
+            <div class="more-info-header">
+                <h2>More info</h2>
+                <p>What it is, what it is not, and how it works.</p>
+            </div>
+            <div class="more-info-content">
+                <div class="more-info-section">
+                    <h3>The Pitch</h3>
+                    <p>Sports can be a social language. The Sideline is for people who do not speak it fluently but still want to feel included at work, at dinner, with family, or at a party.</p>
+                    <p>Open the app, read one short briefing, remember one line, and ask one good question. That is the whole product.</p>
+                </div>
+
+                <div class="more-info-section">
+                    <h3>What It Is Not</h3>
+                    <p><strong>Not a scores app.</strong> No leaderboards, standings, box scores, or fantasy tools.</p>
+                    <p><strong>Not a news reader.</strong> The app frames conversation points and links to the original source. It does not reproduce full articles.</p>
+                    <p><strong>Not for die-hard fans.</strong> If you already have 4 sports podcasts, you probably do not need this. That is fine.</p>
+                </div>
+
+                <div class="more-info-section">
+                    <h3>Specs</h3>
+                    <table class="specs-table">
+                        <tr><td>Platform</td><td>iOS 17+</td></tr>
+                        <tr><td>Language</td><td>SwiftUI with Swift 6 settings</td></tr>
+                        <tr><td>Backend</td><td>Supabase Edge Functions and Postgres</td></tr>
+                        <tr><td>AI</td><td>Gemini server-side generation from curated RSS sources</td></tr>
+                        <tr><td>Purchases</td><td>RevenueCat with local Pro gating</td></tr>
+                        <tr><td>Privacy</td><td>No accounts, no social graph, no user-generated feed</td></tr>
+                    </table>
+                </div>
+
+                <div class="more-info-section">
+                    <h3>What Mattered</h3>
+                    <p><strong>Finite by design.</strong> You are supposed to finish the briefing. If it becomes an endless feed, it missed the point.</p>
+                    <p><strong>Plain language first.</strong> The model writes for a person walking into a room, not for a sports desk.</p>
+                    <p><strong>Source-cited trust.</strong> Every bullet keeps a visible source link because confidence should be checkable.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta" id="notify">
+        <h2>Coming soon to iPhone</h2>
+        <p>The backend is live, the first TestFlight build is next, and the app is being prepared for App Store Connect.</p>
+        <a class="download-btn" href="support.html">Contact for access</a>
+    </section>
+
+    <footer>
+        <div class="divider">&copy; 2026 Jack Wallner</div>
+        <div>
+            <a href="support.html">Support</a>
+            <a href="privacy-policy.html">Privacy</a>
+            <a href="terms.html">Terms</a>
+        </div>
+    </footer>
+
+</body>
+</html>
