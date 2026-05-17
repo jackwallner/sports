@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		032B44F91A1B85DF7123669E /* BriefingCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978835B0B8280D3BCC4459BA /* BriefingCache.swift */; };
+		054F547B57B540D42D2B842F /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 6D6E6137B3412D5E045A9D4A /* PrivacyInfo.xcprivacy */; };
 		0735FCD82EF09CC01F37913B /* Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF9FA1E3962405E2034FBEAB /* Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		07792FAFE86733B877DF1D49 /* BulletCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C1F64E1F57905F83A288AC /* BulletCard.swift */; };
 		0A72CADBFFC76963B4884BB9 /* SuggestedQuestionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF286AE328606C69C8A458CD /* SuggestedQuestionCard.swift */; };
@@ -88,6 +89,7 @@
 		2B33FF335FF20D0ECCB46260 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		47C4F2D20034A6846EA72D4C /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		6A445293CF6FD3C5CAE3F3F2 /* RevenueCatEntitlementStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RevenueCatEntitlementStore.swift; sourceTree = "<group>"; };
+		6D6E6137B3412D5E045A9D4A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		90C7068DEF5036C781010D06 /* BriefingTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BriefingTag.swift; sourceTree = "<group>"; };
 		958C66A952950105F173F779 /* Persona.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persona.swift; sourceTree = "<group>"; };
 		95C1F64E1F57905F83A288AC /* BulletCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BulletCard.swift; sourceTree = "<group>"; };
@@ -144,6 +146,7 @@
 			children = (
 				A41C4D3C466BA87F26026E61 /* Assets.xcassets */,
 				AA0F0561DD2BD7C18F7057F6 /* Info.plist */,
+				6D6E6137B3412D5E045A9D4A /* PrivacyInfo.xcprivacy */,
 				1FB7BB4BDA28451CA994C2A1 /* Sideline.entitlements */,
 				F5610B6ABBCB292364C14EF1 /* SidelineApp.swift */,
 				6FD1F8D56D5A568CF966DCC0 /* Utilities */,
@@ -379,6 +382,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3A3DD2211138E2EE98CBCE19 /* Assets.xcassets in Resources */,
+				054F547B57B540D42D2B842F /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
