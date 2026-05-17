@@ -100,6 +100,7 @@
 		D37C9E82B7BFCE162FB7B53B /* PersonaRail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonaRail.swift; sourceTree = "<group>"; };
 		D556ACAE46E034CD09B0A8BA /* SidelineTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SidelineTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8A3CCCB524D37B51D3F8458 /* TodayBriefingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayBriefingViewModel.swift; sourceTree = "<group>"; };
+		DA48434C52BDBDF770BA270F /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 		DE02FEC5275EFE40056DF513 /* Entitlements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entitlements.swift; sourceTree = "<group>"; };
 		E3B3F206F2C3A76C63F13D3F /* SafariView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariView.swift; sourceTree = "<group>"; };
 		F43E0BBEAECA6CD7A6278351 /* TodayBriefingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayBriefingView.swift; sourceTree = "<group>"; };
@@ -152,6 +153,14 @@
 			path = Sideline;
 			sourceTree = "<group>";
 		};
+		3E09C61860632A8ACB8811A2 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				DA48434C52BDBDF770BA270F /* Secrets.xcconfig */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
 		5B9454515D6315E034CE29F3 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
@@ -192,6 +201,7 @@
 		BCD65D52D676FDB8BBF1479B = {
 			isa = PBXGroup;
 			children = (
+				3E09C61860632A8ACB8811A2 /* Config */,
 				5B9454515D6315E034CE29F3 /* Shared */,
 				04CBCE90611869E71820042B /* Sideline */,
 				AB6A8BCA33F5C70679EDFBB3 /* SidelineTests */,
@@ -451,6 +461,7 @@
 		};
 		3273A8BFB64AEB7D063C4FAD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DA48434C52BDBDF770BA270F /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -575,6 +586,7 @@
 		};
 		AFA3E04D656F379490BEC112 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DA48434C52BDBDF770BA270F /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;

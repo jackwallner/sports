@@ -13,8 +13,18 @@ final class TodayBriefingViewModel {
         case refreshLimit
     }
 
-    var selectedPersona: Persona = .cocktailParty
+    var selectedPersona: Persona = TodayBriefingViewModel.initialPersona()
     var state: LoadState = .idle
+
+    private static func initialPersona() -> Persona {
+        #if DEBUG
+        let args = ProcessInfo.processInfo.arguments
+        if let idx = args.firstIndex(of: "-SidelinePersona"), idx + 1 < args.count {
+            return Persona(rawValue: args[idx + 1]) ?? .cocktailParty
+        }
+        #endif
+        return .cocktailParty
+    }
 
     private let service: any BriefingServing
     private let entitlement: any EntitlementProviding

@@ -1,29 +1,11 @@
 import Shared
 import SwiftUI
-#if canImport(RevenueCatUI)
-import RevenueCatUI
-#endif
 
 struct PaywallView: View {
     @Environment(\.dismiss) private var dismiss
     let entitlement: any EntitlementProviding
 
     var body: some View {
-        #if canImport(RevenueCatUI)
-        RevenueCatUI.PaywallView(displayCloseButton: true)
-            .onPurchaseCompleted { _ in
-                Task {
-                    await entitlement.refresh()
-                    dismiss()
-                }
-            }
-            .onRestoreCompleted { _ in
-                Task {
-                    await entitlement.refresh()
-                    dismiss()
-                }
-            }
-        #else
         NavigationStack {
             VStack(alignment: .leading, spacing: 24) {
                 VStack(alignment: .leading, spacing: 10) {
@@ -89,7 +71,6 @@ struct PaywallView: View {
                 }
             }
         }
-        #endif
     }
 
     private func benefit(_ symbol: String, _ title: String, _ body: String) -> some View {

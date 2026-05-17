@@ -6,6 +6,10 @@ options:
   xcodeVersion: "16.0"
   minimumXcodeGenVersion: "2.38"
 
+configFiles:
+  Debug: Config/Secrets.xcconfig
+  Release: Config/Secrets.xcconfig
+
 settings:
   base:
     SWIFT_VERSION: "6.0"
@@ -16,13 +20,9 @@ settings:
     GENERATE_INFOPLIST_FILE: NO
   configs:
     Debug:
-      base:
-        DEBUG_INFORMATION_FORMAT: dwarf
-      xcconfig: Config/Secrets.xcconfig
+      DEBUG_INFORMATION_FORMAT: dwarf
     Release:
-      base:
-        DEBUG_INFORMATION_FORMAT: dwarf-with-dsym
-      xcconfig: Config/Secrets.xcconfig
+      DEBUG_INFORMATION_FORMAT: dwarf-with-dsym
 
 packages:
   RevenueCat:

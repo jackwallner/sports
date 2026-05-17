@@ -23,17 +23,31 @@ struct SidelineApp: App {
             !apiKey.hasPrefix("$(")
         {
             Purchases.configure(withAPIKey: apiKey)
-            let revenueCatStore = RevenueCatEntitlementStore()
-            self.entitlement = revenueCatStore
-            Task {
-                await revenueCatStore.refresh()
-            }
-        } else {
-            self.entitlement = LocalEntitlementStore()
         }
-        #else
-        self.entitlement = LocalEntitlementStore()
         #endif
+
+        self.entitlement = Self.makeEntitlement()
+
+        #if canImport(RevenueCat)
+        if let revenueCatStore = self.entitlement as? RevenueCatEntitlementStore {
+            Task { await revenueCatStore.refresh() }
+        }
+        #endif
+    }
+
+    private static func makeEntitlement() -> any EntitlementProviding {
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("-SidelineForcePro") {
+            return LocalEntitlementStore(isPro: true)
+        }
+        #endif
+
+        #if canImport(RevenueCat)
+        if Purchases.isConfigured {
+            return RevenueCatEntitlementStore()
+        }
+        #endif
+        return LocalEntitlementStore()
     }
 
     var body: some Scene {

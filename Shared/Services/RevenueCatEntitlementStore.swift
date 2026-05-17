@@ -12,6 +12,7 @@ public final class RevenueCatEntitlementStore: EntitlementProviding, @unchecked 
     }
 
     public func refresh() async {
+        guard Purchases.isConfigured else { return }
         do {
             let info = try await Purchases.shared.customerInfo()
             isPro = info.entitlements[entitlementIdentifier]?.isActive == true
