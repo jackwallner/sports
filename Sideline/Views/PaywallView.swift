@@ -1,11 +1,45 @@
 import Shared
 import SwiftUI
+#if canImport(RevenueCat)
+import RevenueCat
+#endif
+#if canImport(RevenueCatUI)
+import RevenueCatUI
+#endif
 
 struct PaywallView: View {
     @Environment(\.dismiss) private var dismiss
+    @State private var remotePaywallReady = false
     let entitlement: any EntitlementProviding
 
     var body: some View {
+        #if canImport(RevenueCatUI) && canImport(RevenueCat)
+        if remotePaywallReady, Purchases.isConfigured {
+            RevenueCatUI.PaywallView(displayCloseButton: true)
+                .onPurchaseCompleted { _ in
+                    Task {
+                        await entitlement.refresh()
+                        dismiss()
+                    }
+                }
+                .onRestoreCompleted { _ in
+                    Task {
+                        await entitlement.refresh()
+                        dismiss()
+                    }
+                }
+                .task {
+                    remotePaywallReady = await Self.hasRemoteOffering()
+                }
+        } else {
+            fallbackPaywall
+        }
+        #else
+        fallbackPaywall
+        #endif
+    }
+
+    private var fallbackPaywall: some View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 24) {
                 VStack(alignment: .leading, spacing: 10) {
@@ -25,7 +59,7 @@ struct PaywallView: View {
 
                 VStack(alignment: .leading, spacing: 14) {
                     benefit("person.3", "All 5 contexts", "Cocktail party, office, date night, family, and local team.")
-                    benefit("clock.arrow.circlepath", "Fresh 3× a day", "Morning, midday, and evening when the sports world moves.")
+                    benefit("clock.arrow.circlepath", "Fresh 3\u{00D7} a day", "Morning, midday, and evening when the sports world moves.")
                     benefit("mappin.and.ellipse", "Local Team", "Conversation fuel for the teams people around you care about.")
                 }
 
@@ -72,6 +106,18 @@ struct PaywallView: View {
             }
         }
     }
+
+    #if canImport(RevenueCat)
+    private static func hasRemoteOffering() async -> Bool {
+        guard Purchases.isConfigured else { return false }
+        do {
+            let offerings = try await Purchases.shared.offerings()
+            return offerings.current?.availablePackages.isEmpty == false
+        } catch {
+            return false
+        }
+    }
+    #endif
 
     private func benefit(_ symbol: String, _ title: String, _ body: String) -> some View {
         HStack(alignment: .top, spacing: 12) {

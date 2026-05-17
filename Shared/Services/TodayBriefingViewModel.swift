@@ -1,11 +1,10 @@
 import Foundation
 import Observation
-import Shared
 
 @Observable
 @MainActor
-final class TodayBriefingViewModel {
-    enum LoadState: Equatable {
+public final class TodayBriefingViewModel {
+    public enum LoadState: Equatable {
         case idle
         case loading
         case populated(Briefing, isOffline: Bool)
@@ -13,8 +12,9 @@ final class TodayBriefingViewModel {
         case refreshLimit
     }
 
-    var selectedPersona: Persona = TodayBriefingViewModel.initialPersona()
-    var state: LoadState = .idle
+    public var selectedPersona: Persona = TodayBriefingViewModel.initialPersona()
+    public var state: LoadState = .idle
+    public private(set) var lastBriefing: Briefing?
 
     private static func initialPersona() -> Persona {
         #if DEBUG
@@ -32,7 +32,7 @@ final class TodayBriefingViewModel {
     private let cache: BriefingCache?
     #endif
 
-    init(
+    public init(
         service: any BriefingServing,
         entitlement: any EntitlementProviding
     ) {
@@ -43,7 +43,7 @@ final class TodayBriefingViewModel {
         #endif
     }
 
-    func load() async {
+    public func load() async {
         state = .loading
 
         do {
@@ -51,10 +51,12 @@ final class TodayBriefingViewModel {
             #if canImport(SwiftData)
             try? cache?.save(briefing)
             #endif
+            lastBriefing = briefing
             state = .populated(briefing, isOffline: false)
         } catch {
             #if canImport(SwiftData)
             if let cached = try? cache?.load(persona: selectedPersona, scope: .national) {
+                lastBriefing = cached
                 state = .populated(cached, isOffline: true)
                 return
             }
@@ -64,7 +66,7 @@ final class TodayBriefingViewModel {
         }
     }
 
-    func select(_ persona: Persona) async -> Bool {
+    public func select(_ persona: Persona) async -> Bool {
         guard entitlement.canUse(persona: persona) else {
             return false
         }
@@ -74,7 +76,7 @@ final class TodayBriefingViewModel {
         return true
     }
 
-    func refresh() async {
+    public func refresh() async {
         guard entitlement.isPro || selectedPersona == .cocktailParty else {
             state = .refreshLimit
             return

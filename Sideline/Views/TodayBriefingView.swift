@@ -74,7 +74,10 @@ struct TodayBriefingView: View {
             emptyState(message: message)
         case .refreshLimit:
             refreshLimitCard
-            briefingView(.sample, isOffline: false)
+            if let briefing = viewModel.lastBriefing {
+                briefingView(briefing, isOffline: false)
+                    .transition(.opacity)
+            }
         }
     }
 
