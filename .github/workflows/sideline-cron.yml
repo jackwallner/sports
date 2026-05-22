@@ -1,0 +1,52 @@
+name: Sideline content pipeline
+
+on:
+  schedule:
+    # UTC times chosen so generate-briefings runs land in the refresh_window
+    # the edge function derives from UTC hour (see generate-briefings/index.ts:210):
+    #   <16 = morning, <22 = midday, >=22 = evening
+    - cron: '0 14 * * *'  # morning  (~7a PT / 10a ET)
+    - cron: '0 19 * * *'  # midday   (~12p PT / 3p ET)
+    - cron: '0 23 * * *'  # evening  (~4p PT / 7p ET)
+  workflow_dispatch:
+    inputs:
+      skip_ingest:
+        description: 'Skip ingest-rss (only generate)'
+        type: boolean
+        default: false
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      URL: ${{ secrets.SUPABASE_FUNCTIONS_URL }}
+      CS: ${{ secrets.CRON_SECRET }}
+    steps:
+      - name: Ingest RSS
+        if: ${{ inputs.skip_ingest != true }}
+        run: |
+          curl -fsS --retry 2 --retry-delay 10 \
+            -X POST "$URL/ingest-rss" \
+            -H "x-cron-secret: $CS"
+          echo
+
+      - name: Generate briefings (per persona)
+        run: |
+          set -uo pipefail
+          FAILED=0
+          for P in cocktail_party office_watercooler date_night sports_talk_for_moms local_team; do
+            echo "=== $P ==="
+            OK=0
+            for i in 1 2 3; do
+              R=$(curl -fsS -X POST "$URL/generate-briefings" \
+                -H "content-type: application/json" \
+                -H "x-cron-secret: $CS" \
+                -d "{\"personas\":[\"$P\"]}") || R='{"error":"curl failed"}'
+              echo "$R"
+              if echo "$R" | grep -q '"status":"succeeded"'; then OK=1; break; fi
+              sleep 5
+            done
+            if [ "$OK" -ne 1 ]; then FAILED=1; fi
+          done
+          exit $FAILED
