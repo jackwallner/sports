@@ -1,15 +1,25 @@
 import Shared
 import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#endif
 
 struct TodayBriefingView: View {
     @State private var viewModel: TodayBriefingViewModel
     @State private var sourceURL: PresentedURL?
     @State private var showingPaywall = false
+    @State private var pendingLockedPersona: Persona?
+
+    @AppStorage("sideline.hasCompletedOnboarding") private var hasCompletedOnboarding = false
+    @AppStorage("sideline.lastPersona") private var lastPersonaRaw = Persona.cocktailParty.rawValue
+    @AppStorage("favoriteTeam") private var favoriteTeam = ""
 
     private let entitlement: any EntitlementProviding
+    private let isDemo: Bool
 
-    init(service: any BriefingServing, entitlement: any EntitlementProviding) {
+    init(service: any BriefingServing, entitlement: any EntitlementProviding, isDemo: Bool = false) {
         self.entitlement = entitlement
+        self.isDemo = isDemo
         _viewModel = State(wrappedValue: TodayBriefingViewModel(service: service, entitlement: entitlement))
     }
 
@@ -21,7 +31,7 @@ struct TodayBriefingView: View {
                         Task {
                             let didSelect = await viewModel.select(persona)
                             if !didSelect {
-                                showingPaywall = true
+                                pendingLockedPersona = persona
                             }
                         }
                     }
@@ -36,7 +46,11 @@ struct TodayBriefingView: View {
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     NavigationLink {
-                        SettingsView(entitlement: entitlement)
+                        SettingsView(
+                            entitlement: entitlement,
+                            onManualRefresh: { Task { await viewModel.refresh() } },
+                            onTeamChanged: { Task { await viewModel.reloadAfterPreferenceChange() } }
+                        )
                     } label: {
                         Image(systemName: "gearshape")
                     }
@@ -48,12 +62,46 @@ struct TodayBriefingView: View {
             }
             .task {
                 if case .idle = viewModel.state {
+                    if let persona = Persona(rawValue: lastPersonaRaw),
+                       entitlement.canUse(persona: persona) {
+                        viewModel.selectedPersona = persona
+                    }
                     await viewModel.load()
                 }
             }
             .sheet(isPresented: $showingPaywall) {
-                PaywallView(entitlement: entitlement)
+                PaywallView(entitlement: entitlement, context: viewModel.selectedPersona)
             }
+            .sheet(item: $pendingLockedPersona) { persona in
+                ProPreviewSheet(
+                    persona: persona,
+                    onSeePro: {
+                        pendingLockedPersona = nil
+                        showingPaywall = true
+                    },
+                    onDismiss: { pendingLockedPersona = nil }
+                )
+            }
+            .modifier(OnboardingPresenter(
+                isPresented: Binding(
+                    get: { !hasCompletedOnboarding },
+                    set: { newValue in hasCompletedOnboarding = !newValue }
+                ),
+                content: {
+                    OnboardingView(
+                        hasCompletedOnboarding: $hasCompletedOnboarding,
+                        lastPersona: $lastPersonaRaw,
+                        favoriteTeam: $favoriteTeam
+                    )
+                    .onDisappear {
+                        if let persona = Persona(rawValue: lastPersonaRaw),
+                           entitlement.canUse(persona: persona) {
+                            viewModel.selectedPersona = persona
+                        }
+                        Task { await viewModel.load() }
+                    }
+                }
+            ))
             #if canImport(SafariServices) && canImport(UIKit)
             .sheet(item: $sourceURL) { item in
                 SafariView(url: item.url)
@@ -75,15 +123,17 @@ struct TodayBriefingView: View {
         case .refreshLimit:
             refreshLimitCard
             if let briefing = viewModel.lastBriefing {
-                briefingView(briefing, isOffline: false)
+                briefingView(briefing, isOffline: false, suppressOfflineBanner: true)
                     .transition(.opacity)
             }
         }
     }
 
-    private func briefingView(_ briefing: Briefing, isOffline: Bool) -> some View {
+    private func briefingView(_ briefing: Briefing, isOffline: Bool, suppressOfflineBanner: Bool = false) -> some View {
         VStack(alignment: .leading, spacing: 22) {
-            if isOffline {
+            if isDemo {
+                demoBanner
+            } else if isOffline && !suppressOfflineBanner {
                 offlineBanner
             }
 
@@ -111,7 +161,7 @@ struct TodayBriefingView: View {
 
             SuggestedQuestionCard(question: briefing.suggestedQuestion)
 
-            FreshnessFooter(briefing: briefing, isOffline: isOffline)
+            FreshnessFooter(briefing: briefing, isOffline: isOffline, isPro: entitlement.isPro)
                 .padding(.top, 4)
         }
     }
@@ -121,20 +171,27 @@ struct TodayBriefingView: View {
             HStack(spacing: 8) {
                 Image(systemName: viewModel.selectedPersona.symbolName)
                     .font(.caption.weight(.bold))
-                Text(contextHeader(for: viewModel.selectedPersona))
+                Text(viewModel.selectedPersona.contextHeader)
                     .font(.caption.weight(.heavy))
                     .tracking(1.2)
             }
             .foregroundStyle(SidelineTheme.brandPrimary)
 
-            Text(briefing.headline)
-                .font(.footnote.weight(.semibold))
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-
             Text(briefing.tlDR)
                 .font(.title2.weight(.bold))
                 .lineSpacing(4)
+                .fixedSize(horizontal: false, vertical: true)
+                .contextMenu {
+                    Button {
+                        copyToClipboard(briefing.tlDR)
+                    } label: {
+                        Label("Copy", systemImage: "doc.on.doc")
+                    }
+                }
+
+            Text(briefing.headline)
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.top, 2)
         }
@@ -150,22 +207,12 @@ struct TodayBriefingView: View {
         )
     }
 
-    private func contextHeader(for persona: Persona) -> String {
-        switch persona {
-        case .cocktailParty: return "LEAD WITH THIS"
-        case .sportsTalkForMoms: return "WHEN YOUR KID BRINGS IT UP"
-        case .officeWatercooler: return "AT THE OFFICE TODAY"
-        case .dateNight: return "FOR THE DINNER TABLE"
-        case .localTeam: return "FOR YOUR LOCAL CROWD"
-        }
-    }
-
     private func emptyState(message: String) -> some View {
         VStack(spacing: 14) {
             Image(systemName: "newspaper")
                 .font(.system(size: 42, weight: .light))
                 .foregroundStyle(.tertiary)
-            Text("Nothing fresh yet")
+            Text("Can't reach today's briefing")
                 .font(.title3.weight(.semibold))
             Text(message)
                 .font(.callout)
@@ -206,11 +253,25 @@ struct TodayBriefingView: View {
     }
 
     private var offlineBanner: some View {
-        Label("Offline - showing the last update.", systemImage: "wifi.slash")
+        Label("Offline — showing yesterday's update.", systemImage: "wifi.slash")
             .font(.callout)
             .padding(12)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
+    }
+
+    private var demoBanner: some View {
+        Label {
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Preview briefing").font(.callout.weight(.semibold))
+                Text("Not today's news — for demo only.").font(.caption).foregroundStyle(.secondary)
+            }
+        } icon: {
+            Image(systemName: "eye")
+        }
+        .padding(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(SidelineTheme.brandAccent.opacity(0.15), in: RoundedRectangle(cornerRadius: 12))
     }
 
     private var refreshLimitCard: some View {
@@ -229,9 +290,28 @@ struct TodayBriefingView: View {
         .padding(16)
         .background(Color.sidelineCard, in: RoundedRectangle(cornerRadius: SidelineTheme.cardCornerRadius))
     }
+
+    private func copyToClipboard(_ text: String) {
+        #if canImport(UIKit)
+        UIPasteboard.general.string = text
+        #endif
+    }
 }
 
 private struct PresentedURL: Identifiable {
     let url: URL
     var id: String { url.absoluteString }
+}
+
+private struct OnboardingPresenter<SheetContent: View>: ViewModifier {
+    @Binding var isPresented: Bool
+    @ViewBuilder let content: () -> SheetContent
+
+    func body(content base: Content) -> some View {
+        #if os(iOS)
+        base.fullScreenCover(isPresented: $isPresented, content: content)
+        #else
+        base.sheet(isPresented: $isPresented, content: content)
+        #endif
+    }
 }

@@ -11,6 +11,7 @@ struct PaywallView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var remotePaywallReady = false
     let entitlement: any EntitlementProviding
+    var context: Persona = .cocktailParty
 
     var body: some View {
         #if canImport(RevenueCatUI) && canImport(RevenueCat)
@@ -43,11 +44,11 @@ struct PaywallView: View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 24) {
                 VStack(alignment: .leading, spacing: 10) {
-                    Image(systemName: "quote.bubble.fill")
+                    Image(systemName: context.isFree ? "quote.bubble.fill" : context.symbolName)
                         .font(.system(size: 48, weight: .semibold))
                         .foregroundStyle(SidelineTheme.brandPrimary)
 
-                    Text("Every Room, Covered")
+                    Text(context.isFree ? "Every Room, Covered" : context.paywallHook)
                         .font(.largeTitle.weight(.bold))
                         .fixedSize(horizontal: false, vertical: true)
 

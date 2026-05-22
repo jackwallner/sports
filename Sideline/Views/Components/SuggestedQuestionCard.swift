@@ -1,4 +1,7 @@
 import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#endif
 
 struct SuggestedQuestionCard: View {
     let question: String
@@ -31,6 +34,15 @@ struct SuggestedQuestionCard: View {
             RoundedRectangle(cornerRadius: SidelineTheme.cardCornerRadius)
                 .fill(SidelineTheme.brandAccent.opacity(0.14))
         )
+        .contextMenu {
+            Button {
+                #if canImport(UIKit)
+                UIPasteboard.general.string = question
+                #endif
+            } label: {
+                Label("Copy question", systemImage: "doc.on.doc")
+            }
+        }
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Your move, suggested question: \(question)")
     }

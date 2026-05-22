@@ -10,6 +10,15 @@ public enum RefreshWindow: String, Codable, CaseIterable, Sendable {
     case morning
     case midday
     case evening
+
+    public var nextUpdateHint: String {
+        switch self {
+        case .daily: return "Next briefing tomorrow morning"
+        case .morning: return "Next refresh midday"
+        case .midday: return "Next refresh this evening"
+        case .evening: return "Next briefing tomorrow morning"
+        }
+    }
 }
 
 public struct Briefing: Identifiable, Codable, Equatable, Sendable {

@@ -1,5 +1,8 @@
 import Shared
 import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#endif
 
 struct BulletCard: View {
     let bullet: BriefingBullet
@@ -19,6 +22,20 @@ struct BulletCard: View {
                     .foregroundStyle(.primary)
                     .lineSpacing(2)
                     .fixedSize(horizontal: false, vertical: true)
+                    .contextMenu {
+                        Button {
+                            copyToClipboard(bullet.talkingPoint)
+                        } label: {
+                            Label("Copy", systemImage: "doc.on.doc")
+                        }
+                    }
+
+                if let tag = bullet.tag, tag != .neutral, let reason = bullet.tagReason, !reason.isEmpty {
+                    Text(reason)
+                        .font(.footnote)
+                        .foregroundStyle(tagFG(tag))
+                        .fixedSize(horizontal: false, vertical: true)
+                }
 
                 if let tieIn = bullet.tieIn, !tieIn.isEmpty {
                     HStack(alignment: .top, spacing: 8) {
@@ -130,5 +147,11 @@ struct BulletCard: View {
             return "Tagged: \(tag.displayName), \(reason)"
         }
         return "Tagged: \(tag.displayName)"
+    }
+
+    private func copyToClipboard(_ text: String) {
+        #if canImport(UIKit)
+        UIPasteboard.general.string = text
+        #endif
     }
 }

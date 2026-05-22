@@ -2,10 +2,13 @@ import Shared
 import SwiftUI
 
 struct SettingsView: View {
+    @Environment(\.dismiss) private var dismiss
     @State private var showingPaywall = false
     @AppStorage("favoriteTeam") private var favoriteTeam = ""
 
     let entitlement: any EntitlementProviding
+    var onManualRefresh: () -> Void = {}
+    var onTeamChanged: () -> Void = {}
 
     var body: some View {
         List {
@@ -33,42 +36,56 @@ struct SettingsView: View {
                     Button {
                         showingPaywall = true
                     } label: {
-                        HStack {
-                            Label("Local team", systemImage: "mappin.and.ellipse")
-                            Spacer()
-                            Text("Pro")
-                                .foregroundStyle(.secondary)
-                            Image(systemName: "lock.fill")
+                        VStack(alignment: .leading, spacing: 4) {
+                            HStack {
+                                Label("Local team", systemImage: "mappin.and.ellipse")
+                                Spacer()
+                                Image(systemName: "lock.fill")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Text("Pro biases briefings toward your market.")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
                     }
                 }
             }
+            .onChange(of: favoriteTeam) { _, _ in
+                onTeamChanged()
+            }
 
             Section("Briefing") {
                 Button {
-                    if !entitlement.isPro {
+                    if entitlement.isPro {
+                        dismiss()
+                        onManualRefresh()
+                    } else {
                         showingPaywall = true
                     }
                 } label: {
                     HStack {
                         Label("Manual refresh", systemImage: "arrow.clockwise")
                         Spacer()
-                        Text(entitlement.isPro ? "Available" : "Pro")
+                        Text(entitlement.isPro ? "Refresh now" : "Pro")
                             .foregroundStyle(.secondary)
                     }
                 }
             }
 
-            Section("About") {
-                Link("Privacy Policy", destination: URL(string: "https://jackwallner.github.io/sports/privacy-policy.html")!)
-                Link("Terms of Use", destination: URL(string: "https://jackwallner.github.io/sports/terms.html")!)
+            Section {
                 Button("Restore Purchases") {
                     Task {
                         await entitlement.refresh()
                     }
                 }
+            } footer: {
+                Text("Already subscribed? Restore to unlock Pro on this device.")
+            }
+
+            Section("About") {
+                Link("Privacy Policy", destination: URL(string: "https://jackwallner.github.io/sports/privacy-policy.html")!)
+                Link("Terms of Use", destination: URL(string: "https://jackwallner.github.io/sports/terms.html")!)
                 LabeledContent("Version", value: versionString)
             }
         }
@@ -88,6 +105,7 @@ struct SettingsView: View {
 private struct TeamPickerView: View {
     @Binding var selectedTeam: String
     @Environment(\.dismiss) private var dismiss
+    @State private var query = ""
 
     private let teams = [
         "Arizona Cardinals", "Atlanta Falcons", "Baltimore Ravens", "Buffalo Bills",
@@ -100,24 +118,32 @@ private struct TeamPickerView: View {
         "Seattle Seahawks", "Tampa Bay Buccaneers", "Tennessee Titans", "Washington Commanders"
     ]
 
+    private var filteredTeams: [String] {
+        let trimmed = query.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty else { return teams }
+        return teams.filter { $0.localizedCaseInsensitiveContains(trimmed) }
+    }
+
     var body: some View {
         List {
-            Button {
-                selectedTeam = ""
-                dismiss()
-            } label: {
-                HStack {
-                    Text("None")
-                        .foregroundStyle(.primary)
-                    Spacer()
-                    if selectedTeam.isEmpty {
-                        Image(systemName: "checkmark")
-                            .foregroundStyle(SidelineTheme.brandPrimary)
+            if query.isEmpty {
+                Button {
+                    selectedTeam = ""
+                    dismiss()
+                } label: {
+                    HStack {
+                        Text("None")
+                            .foregroundStyle(.primary)
+                        Spacer()
+                        if selectedTeam.isEmpty {
+                            Image(systemName: "checkmark")
+                                .foregroundStyle(SidelineTheme.brandPrimary)
+                        }
                     }
                 }
             }
 
-            ForEach(teams, id: \.self) { team in
+            ForEach(filteredTeams, id: \.self) { team in
                 Button {
                     selectedTeam = team
                     dismiss()
@@ -134,6 +160,7 @@ private struct TeamPickerView: View {
                 }
             }
         }
+        .searchable(text: $query, prompt: "Search teams")
         .navigationTitle("Local Team")
     }
 }

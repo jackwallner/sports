@@ -8,12 +8,15 @@ import RevenueCat
 struct SidelineApp: App {
     private let entitlement: any EntitlementProviding
     private let service: any BriefingServing
+    private let isDemo: Bool
 
     init() {
         if let config = AppConfig.fromBundle() ?? AppConfig.fromEnvironment() {
             self.service = SupabaseBriefingService(config: config)
+            self.isDemo = false
         } else {
             self.service = SampleBriefingService()
+            self.isDemo = true
         }
 
         #if canImport(RevenueCat)
@@ -52,7 +55,7 @@ struct SidelineApp: App {
 
     var body: some Scene {
         WindowGroup {
-            TodayBriefingView(service: service, entitlement: entitlement)
+            TodayBriefingView(service: service, entitlement: entitlement, isDemo: isDemo)
         }
     }
 }

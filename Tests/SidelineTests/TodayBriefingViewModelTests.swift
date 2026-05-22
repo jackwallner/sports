@@ -4,6 +4,13 @@ import XCTest
 
 @MainActor
 final class TodayBriefingViewModelTests: XCTestCase {
+    override func setUp() {
+        super.setUp()
+        UserDefaults.standard.removeObject(forKey: "sideline.lastFreeRefreshDay")
+        UserDefaults.standard.removeObject(forKey: "sideline.lastPersona")
+        UserDefaults.standard.removeObject(forKey: "favoriteTeam")
+    }
+
     private func makeBriefing(tlDR: String = "Test TLDR") -> Briefing {
         Briefing(
             persona: .cocktailParty,
@@ -29,7 +36,7 @@ final class TodayBriefingViewModelTests: XCTestCase {
     private final class MockService: BriefingServing, @unchecked Sendable {
         var result: Result<Briefing, Error>?
 
-        func latestBriefing(persona: Persona, scope: BriefingScope) async throws -> Briefing {
+        func latestBriefing(persona: Persona, scope: BriefingScope, team: String?) async throws -> Briefing {
             guard let result else {
                 throw BriefingServiceError.emptyResult
             }
@@ -144,6 +151,25 @@ final class TodayBriefingViewModelTests: XCTestCase {
             XCTFail("Expected .populated after refresh on free persona, got \(vm.state)")
             return
         }
+    }
+
+    func testSecondFreeRefreshSameDayHitsLimit() async {
+        let service = MockService()
+        service.result = .success(makeBriefing())
+        let vm = TodayBriefingViewModel(
+            service: service,
+            entitlement: LocalEntitlementStore(isPro: false)
+        )
+
+        await vm.load()
+        await vm.refresh()
+        guard case .populated = vm.state else {
+            XCTFail("First refresh should populate, got \(vm.state)")
+            return
+        }
+
+        await vm.refresh()
+        XCTAssertEqual(vm.state, .refreshLimit)
     }
 
     func testRefreshOnLockedPersonaHitsLimitForNonPro() async {
