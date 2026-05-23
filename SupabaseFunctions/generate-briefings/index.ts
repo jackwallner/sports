@@ -78,6 +78,7 @@ async function generateOne(
     const { error: insertError } = await supabase.from("briefings").insert({
       persona: target.persona,
       scope: target.scope,
+      team: target.team ?? null,
       refresh_window: target.refreshWindow,
       headline: normalized.headline,
       tl_dr: normalized.tl_dr,
@@ -159,6 +160,7 @@ async function createRun(
       trace_id,
       persona: target.persona,
       scope: target.scope,
+      team: target.team ?? null,
       refresh_window: target.refreshWindow,
       status: "running",
       model,
@@ -190,13 +192,24 @@ async function updateRun(supabase: any, runId: string, fields: Record<string, un
 
 function resolveTargets(body: Record<string, unknown>): GenerationTarget[] {
   const refreshWindow = (body.refresh_window as RefreshWindow | undefined) ?? currentRefreshWindow();
-  const scope = (body.scope as BriefingScope | undefined) ?? "national";
   const requestedPersonas = Array.isArray(body.personas) ? body.personas as Persona[] : null;
   const personas = requestedPersonas?.length ? requestedPersonas : defaultPersonas(refreshWindow);
 
+  // local_team always covers a specific team and is stored under scope=local.
+  const team = typeof body.team === "string" && body.team.trim() ? body.team.trim() : null;
+  const requestedScope = body.scope as BriefingScope | undefined;
+
   return personas
     .filter((persona): persona is Persona => PERSONAS.includes(persona as Persona))
-    .map((persona) => ({ persona, scope, refreshWindow }));
+    .map((persona) => {
+      if (persona === "local_team") {
+        if (!team) {
+          throw new Error(`local_team requires a "team" in the request body`);
+        }
+        return { persona, scope: "local" as BriefingScope, refreshWindow, team };
+      }
+      return { persona, scope: requestedScope ?? "national", refreshWindow, team: null };
+    });
 }
 
 function defaultPersonas(refreshWindow: RefreshWindow): Persona[] {

@@ -18,7 +18,7 @@ on:
 jobs:
   pipeline:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     env:
       URL: ${{ secrets.SUPABASE_FUNCTIONS_URL }}
       CS: ${{ secrets.CRON_SECRET }}
@@ -31,11 +31,11 @@ jobs:
             -H "x-cron-secret: $CS"
           echo
 
-      - name: Generate briefings (per persona)
+      - name: Generate national briefings (per persona)
         run: |
           set -uo pipefail
           FAILED=0
-          for P in cocktail_party office_watercooler date_night sports_talk_for_moms local_team; do
+          for P in cocktail_party office_watercooler date_night sports_talk_for_moms; do
             echo "=== $P ==="
             OK=0
             for i in 1 2 3; do
@@ -43,6 +43,38 @@ jobs:
                 -H "content-type: application/json" \
                 -H "x-cron-secret: $CS" \
                 -d "{\"personas\":[\"$P\"]}") || R='{"error":"curl failed"}'
+              echo "$R"
+              if echo "$R" | grep -q '"status":"succeeded"'; then OK=1; break; fi
+              sleep 5
+            done
+            if [ "$OK" -ne 1 ]; then FAILED=1; fi
+          done
+          exit $FAILED
+
+      - name: Generate local team briefings (per team)
+        run: |
+          set -uo pipefail
+          # Must match the team names in Sideline/Views/SettingsView.swift TeamPickerView.
+          TEAMS=(
+            "Arizona Cardinals" "Atlanta Falcons" "Baltimore Ravens" "Buffalo Bills"
+            "Carolina Panthers" "Chicago Bears" "Cincinnati Bengals" "Cleveland Browns"
+            "Dallas Cowboys" "Denver Broncos" "Detroit Lions" "Green Bay Packers"
+            "Houston Texans" "Indianapolis Colts" "Jacksonville Jaguars" "Kansas City Chiefs"
+            "Las Vegas Raiders" "Los Angeles Chargers" "Los Angeles Rams" "Miami Dolphins"
+            "Minnesota Vikings" "New England Patriots" "New Orleans Saints" "New York Giants"
+            "New York Jets" "Philadelphia Eagles" "Pittsburgh Steelers" "San Francisco 49ers"
+            "Seattle Seahawks" "Tampa Bay Buccaneers" "Tennessee Titans" "Washington Commanders"
+          )
+          FAILED=0
+          for T in "${TEAMS[@]}"; do
+            echo "=== local_team: $T ==="
+            BODY=$(jq -nc --arg t "$T" '{personas:["local_team"],team:$t}')
+            OK=0
+            for i in 1 2 3; do
+              R=$(curl -fsS -X POST "$URL/generate-briefings" \
+                -H "content-type: application/json" \
+                -H "x-cron-secret: $CS" \
+                -d "$BODY") || R='{"error":"curl failed"}'
               echo "$R"
               if echo "$R" | grep -q '"status":"succeeded"'; then OK=1; break; fi
               sleep 5

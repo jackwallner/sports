@@ -80,6 +80,7 @@ export interface GenerationTarget {
   persona: Persona;
   scope: BriefingScope;
   refreshWindow: RefreshWindow;
+  team?: string | null;
 }
 
 export const ALLOWED_TAGS: BriefingTag[] = ["nice_guy", "jerk", "redemption", "drama", "neutral"];

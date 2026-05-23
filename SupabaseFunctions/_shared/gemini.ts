@@ -82,7 +82,7 @@ export async function paceGeminiCalls(trace_id: string) {
 }
 
 function buildPrompt(target: GenerationTarget, sourceItems: SourceItemRow[]): string {
-  const personaVoice = personaInstruction(target.persona);
+  const personaVoice = personaInstruction(target.persona, target.team);
   const sources = sourceItems.map((item, index) => ({
     n: index + 1,
     source_name: item.source_name,
@@ -93,11 +93,15 @@ function buildPrompt(target: GenerationTarget, sourceItems: SourceItemRow[]): st
     categories: item.categories,
   }));
 
+  const coverage = target.persona === "local_team" && target.team
+    ? `Coverage: prioritize stories about the ${target.team} and their league/city; if the sources have little on that team, pick the stories most relevant to their sport and frame them for a ${target.team} fan. Never invent facts not present in the sources.`
+    : "Coverage: national US major sports and broad sports-pop-culture stories likely to come up outside sports media.";
+
   return [
     "You write The Sideline: sports pop-culture talking points for people who do not follow sports.",
     "Audience: non-sports people who want to sound informed and not excluded from sports conversations.",
     `Persona: ${target.persona}. ${personaVoice}`,
-    "Coverage: national US major sports and broad sports-pop-culture stories likely to come up outside sports media.",
+    coverage,
     "Do not write like ESPN. Use plain language, warm wit, and zero stats jargon.",
     "Do not reproduce article bodies. Use the provided headlines/summaries only and link to the original source URL.",
     "Every bullet must cite exactly one provided source URL.",
@@ -125,7 +129,7 @@ function buildPrompt(target: GenerationTarget, sourceItems: SourceItemRow[]): st
   ].join("\n\n");
 }
 
-function personaInstruction(persona: string): string {
+function personaInstruction(persona: string, team?: string | null): string {
   switch (persona) {
     case "sports_talk_for_moms":
       return "Warm, zero jargon, framed as something to ask your kid about.";
@@ -134,7 +138,9 @@ function personaInstruction(persona: string): string {
     case "date_night":
       return "One charming story plus a follow-up question to seem interested.";
     case "local_team":
-      return "Bias toward city/team relevance, but keep it useful to a non-fan.";
+      return team
+        ? `Bias toward the ${team} and their city, but keep it useful to a non-fan.`
+        : "Bias toward city/team relevance, but keep it useful to a non-fan.";
     default:
       return "Broad, witty, cross-sport, light gossip that can work in any room.";
   }
