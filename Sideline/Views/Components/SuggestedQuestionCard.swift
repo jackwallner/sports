@@ -23,7 +23,8 @@ struct SuggestedQuestionCard: View {
                     .foregroundStyle(SidelineTheme.brandAccent.opacity(0.55))
                     .offset(y: 6)
                 Text(question)
-                    .font(.title3.weight(.semibold))
+                    .font(SidelineTheme.title)
+                    .foregroundStyle(SidelineTheme.inkPrimary)
                     .lineSpacing(2)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -32,7 +33,11 @@ struct SuggestedQuestionCard: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: SidelineTheme.cardCornerRadius)
-                .fill(SidelineTheme.brandAccent.opacity(0.14))
+                .fill(Color.sidelineCard)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: SidelineTheme.cardCornerRadius)
+                .stroke(SidelineTheme.brandAccent, lineWidth: 1)
         )
         .contextMenu {
             Button {

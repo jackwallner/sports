@@ -25,9 +25,14 @@ struct PersonaRail: View {
                         }
                         .font(.subheadline.weight(.semibold))
                         .padding(.horizontal, 14)
-                        .padding(.vertical, 10)
+                        .padding(.vertical, 9)
                         .foregroundStyle(foreground(for: persona))
-                        .background(background(for: persona))
+                        .background(
+                            Capsule().fill(persona == selected ? SidelineTheme.brandPrimary : Color.clear)
+                        )
+                        .overlay(
+                            Capsule().stroke(persona == selected ? Color.clear : SidelineTheme.rule, lineWidth: 1)
+                        )
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel(accessibilityLabel(for: persona))
@@ -38,16 +43,10 @@ struct PersonaRail: View {
         }
     }
 
-    private func background(for persona: Persona) -> some ShapeStyle {
-        persona == selected
-            ? AnyShapeStyle(SidelineTheme.brandPrimary)
-            : AnyShapeStyle(Color.sidelineCard)
-    }
-
     private func foreground(for persona: Persona) -> some ShapeStyle {
         persona == selected
             ? AnyShapeStyle(Color.white)
-            : AnyShapeStyle(Color.primary)
+            : AnyShapeStyle(SidelineTheme.inkPrimary)
     }
 
     private func accessibilityLabel(for persona: Persona) -> String {

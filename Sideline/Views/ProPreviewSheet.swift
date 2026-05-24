@@ -20,10 +20,11 @@ struct ProPreviewSheet: View {
                     .foregroundStyle(SidelineTheme.brandPrimary)
 
                     Text(persona.displayName)
-                        .font(.largeTitle.weight(.bold))
+                        .font(SidelineTheme.display(34))
+                        .foregroundStyle(SidelineTheme.inkPrimary)
                     Text(persona.shortPitch)
                         .font(.title3)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(SidelineTheme.inkSecondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
 

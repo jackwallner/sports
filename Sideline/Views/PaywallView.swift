@@ -49,12 +49,13 @@ struct PaywallView: View {
                         .foregroundStyle(SidelineTheme.brandPrimary)
 
                     Text(context.isFree ? "Every Room, Covered" : context.paywallHook)
-                        .font(.largeTitle.weight(.bold))
+                        .font(SidelineTheme.display(34))
+                        .foregroundStyle(SidelineTheme.inkPrimary)
                         .fixedSize(horizontal: false, vertical: true)
 
                     Text("One room is free. Pro gives you all 5 contexts, fresher briefings, and your local team.")
                         .font(.body)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(SidelineTheme.inkSecondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
 

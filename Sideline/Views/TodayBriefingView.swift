@@ -139,8 +139,13 @@ struct TodayBriefingView: View {
 
             heroBlock(briefing: briefing)
 
+            Text("\(briefing.bullets.count) talking points".uppercased())
+                .font(.caption2.weight(.bold))
+                .tracking(1.3)
+                .foregroundStyle(SidelineTheme.inkTertiary)
+                .padding(.top, 2)
+
             Divider()
-                .padding(.vertical, 2)
 
             VStack(spacing: 0) {
                 ForEach(Array(briefing.bullets.enumerated()), id: \.element.id) { index, bullet in
@@ -167,19 +172,22 @@ struct TodayBriefingView: View {
     }
 
     private func heroBlock(briefing: Briefing) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(spacing: 8) {
+        // Newsroom: no card chrome — the eyebrow, a serif headline, and
+        // spacing carry the hero. The page background does the rest.
+        VStack(alignment: .leading, spacing: SidelineTheme.Spacing.sm) {
+            HStack(spacing: 6) {
                 Image(systemName: viewModel.selectedPersona.symbolName)
-                    .font(.caption.weight(.bold))
-                Text(viewModel.selectedPersona.contextHeader)
-                    .font(.caption.weight(.heavy))
-                    .tracking(1.2)
+                    .font(.caption2.weight(.bold))
+                Text(viewModel.selectedPersona.contextHeader.uppercased())
+                    .font(SidelineTheme.eyebrow)
+                    .tracking(1.4)
             }
             .foregroundStyle(SidelineTheme.brandPrimary)
 
             Text(briefing.tlDR)
-                .font(.title2.weight(.bold))
-                .lineSpacing(4)
+                .font(SidelineTheme.display())
+                .foregroundStyle(SidelineTheme.inkPrimary)
+                .lineSpacing(3)
                 .fixedSize(horizontal: false, vertical: true)
                 .contextMenu {
                     Button {
@@ -190,21 +198,12 @@ struct TodayBriefingView: View {
                 }
 
             Text(briefing.headline)
-                .font(.footnote.weight(.semibold))
-                .foregroundStyle(.secondary)
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(SidelineTheme.inkSecondary)
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.top, 2)
         }
-        .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: SidelineTheme.cardCornerRadius)
-                .fill(SidelineTheme.brandPrimary.opacity(0.08))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: SidelineTheme.cardCornerRadius)
-                .stroke(SidelineTheme.brandPrimary.opacity(0.18), lineWidth: 1)
-        )
     }
 
     private func emptyState(message: String) -> some View {
@@ -231,9 +230,12 @@ struct TodayBriefingView: View {
 
     private var skeleton: some View {
         VStack(alignment: .leading, spacing: 18) {
-            RoundedRectangle(cornerRadius: SidelineTheme.cardCornerRadius)
-                .fill(Color.secondary.opacity(0.12))
-                .frame(height: 140)
+            VStack(alignment: .leading, spacing: 10) {
+                Capsule().fill(SidelineTheme.rule).frame(width: 90, height: 10)
+                Capsule().fill(SidelineTheme.rule).frame(height: 22)
+                Capsule().fill(SidelineTheme.rule).frame(height: 22)
+                Capsule().fill(SidelineTheme.rule).frame(width: 200, height: 22)
+            }
 
             ForEach(0..<3, id: \.self) { _ in
                 HStack(alignment: .top, spacing: 14) {
@@ -276,11 +278,13 @@ struct TodayBriefingView: View {
 
     private var refreshLimitCard: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("You're caught up")
-                .font(.headline)
+            Text("You're caught up".uppercased())
+                .font(.caption2.weight(.bold))
+                .tracking(1.2)
+                .foregroundStyle(SidelineTheme.amberText)
             Text("Today's free briefing is already the latest. Pro refreshes 3× a day: morning, midday, and evening.")
                 .font(.callout)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(SidelineTheme.inkSecondary)
             Button("See Pro") {
                 showingPaywall = true
             }
@@ -288,7 +292,12 @@ struct TodayBriefingView: View {
             .tint(SidelineTheme.brandPrimary)
         }
         .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.sidelineCard, in: RoundedRectangle(cornerRadius: SidelineTheme.cardCornerRadius))
+        .overlay(
+            RoundedRectangle(cornerRadius: SidelineTheme.cardCornerRadius)
+                .stroke(SidelineTheme.brandAccent, lineWidth: 1)
+        )
     }
 
     private func copyToClipboard(_ text: String) {

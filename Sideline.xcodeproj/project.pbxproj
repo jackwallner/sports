@@ -15,6 +15,7 @@
 		17E0C916978E4EF6111B72EE /* BriefingDecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08D5C1E878A0D6C1E14E8410 /* BriefingDecodingTests.swift */; };
 		19D9B2ACAEE995C286CAA68A /* BriefingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F811AB78031894F0206E64 /* BriefingService.swift */; };
 		1B795FC29E05375584B29FDE /* Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF9FA1E3962405E2034FBEAB /* Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1D840156CEF819C9165217CC /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C3C8476341FF92D582A42A /* OnboardingView.swift */; };
 		22C61070A1A7CC9AADB9956A /* TodayBriefingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 715BB48CD05015E9D52E8F43 /* TodayBriefingViewModel.swift */; };
 		2CCF06106F5389C4F2B917DA /* Persona.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958C66A952950105F173F779 /* Persona.swift */; };
 		34F6144B1D4B958009A814C0 /* TodayBriefingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43E0BBEAECA6CD7A6278351 /* TodayBriefingView.swift */; };
@@ -26,6 +27,7 @@
 		5A87E3CD87A50F539E0B3C18 /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DD47129F583226CE63D6FFF /* PaywallView.swift */; };
 		682D886BC20C76A704007E0A /* SafariView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3B3F206F2C3A76C63F13D3F /* SafariView.swift */; };
 		689FECA729D460B2B8CD9AA1 /* BriefingTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C7068DEF5036C781010D06 /* BriefingTag.swift */; };
+		8940C470F0EB729DA157FC7C /* ProPreviewSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D247B8D538BBCFAE75C10A0 /* ProPreviewSheet.swift */; };
 		8E2D7A5C8A0ACB9358CBFDB6 /* Entitlements.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE02FEC5275EFE40056DF513 /* Entitlements.swift */; };
 		91CADFAB5B68366507B730BE /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B33FF335FF20D0ECCB46260 /* Theme.swift */; };
 		9B973FC14256F6F49373FC15 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 609D0F2AA482CC295A18420A /* RevenueCat */; };
@@ -88,8 +90,10 @@
 		10CD784DBD346AEBE64DD90B /* Sideline.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Sideline.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FB7BB4BDA28451CA994C2A1 /* Sideline.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Sideline.entitlements; sourceTree = "<group>"; };
 		2B33FF335FF20D0ECCB46260 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		2D247B8D538BBCFAE75C10A0 /* ProPreviewSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProPreviewSheet.swift; sourceTree = "<group>"; };
 		388BC8A0B2DD193D31B3CED0 /* TodayBriefingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayBriefingViewModelTests.swift; sourceTree = "<group>"; };
 		47C4F2D20034A6846EA72D4C /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
+		55C3C8476341FF92D582A42A /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		6A445293CF6FD3C5CAE3F3F2 /* RevenueCatEntitlementStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RevenueCatEntitlementStore.swift; sourceTree = "<group>"; };
 		6D6E6137B3412D5E045A9D4A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		715BB48CD05015E9D52E8F43 /* TodayBriefingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayBriefingViewModel.swift; sourceTree = "<group>"; };
@@ -238,7 +242,9 @@
 		EEC62AE91ABAC508A3C92FB0 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				55C3C8476341FF92D582A42A /* OnboardingView.swift */,
 				0DD47129F583226CE63D6FFF /* PaywallView.swift */,
+				2D247B8D538BBCFAE75C10A0 /* ProPreviewSheet.swift */,
 				96F7A88EA9D0E4101FE5EFFB /* SettingsView.swift */,
 				F43E0BBEAECA6CD7A6278351 /* TodayBriefingView.swift */,
 				E316096CFE4C80A67588403B /* Components */,
@@ -415,8 +421,10 @@
 			files = (
 				07792FAFE86733B877DF1D49 /* BulletCard.swift in Sources */,
 				CD2EA39D6AA4C1E849B62835 /* FreshnessFooter.swift in Sources */,
+				1D840156CEF819C9165217CC /* OnboardingView.swift in Sources */,
 				5A87E3CD87A50F539E0B3C18 /* PaywallView.swift in Sources */,
 				3B40FA064F4838E50DF1443C /* PersonaRail.swift in Sources */,
+				8940C470F0EB729DA157FC7C /* ProPreviewSheet.swift in Sources */,
 				682D886BC20C76A704007E0A /* SafariView.swift in Sources */,
 				CE63058BB591C1C8C9572540 /* SettingsView.swift in Sources */,
 				572650BE016F2C0FB6F25795 /* SidelineApp.swift in Sources */,

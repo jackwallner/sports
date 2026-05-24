@@ -43,11 +43,12 @@ struct OnboardingView: View {
                 .font(.system(size: 56, weight: .semibold))
                 .foregroundStyle(SidelineTheme.brandPrimary)
             Text("Sound like you follow sports.")
-                .font(.largeTitle.weight(.bold))
+                .font(SidelineTheme.display(34))
+                .foregroundStyle(SidelineTheme.inkPrimary)
                 .fixedSize(horizontal: false, vertical: true)
             Text("Three things to say and one question to ask — in under 20 seconds, before you walk into the room.")
                 .font(.title3)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(SidelineTheme.inkSecondary)
                 .fixedSize(horizontal: false, vertical: true)
             Spacer()
         }
@@ -59,11 +60,12 @@ struct OnboardingView: View {
         VStack(alignment: .leading, spacing: 16) {
             Spacer(minLength: 12)
             Text("Pick the room you'll use this in")
-                .font(.title.weight(.bold))
+                .font(SidelineTheme.title)
+                .foregroundStyle(SidelineTheme.inkPrimary)
                 .fixedSize(horizontal: false, vertical: true)
             Text("You can switch anytime. Cocktail Party is free; the rest unlock with Pro.")
                 .font(.callout)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(SidelineTheme.inkSecondary)
 
             ScrollView {
                 VStack(spacing: 10) {
@@ -114,11 +116,11 @@ struct OnboardingView: View {
             .padding(14)
             .background(
                 RoundedRectangle(cornerRadius: SidelineTheme.cardCornerRadius)
-                    .fill(persona == pickedPersona ? SidelineTheme.brandPrimary.opacity(0.10) : Color.sidelineCard)
+                    .fill(persona == pickedPersona ? SidelineTheme.brandPrimary.opacity(0.10) : Color.clear)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: SidelineTheme.cardCornerRadius)
-                    .stroke(persona == pickedPersona ? SidelineTheme.brandPrimary.opacity(0.35) : Color.clear, lineWidth: 1)
+                    .stroke(persona == pickedPersona ? SidelineTheme.brandPrimary.opacity(0.45) : SidelineTheme.rule, lineWidth: persona == pickedPersona ? 1.5 : 1)
             )
         }
         .buttonStyle(.plain)
@@ -128,10 +130,11 @@ struct OnboardingView: View {
         VStack(alignment: .leading, spacing: 16) {
             Spacer(minLength: 12)
             Text("Got a team?")
-                .font(.title.weight(.bold))
+                .font(SidelineTheme.title)
+                .foregroundStyle(SidelineTheme.inkPrimary)
             Text("Optional. Pro briefings can lean toward your team. Skip if you'd rather not.")
                 .font(.callout)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(SidelineTheme.inkSecondary)
                 .fixedSize(horizontal: false, vertical: true)
 
             TextField("e.g. Philadelphia Eagles", text: $teamDraft)
