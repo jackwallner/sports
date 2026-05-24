@@ -1,5 +1,8 @@
 import Shared
 import SwiftUI
+#if canImport(RevenueCat)
+import RevenueCat
+#endif
 #if canImport(UIKit)
 import UIKit
 #endif
@@ -9,25 +12,43 @@ struct TodayBriefingView: View {
     @State private var sourceURL: PresentedURL?
     @State private var showingPaywall = false
     @State private var pendingLockedPersona: Persona?
+    @State private var openPaywallAfterPreview = false
+    @State private var paywallContext: Persona?
 
     @AppStorage("sideline.hasCompletedOnboarding") private var hasCompletedOnboarding = false
     @AppStorage("sideline.lastPersona") private var lastPersonaRaw = Persona.cocktailParty.rawValue
     @AppStorage("favoriteTeam") private var favoriteTeam = ""
 
     private let entitlement: any EntitlementProviding
+    private let store: StoreService
     private let isDemo: Bool
 
-    init(service: any BriefingServing, entitlement: any EntitlementProviding, isDemo: Bool = false) {
+    init(
+        service: any BriefingServing,
+        entitlement: any EntitlementProviding,
+        store: StoreService = .shared,
+        isDemo: Bool = false
+    ) {
         self.entitlement = entitlement
+        self.store = store
         self.isDemo = isDemo
         _viewModel = State(wrappedValue: TodayBriefingViewModel(service: service, entitlement: entitlement))
+    }
+
+    private var isPro: Bool {
+        #if canImport(RevenueCat)
+        if Purchases.isConfigured, entitlement is StoreService {
+            return store.isPro
+        }
+        #endif
+        return entitlement.isPro
     }
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    PersonaRail(selected: viewModel.selectedPersona, isPro: entitlement.isPro) { persona in
+                    PersonaRail(selected: viewModel.selectedPersona, isPro: isPro) { persona in
                         Task {
                             let didSelect = await viewModel.select(persona)
                             if !didSelect {
@@ -48,6 +69,7 @@ struct TodayBriefingView: View {
                     NavigationLink {
                         SettingsView(
                             entitlement: entitlement,
+                            store: store,
                             onManualRefresh: { Task { await viewModel.refresh() } },
                             onTeamChanged: { Task { await viewModel.reloadAfterPreferenceChange() } }
                         )
@@ -70,14 +92,27 @@ struct TodayBriefingView: View {
                 }
             }
             .sheet(isPresented: $showingPaywall) {
-                PaywallView(entitlement: entitlement, context: viewModel.selectedPersona)
+                PaywallView(
+                    entitlement: entitlement,
+                    context: paywallContext ?? viewModel.selectedPersona,
+                    impressionId: "sideline_paywall_sheet"
+                )
             }
-            .sheet(item: $pendingLockedPersona) { persona in
+            .onChange(of: showingPaywall) { _, isShowing in
+                if !isShowing { paywallContext = nil }
+            }
+            .sheet(item: $pendingLockedPersona, onDismiss: {
+                if openPaywallAfterPreview {
+                    showingPaywall = true
+                    openPaywallAfterPreview = false
+                }
+            }) { persona in
                 ProPreviewSheet(
                     persona: persona,
                     onSeePro: {
+                        paywallContext = persona
+                        openPaywallAfterPreview = true
                         pendingLockedPersona = nil
-                        showingPaywall = true
                     },
                     onDismiss: { pendingLockedPersona = nil }
                 )
@@ -166,7 +201,7 @@ struct TodayBriefingView: View {
 
             SuggestedQuestionCard(question: briefing.suggestedQuestion)
 
-            FreshnessFooter(briefing: briefing, isOffline: isOffline, isPro: entitlement.isPro)
+            FreshnessFooter(briefing: briefing, isOffline: isOffline, isPro: isPro)
                 .padding(.top, 4)
         }
     }

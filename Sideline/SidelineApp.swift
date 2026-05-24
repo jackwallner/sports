@@ -7,6 +7,7 @@ import RevenueCat
 @main
 struct SidelineApp: App {
     private let entitlement: any EntitlementProviding
+    private let store = StoreService.shared
     private let service: any BriefingServing
     private let isDemo: Bool
 
@@ -26,16 +27,11 @@ struct SidelineApp: App {
             !apiKey.hasPrefix("$(")
         {
             Purchases.configure(withAPIKey: apiKey)
+            StoreService.shared.start()
         }
         #endif
 
         self.entitlement = Self.makeEntitlement()
-
-        #if canImport(RevenueCat)
-        if let revenueCatStore = self.entitlement as? RevenueCatEntitlementStore {
-            Task { await revenueCatStore.refresh() }
-        }
-        #endif
     }
 
     private static func makeEntitlement() -> any EntitlementProviding {
@@ -47,7 +43,7 @@ struct SidelineApp: App {
 
         #if canImport(RevenueCat)
         if Purchases.isConfigured {
-            return RevenueCatEntitlementStore()
+            return StoreService.shared
         }
         #endif
         return LocalEntitlementStore()
@@ -55,7 +51,8 @@ struct SidelineApp: App {
 
     var body: some Scene {
         WindowGroup {
-            TodayBriefingView(service: service, entitlement: entitlement, isDemo: isDemo)
+            TodayBriefingView(service: service, entitlement: entitlement, store: store, isDemo: isDemo)
+                .environment(store)
         }
     }
 }

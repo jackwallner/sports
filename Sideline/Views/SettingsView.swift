@@ -1,5 +1,8 @@
 import Shared
 import SwiftUI
+#if canImport(RevenueCat)
+import RevenueCat
+#endif
 
 struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
@@ -7,8 +10,18 @@ struct SettingsView: View {
     @AppStorage("favoriteTeam") private var favoriteTeam = ""
 
     let entitlement: any EntitlementProviding
+    let store: StoreService
     var onManualRefresh: () -> Void = {}
     var onTeamChanged: () -> Void = {}
+
+    private var isPro: Bool {
+        #if canImport(RevenueCat)
+        if Purchases.isConfigured, entitlement is StoreService {
+            return store.isPro
+        }
+        #endif
+        return entitlement.isPro
+    }
 
     var body: some View {
         List {
@@ -16,12 +29,12 @@ struct SettingsView: View {
                 Button {
                     showingPaywall = true
                 } label: {
-                    SettingsProRow(isPro: entitlement.isPro)
+                    SettingsProRow(isPro: isPro)
                 }
             }
 
             Section("Personalization") {
-                if entitlement.isPro {
+                if isPro {
                     NavigationLink {
                         TeamPickerView(selectedTeam: $favoriteTeam)
                     } label: {
@@ -57,7 +70,7 @@ struct SettingsView: View {
 
             Section("Briefing") {
                 Button {
-                    if entitlement.isPro {
+                    if isPro {
                         dismiss()
                         onManualRefresh()
                     } else {
@@ -67,7 +80,7 @@ struct SettingsView: View {
                     HStack {
                         Label("Manual refresh", systemImage: "arrow.clockwise")
                         Spacer()
-                        Text(entitlement.isPro ? "Refresh now" : "Pro")
+                        Text(isPro ? "Refresh now" : "Pro")
                             .foregroundStyle(.secondary)
                     }
                 }
@@ -76,7 +89,15 @@ struct SettingsView: View {
             Section {
                 Button("Restore Purchases") {
                     Task {
+                        #if canImport(RevenueCat)
+                        if Purchases.isConfigured, entitlement is StoreService {
+                            await store.restorePurchases()
+                        } else {
+                            await entitlement.refresh()
+                        }
+                        #else
                         await entitlement.refresh()
+                        #endif
                     }
                 }
             } footer: {
@@ -91,7 +112,10 @@ struct SettingsView: View {
         }
         .navigationTitle("Settings")
         .sheet(isPresented: $showingPaywall) {
-            PaywallView(entitlement: entitlement)
+            PaywallView(
+                entitlement: entitlement,
+                impressionId: "sideline_settings_paywall_sheet"
+            )
         }
     }
 

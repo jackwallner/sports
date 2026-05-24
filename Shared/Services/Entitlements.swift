@@ -6,7 +6,8 @@ public enum ProFeature: String, CaseIterable, Sendable {
     case localTeam
 }
 
-public protocol EntitlementProviding: AnyObject, Sendable {
+@MainActor
+public protocol EntitlementProviding: AnyObject {
     var isPro: Bool { get }
     func refresh() async
     func canUse(persona: Persona) -> Bool
@@ -18,7 +19,8 @@ public extension EntitlementProviding {
     }
 }
 
-public final class LocalEntitlementStore: EntitlementProviding, @unchecked Sendable {
+@MainActor
+public final class LocalEntitlementStore: EntitlementProviding {
     public private(set) var isPro: Bool
 
     public init(isPro: Bool = false) {
