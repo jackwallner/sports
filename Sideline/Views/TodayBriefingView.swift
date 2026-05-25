@@ -1,4 +1,5 @@
 import Shared
+import StoreKit
 import SwiftUI
 #if canImport(RevenueCat)
 import RevenueCat
@@ -14,6 +15,13 @@ struct TodayBriefingView: View {
     @State private var pendingLockedPersona: Persona?
     @State private var openPaywallAfterPreview = false
     @State private var paywallContext: Persona?
+    @StateObject private var reviewPromptCoordinator = ReviewPromptCoordinator.shared
+    @State private var showReviewPrompt = false
+    @State private var reviewPromptInitialStep: ReviewPromptSheet.Step = .enjoyment
+    @State private var reviewPromptShownThisSession = false
+    @State private var pendingNativeReviewAfterDismiss = false
+
+    @Environment(\.requestReview) private var requestReview
 
     @AppStorage("sideline.hasCompletedOnboarding") private var hasCompletedOnboarding = false
     @AppStorage("sideline.lastPersona") private var lastPersonaRaw = Persona.cocktailParty.rawValue
@@ -142,7 +150,66 @@ struct TodayBriefingView: View {
                 SafariView(url: item.url)
             }
             #endif
+            .sheet(isPresented: $showReviewPrompt, onDismiss: {
+                if pendingNativeReviewAfterDismiss {
+                    pendingNativeReviewAfterDismiss = false
+                    requestReview()
+                }
+            }) {
+                ReviewPromptSheet(initialStep: reviewPromptInitialStep, onFinish: handleReviewPromptFinish)
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .sidelinePositiveMomentForReview)) { _ in
+                scheduleReviewPromptAfterPositiveMoment()
+            }
+            .onChange(of: reviewPromptCoordinator.pendingPresentation) { _, presentation in
+                guard let presentation else { return }
+                defer { reviewPromptCoordinator.clear() }
+                guard !showingPaywall, pendingLockedPersona == nil else { return }
+                switch presentation {
+                case .enjoymentPrompt:
+                    presentReviewPrompt(step: .enjoyment)
+                case .feedbackOnly:
+                    presentReviewPrompt(step: .feedback)
+                }
+            }
         }
+    }
+
+    private func scheduleReviewPromptAfterPositiveMoment() {
+        guard !isDemo,
+              hasCompletedOnboarding,
+              ReviewPromptTracker.shouldShowAfterPositiveMoment(hasCompletedSetup: hasCompletedOnboarding),
+              !reviewPromptShownThisSession,
+              !showingPaywall,
+              pendingLockedPersona == nil,
+              !showReviewPrompt
+        else { return }
+
+        Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 3_500_000_000)
+            guard !showingPaywall,
+                  pendingLockedPersona == nil,
+                  !showReviewPrompt,
+                  ReviewPromptTracker.shouldShowAfterPositiveMoment(hasCompletedSetup: hasCompletedOnboarding)
+            else { return }
+            ReviewPromptTracker.consumePendingPositiveMoment()
+            reviewPromptInitialStep = .enjoyment
+            reviewPromptShownThisSession = true
+            showReviewPrompt = true
+        }
+    }
+
+    private func handleReviewPromptFinish(_ outcome: ReviewPromptDismissOutcome) {
+        showReviewPrompt = false
+        if outcome == .enjoyedMaybeLater {
+            pendingNativeReviewAfterDismiss = true
+        }
+    }
+
+    private func presentReviewPrompt(step: ReviewPromptSheet.Step) {
+        reviewPromptInitialStep = step
+        reviewPromptShownThisSession = true
+        showReviewPrompt = true
     }
 
     @ViewBuilder

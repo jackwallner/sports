@@ -37,6 +37,7 @@ public final class TodayBriefingViewModel {
     private let service: any BriefingServing
     private let entitlement: any EntitlementProviding
     private var hasShownLimitThisSession = false
+    private var shouldRecordPositiveMomentOnNextSuccess = false
     #if canImport(SwiftData)
     private let cache: BriefingCache?
     #endif
@@ -65,6 +66,7 @@ public final class TodayBriefingViewModel {
             #endif
             lastBriefing = briefing
             state = .populated(briefing, isOffline: false)
+            notifyPositiveMomentIfRequested()
         } catch {
             #if canImport(SwiftData)
             if let cached = try? cache?.load(persona: selectedPersona, scope: scope) {
@@ -75,6 +77,7 @@ public final class TodayBriefingViewModel {
             #endif
 
             state = .failed(friendlyMessage(for: error))
+            shouldRecordPositiveMomentOnNextSuccess = false
         }
     }
 
@@ -85,13 +88,16 @@ public final class TodayBriefingViewModel {
 
         selectedPersona = persona
         UserDefaults.standard.set(persona.rawValue, forKey: Self.lastPersonaKey)
+        shouldRecordPositiveMomentOnNextSuccess = true
         await load()
         return true
     }
 
     public func refresh() async {
+        shouldRecordPositiveMomentOnNextSuccess = true
         if !entitlement.isPro {
             if selectedPersona != .cocktailParty || isFreeRefreshExhaustedToday {
+                shouldRecordPositiveMomentOnNextSuccess = false
                 showLimitOrStayPopulated()
                 return
             }
@@ -106,6 +112,7 @@ public final class TodayBriefingViewModel {
     }
 
     public func reloadAfterPreferenceChange() async {
+        shouldRecordPositiveMomentOnNextSuccess = true
         await load()
     }
 
@@ -147,5 +154,12 @@ public final class TodayBriefingViewModel {
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withFullDate]
         return formatter.string(from: Date())
+    }
+
+    private func notifyPositiveMomentIfRequested() {
+        guard shouldRecordPositiveMomentOnNextSuccess else { return }
+        shouldRecordPositiveMomentOnNextSuccess = false
+        guard case .populated(_, isOffline: false) = state else { return }
+        ReviewPromptTracker.recordPositiveMoment()
     }
 }

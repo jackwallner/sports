@@ -104,6 +104,14 @@ struct SettingsView: View {
                 Text("Already subscribed? Restore to unlock Pro on this device.")
             }
 
+            Section("Help") {
+                Button {
+                    ReviewPromptCoordinator.shared.requestEnjoymentPrompt()
+                } label: {
+                    Label("Rate or Send Feedback", systemImage: "star.bubble")
+                }
+            }
+
             Section("About") {
                 Link("Privacy Policy", destination: URL(string: "https://jackwallner.github.io/sports/privacy-policy.html")!)
                 Link("Terms of Use", destination: URL(string: "https://jackwallner.github.io/sports/terms.html")!)

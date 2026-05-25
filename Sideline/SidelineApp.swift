@@ -32,6 +32,7 @@ struct SidelineApp: App {
         #endif
 
         self.entitlement = Self.makeEntitlement()
+        ReviewPromptTracker.recordAppLaunch()
     }
 
     private static func makeEntitlement() -> any EntitlementProviding {
