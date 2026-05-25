@@ -10,16 +10,27 @@ import UIKit
 
 struct TodayBriefingView: View {
     @State private var viewModel: TodayBriefingViewModel
-    @State private var sourceURL: PresentedURL?
-    @State private var showingPaywall = false
-    @State private var pendingLockedPersona: Persona?
-    @State private var openPaywallAfterPreview = false
-    @State private var paywallContext: Persona?
+    @State private var activeSheet: ActiveSheet?
+    @State private var pendingPaywallContext: Persona?
     @StateObject private var reviewPromptCoordinator = ReviewPromptCoordinator.shared
-    @State private var showReviewPrompt = false
-    @State private var reviewPromptInitialStep: ReviewPromptSheet.Step = .enjoyment
     @State private var reviewPromptShownThisSession = false
     @State private var pendingNativeReviewAfterDismiss = false
+
+    private enum ActiveSheet: Identifiable {
+        case proPreview(Persona)
+        case paywall(Persona)
+        case review(ReviewPromptSheet.Step)
+        case source(URL)
+
+        var id: String {
+            switch self {
+            case .proPreview(let persona): return "preview-\(persona.rawValue)"
+            case .paywall(let persona): return "paywall-\(persona.rawValue)"
+            case .review: return "review"
+            case .source(let url): return "source-\(url.absoluteString)"
+            }
+        }
+    }
 
     @Environment(\.requestReview) private var requestReview
 
@@ -60,7 +71,7 @@ struct TodayBriefingView: View {
                         Task {
                             let didSelect = await viewModel.select(persona)
                             if !didSelect {
-                                pendingLockedPersona = persona
+                                activeSheet = .proPreview(persona)
                             }
                         }
                     }
@@ -99,31 +110,32 @@ struct TodayBriefingView: View {
                     await viewModel.load()
                 }
             }
-            .sheet(isPresented: $showingPaywall) {
-                PaywallView(
-                    entitlement: entitlement,
-                    context: paywallContext ?? viewModel.selectedPersona,
-                    impressionId: "sideline_paywall_sheet"
-                )
-            }
-            .onChange(of: showingPaywall) { _, isShowing in
-                if !isShowing { paywallContext = nil }
-            }
-            .sheet(item: $pendingLockedPersona, onDismiss: {
-                if openPaywallAfterPreview {
-                    showingPaywall = true
-                    openPaywallAfterPreview = false
+            .sheet(item: $activeSheet, onDismiss: handleSheetDismiss) { sheet in
+                switch sheet {
+                case .proPreview(let persona):
+                    ProPreviewSheet(
+                        persona: persona,
+                        onSeePro: {
+                            pendingPaywallContext = persona
+                            activeSheet = nil
+                        },
+                        onDismiss: { activeSheet = nil }
+                    )
+                case .paywall(let persona):
+                    PaywallView(
+                        entitlement: entitlement,
+                        context: persona,
+                        impressionId: "sideline_paywall_sheet"
+                    )
+                case .review(let step):
+                    ReviewPromptSheet(initialStep: step, onFinish: handleReviewPromptFinish)
+                case .source(let url):
+                    #if canImport(SafariServices) && canImport(UIKit)
+                    SafariView(url: url)
+                    #else
+                    EmptyView()
+                    #endif
                 }
-            }) { persona in
-                ProPreviewSheet(
-                    persona: persona,
-                    onSeePro: {
-                        paywallContext = persona
-                        openPaywallAfterPreview = true
-                        pendingLockedPersona = nil
-                    },
-                    onDismiss: { pendingLockedPersona = nil }
-                )
             }
             .modifier(OnboardingPresenter(
                 isPresented: Binding(
@@ -145,26 +157,13 @@ struct TodayBriefingView: View {
                     }
                 }
             ))
-            #if canImport(SafariServices) && canImport(UIKit)
-            .sheet(item: $sourceURL) { item in
-                SafariView(url: item.url)
-            }
-            #endif
-            .sheet(isPresented: $showReviewPrompt, onDismiss: {
-                if pendingNativeReviewAfterDismiss {
-                    pendingNativeReviewAfterDismiss = false
-                    requestReview()
-                }
-            }) {
-                ReviewPromptSheet(initialStep: reviewPromptInitialStep, onFinish: handleReviewPromptFinish)
-            }
             .onReceive(NotificationCenter.default.publisher(for: .sidelinePositiveMomentForReview)) { _ in
                 scheduleReviewPromptAfterPositiveMoment()
             }
             .onChange(of: reviewPromptCoordinator.pendingPresentation) { _, presentation in
                 guard let presentation else { return }
                 defer { reviewPromptCoordinator.clear() }
-                guard !showingPaywall, pendingLockedPersona == nil else { return }
+                guard activeSheet == nil else { return }
                 switch presentation {
                 case .enjoymentPrompt:
                     presentReviewPrompt(step: .enjoyment)
@@ -180,36 +179,41 @@ struct TodayBriefingView: View {
               hasCompletedOnboarding,
               ReviewPromptTracker.shouldShowAfterPositiveMoment(hasCompletedSetup: hasCompletedOnboarding),
               !reviewPromptShownThisSession,
-              !showingPaywall,
-              pendingLockedPersona == nil,
-              !showReviewPrompt
+              activeSheet == nil
         else { return }
 
         Task { @MainActor in
             try? await Task.sleep(nanoseconds: 3_500_000_000)
-            guard !showingPaywall,
-                  pendingLockedPersona == nil,
-                  !showReviewPrompt,
+            guard activeSheet == nil,
                   ReviewPromptTracker.shouldShowAfterPositiveMoment(hasCompletedSetup: hasCompletedOnboarding)
             else { return }
             ReviewPromptTracker.consumePendingPositiveMoment()
-            reviewPromptInitialStep = .enjoyment
-            reviewPromptShownThisSession = true
-            showReviewPrompt = true
+            presentReviewPrompt(step: .enjoyment)
+        }
+    }
+
+    private func handleSheetDismiss() {
+        if let persona = pendingPaywallContext {
+            pendingPaywallContext = nil
+            activeSheet = .paywall(persona)
+            return
+        }
+        if pendingNativeReviewAfterDismiss {
+            pendingNativeReviewAfterDismiss = false
+            requestReview()
         }
     }
 
     private func handleReviewPromptFinish(_ outcome: ReviewPromptDismissOutcome) {
-        showReviewPrompt = false
+        activeSheet = nil
         if outcome == .enjoyedMaybeLater {
             pendingNativeReviewAfterDismiss = true
         }
     }
 
     private func presentReviewPrompt(step: ReviewPromptSheet.Step) {
-        reviewPromptInitialStep = step
         reviewPromptShownThisSession = true
-        showReviewPrompt = true
+        activeSheet = .review(step)
     }
 
     @ViewBuilder
@@ -256,7 +260,7 @@ struct TodayBriefingView: View {
                         index: index + 1,
                         total: briefing.bullets.count
                     ) { url in
-                        sourceURL = PresentedURL(url: url)
+                        activeSheet = .source(url)
                     }
 
                     if index < briefing.bullets.count - 1 {
@@ -388,7 +392,7 @@ struct TodayBriefingView: View {
                 .font(.callout)
                 .foregroundStyle(SidelineTheme.inkSecondary)
             Button("See Pro") {
-                showingPaywall = true
+                activeSheet = .paywall(viewModel.selectedPersona)
             }
             .buttonStyle(.borderedProminent)
             .tint(SidelineTheme.brandPrimary)
@@ -407,11 +411,6 @@ struct TodayBriefingView: View {
         UIPasteboard.general.string = text
         #endif
     }
-}
-
-private struct PresentedURL: Identifiable {
-    let url: URL
-    var id: String { url.absoluteString }
 }
 
 private struct OnboardingPresenter<SheetContent: View>: ViewModifier {
