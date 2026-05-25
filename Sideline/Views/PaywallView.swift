@@ -122,28 +122,40 @@ struct PaywallView: View {
 
     private var paywallContent: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
+            VStack(alignment: .leading, spacing: 28) {
                 hero
                 benefits
                 planCards
+                if showsTrialTimeline {
+                    trialTimeline
+                }
                 purchaseSection
             }
-            .padding(24)
+            .padding(.horizontal, 24)
+            .padding(.top, 8)
+            .padding(.bottom, 32)
         }
     }
 
     private var hero: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Image(systemName: context.isFree ? "quote.bubble.fill" : context.symbolName)
-                .font(.system(size: 48, weight: .semibold))
+        VStack(alignment: .leading, spacing: 12) {
+            if !context.isFree {
+                HStack(spacing: 6) {
+                    Image(systemName: context.symbolName)
+                        .font(.caption.weight(.bold))
+                    Text(context.contextHeader)
+                        .font(.caption.weight(.heavy))
+                        .tracking(1.2)
+                }
                 .foregroundStyle(SidelineTheme.brandPrimary)
+            }
 
-            Text(context.isFree ? "Every room, covered" : context.paywallHook)
+            Text(paywallHeadline)
                 .font(SidelineTheme.display(34))
                 .foregroundStyle(SidelineTheme.inkPrimary)
                 .fixedSize(horizontal: false, vertical: true)
 
-            Text("One room is free. Pro gives you all 5 contexts, fresher briefings, and your local team.")
+            Text("Five 30-second briefings so you never get caught flat-footed when sports come up.")
                 .font(.body)
                 .foregroundStyle(SidelineTheme.inkSecondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -151,21 +163,24 @@ struct PaywallView: View {
     }
 
     private var benefits: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            benefit("person.3", "All 5 contexts", "Cocktail party, office, date night, family, and local team.")
-            benefit("clock.arrow.circlepath", "Fresh 3\u{00D7} a day", "Morning, midday, and evening when the sports world moves.")
-            benefit("mappin.and.ellipse", "Local Team", "Conversation fuel for the teams people around you care about.")
+        VStack(alignment: .leading, spacing: 12) {
+            benefit("All 5 rooms", "Cocktail, office, family, date night, your city.")
+            benefit("Refreshed 3× a day", "Morning, midday, and evening — so you're never quoting last week.")
+            benefit("Your local team", "Sound like you grew up watching them.")
+            benefit("Built for non-fans", "No box scores, no jargon, no expectation that you care.")
         }
     }
 
     private var planCards: some View {
-        VStack(spacing: 10) {
+        let monthly = store.products.first { $0.sidelinePackageKind == .monthly }
+        return VStack(spacing: 10) {
             ForEach(store.products, id: \.identifier) { package in
                 PaywallPlanCard(
                     package: package,
                     isSelected: selectedPackage?.identifier == package.identifier,
                     showsTrialBadge: store.isEligibleForIntroOffer(package),
-                    isBestValue: package.sidelinePackageKind == .annual
+                    isBestValue: package.sidelinePackageKind == .annual,
+                    savingsPercent: monthly.flatMap { package.sidelineSavingsPercent(vsMonthly: $0) }
                 ) {
                     selectedPackage = package
                 }
@@ -173,8 +188,82 @@ struct PaywallView: View {
         }
     }
 
+    private var showsTrialTimeline: Bool {
+        guard let package = selectedPackage else { return false }
+        return store.isEligibleForIntroOffer(package)
+    }
+
+    private var trialTimeline: some View {
+        let days = trialDayCount ?? 7
+        return VStack(alignment: .leading, spacing: 14) {
+            Text("HOW THE FREE TRIAL WORKS")
+                .font(.caption.weight(.heavy))
+                .tracking(1.2)
+                .foregroundStyle(SidelineTheme.brandPrimary)
+
+            timelineRow(
+                badge: "Today",
+                title: "Unlock all 5 rooms",
+                subtitle: "Full access — no charge today.",
+                isLast: false
+            )
+            timelineRow(
+                badge: "Day \(days)",
+                title: "Your subscription starts",
+                subtitle: "Cancel anytime in Settings before then.",
+                isLast: true
+            )
+        }
+    }
+
+    private func timelineRow(badge: String, title: String, subtitle: String, isLast: Bool) -> some View {
+        HStack(alignment: .top, spacing: 14) {
+            VStack(spacing: 0) {
+                ZStack {
+                    Circle()
+                        .fill(SidelineTheme.brandPrimary)
+                        .frame(width: 10, height: 10)
+                }
+                .frame(width: 22, height: 22)
+                if !isLast {
+                    Rectangle()
+                        .fill(SidelineTheme.brandPrimary.opacity(0.25))
+                        .frame(width: 2)
+                        .frame(maxHeight: .infinity)
+                }
+            }
+            VStack(alignment: .leading, spacing: 2) {
+                Text(badge)
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(SidelineTheme.brandPrimary)
+                Text(title)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(SidelineTheme.inkPrimary)
+                Text(subtitle)
+                    .font(.footnote)
+                    .foregroundStyle(SidelineTheme.inkSecondary)
+            }
+            .padding(.bottom, isLast ? 0 : 8)
+            Spacer(minLength: 0)
+        }
+    }
+
+    private var trialDayCount: Int? {
+        guard let package = selectedPackage,
+              let intro = package.storeProduct.introductoryDiscount,
+              intro.paymentMode == .freeTrial else { return nil }
+        let period = intro.subscriptionPeriod
+        switch period.unit {
+        case .day:   return period.value
+        case .week:  return period.value * 7
+        case .month: return period.value * 30
+        case .year:  return period.value * 365
+        @unknown default: return nil
+        }
+    }
+
     private var purchaseSection: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: 10) {
             Button(action: startPurchase) {
                 ZStack {
                     Text(ctaTitle)
@@ -191,9 +280,16 @@ struct PaywallView: View {
             .tint(SidelineTheme.brandPrimary)
             .disabled(isPurchasing || selectedPackage == nil)
 
+            if let trustLine {
+                Text(trustLine)
+                    .font(.footnote.weight(.medium))
+                    .foregroundStyle(SidelineTheme.inkSecondary)
+                    .multilineTextAlignment(.center)
+            }
+
             if let disclosure = disclosureText {
                 Text(disclosure)
-                    .font(.caption)
+                    .font(.caption2)
                     .foregroundStyle(SidelineTheme.inkTertiary)
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
@@ -212,26 +308,38 @@ struct PaywallView: View {
                     .multilineTextAlignment(.center)
             }
 
-            Button(action: startRestore) {
-                Text(isRestoring ? "Restoring…" : "Restore Purchases")
-            }
-            .font(.footnote)
-            .disabled(isRestoring || isPurchasing)
-
-            HStack(spacing: 4) {
+            HStack(spacing: 14) {
+                Button(action: startRestore) {
+                    Text(isRestoring ? "Restoring…" : "Restore")
+                }
+                .disabled(isRestoring || isPurchasing)
+                Text("·").foregroundStyle(SidelineTheme.inkTertiary)
                 Link("Terms", destination: PaywallLinks.standardEULA)
-                Text("·")
-                Link("Privacy Policy", destination: PaywallLinks.privacyPolicy)
+                Text("·").foregroundStyle(SidelineTheme.inkTertiary)
+                Link("Privacy", destination: PaywallLinks.privacyPolicy)
             }
             .font(.caption2)
             .foregroundStyle(SidelineTheme.inkTertiary)
+            .padding(.top, 4)
         }
+    }
+
+    private var trustLine: String? {
+        guard let package = selectedPackage else { return nil }
+        if package.sidelinePackageKind == .lifetime { return nil }
+        if store.isEligibleForIntroOffer(package) {
+            return "$0 today · Cancel anytime in Settings"
+        }
+        return "Cancel anytime in Settings"
     }
 
     private var ctaTitle: String {
         guard let package = selectedPackage else { return "Continue" }
         if package.sidelinePackageKind == .lifetime { return "Unlock Lifetime" }
-        if store.isEligibleForIntroOffer(package) { return "Start Free Trial" }
+        if store.isEligibleForIntroOffer(package) {
+            if let days = trialDayCount { return "Try \(days) Days Free" }
+            return "Start Free Trial"
+        }
         return "Subscribe"
     }
 
@@ -291,26 +399,34 @@ struct PaywallView: View {
     private var fallbackPaywall: some View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 24) {
-                VStack(alignment: .leading, spacing: 10) {
-                    Image(systemName: context.isFree ? "quote.bubble.fill" : context.symbolName)
-                        .font(.system(size: 48, weight: .semibold))
+                VStack(alignment: .leading, spacing: 12) {
+                    if !context.isFree {
+                        HStack(spacing: 6) {
+                            Image(systemName: context.symbolName)
+                                .font(.caption.weight(.bold))
+                            Text(context.contextHeader)
+                                .font(.caption.weight(.heavy))
+                                .tracking(1.2)
+                        }
                         .foregroundStyle(SidelineTheme.brandPrimary)
+                    }
 
-                    Text(context.isFree ? "Every room, covered" : context.paywallHook)
+                    Text(paywallHeadline)
                         .font(SidelineTheme.display(34))
                         .foregroundStyle(SidelineTheme.inkPrimary)
                         .fixedSize(horizontal: false, vertical: true)
 
-                    Text("One room is free. Pro gives you all 5 contexts, fresher briefings, and your local team.")
+                    Text("Five 30-second briefings so you never get caught flat-footed when sports come up.")
                         .font(.body)
                         .foregroundStyle(SidelineTheme.inkSecondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
 
-                VStack(alignment: .leading, spacing: 14) {
-                    benefit("person.3", "All 5 contexts", "Cocktail party, office, date night, family, and local team.")
-                    benefit("clock.arrow.circlepath", "Fresh 3\u{00D7} a day", "Morning, midday, and evening when the sports world moves.")
-                    benefit("mappin.and.ellipse", "Local Team", "Conversation fuel for the teams people around you care about.")
+                VStack(alignment: .leading, spacing: 12) {
+                    benefit("All 5 rooms", "Cocktail, office, family, date night, your city.")
+                    benefit("Refreshed 3× a day", "Morning, midday, and evening — so you're never quoting last week.")
+                    benefit("Your local team", "Sound like you grew up watching them.")
+                    benefit("Built for non-fans", "No box scores, no jargon, no expectation that you care.")
                 }
 
                 Spacer()
@@ -358,19 +474,30 @@ struct PaywallView: View {
         }
     }
 
-    private func benefit(_ symbol: String, _ title: String, _ body: String) -> some View {
+    private var paywallHeadline: String {
+        switch context {
+        case .cocktailParty:      return "Walk in knowing what to say"
+        case .officeWatercooler:  return "Walk into Monday knowing what to say"
+        case .sportsTalkForMoms:  return "Keep up with your kid's favorite topic"
+        case .dateNight:          return "Sound like you actually follow it"
+        case .localTeam:          return "Sound like a local"
+        }
+    }
+
+    private func benefit(_ title: String, _ body: String) -> some View {
         HStack(alignment: .top, spacing: 12) {
-            Image(systemName: symbol)
+            Image(systemName: "checkmark.circle.fill")
                 .font(.title3)
-                .foregroundStyle(SidelineTheme.brandAccent)
-                .frame(width: 28)
+                .foregroundStyle(SidelineTheme.brandPrimary)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
-                    .font(.headline)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(SidelineTheme.inkPrimary)
                 Text(body)
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
+                    .font(.footnote)
+                    .foregroundStyle(SidelineTheme.inkSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
         .accessibilityElement(children: .combine)
@@ -383,11 +510,12 @@ private struct PaywallPlanCard: View {
     let isSelected: Bool
     let showsTrialBadge: Bool
     let isBestValue: Bool
+    let savingsPercent: Int?
     let onTap: () -> Void
 
     var body: some View {
         Button(action: onTap) {
-            HStack(spacing: 14) {
+            HStack(alignment: .center, spacing: 14) {
                 ZStack {
                     Circle()
                         .stroke(isSelected ? SidelineTheme.brandPrimary : SidelineTheme.inkTertiary.opacity(0.4), lineWidth: 2)
@@ -399,12 +527,19 @@ private struct PaywallPlanCard: View {
                     }
                 }
 
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: 3) {
                     HStack(spacing: 6) {
                         Text(package.sidelineDisplayName)
                             .font(.subheadline.weight(.bold))
                             .foregroundStyle(SidelineTheme.inkPrimary)
-                        if isBestValue {
+                        if let savings = savingsPercent {
+                            Text("SAVE \(savings)%")
+                                .font(.system(size: 9, weight: .bold))
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(SidelineTheme.brandPrimary, in: Capsule())
+                        } else if isBestValue {
                             Text("BEST VALUE")
                                 .font(.system(size: 9, weight: .bold))
                                 .foregroundStyle(.white)
@@ -417,6 +552,10 @@ private struct PaywallPlanCard: View {
                         Text(trial.capitalized)
                             .font(.caption2.weight(.semibold))
                             .foregroundStyle(SidelineTheme.brandPrimary)
+                    } else if let perMonth = package.sidelineMonthlyEquivalentLabel {
+                        Text(perMonth)
+                            .font(.caption2.weight(.medium))
+                            .foregroundStyle(SidelineTheme.inkTertiary)
                     }
                 }
 

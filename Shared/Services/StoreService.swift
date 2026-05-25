@@ -75,6 +75,45 @@ extension Package {
         return "\(storeProduct.localizedPriceString) / \(period.value) \(unit)"
     }
 
+    /// For annual/year packages, returns the per-month-equivalent price string
+    /// (e.g. "$2.49/mo") using the product's own locale-aware formatter.
+    public var sidelineMonthlyEquivalentLabel: String? {
+        guard let period = storeProduct.subscriptionPeriod, period.value > 0 else { return nil }
+        let months: Decimal
+        switch period.unit {
+        case .year:  months = Decimal(12 * period.value)
+        case .month: months = Decimal(period.value)
+        default:     return nil
+        }
+        guard months > 1 else { return nil }
+        let perMonth = storeProduct.price / months
+        let formatter = storeProduct.priceFormatter ?? sidelineFallbackPriceFormatter()
+        guard let str = formatter.string(from: perMonth as NSDecimalNumber) else { return nil }
+        return "\(str)/mo"
+    }
+
+    /// Whole-percent savings of this package's per-month price vs the supplied
+    /// monthly package (e.g. 60 for "Save 60%"). Returns nil when the
+    /// comparison isn't meaningful.
+    public func sidelineSavingsPercent(vsMonthly monthly: Package) -> Int? {
+        guard let period = storeProduct.subscriptionPeriod, period.value > 0 else { return nil }
+        let months: Decimal
+        switch period.unit {
+        case .year:  months = Decimal(12 * period.value)
+        case .month where period.value > 1: months = Decimal(period.value)
+        default:     return nil
+        }
+        guard let monthlyPeriod = monthly.storeProduct.subscriptionPeriod,
+              monthlyPeriod.unit == .month, monthlyPeriod.value == 1 else { return nil }
+        let monthlyPrice = monthly.storeProduct.price
+        guard monthlyPrice > 0 else { return nil }
+        let perMonth = storeProduct.price / months
+        let savings = (monthlyPrice - perMonth) / monthlyPrice
+        let pct = NSDecimalNumber(decimal: savings * 100).doubleValue
+        guard pct >= 1 else { return nil }
+        return Int(pct.rounded())
+    }
+
     public var sidelineIntroOfferLabel: String? {
         guard let intro = storeProduct.introductoryDiscount, intro.paymentMode == .freeTrial else {
             return nil
@@ -93,6 +132,13 @@ extension Package {
         }
         return "\(period.value)-\(unit.dropLast(period.value == 1 ? 0 : 1)) free trial"
     }
+}
+
+private func sidelineFallbackPriceFormatter() -> NumberFormatter {
+    let f = NumberFormatter()
+    f.numberStyle = .currency
+    f.locale = .current
+    return f
 }
 
 extension CustomerInfo {
