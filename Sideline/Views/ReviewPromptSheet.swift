@@ -133,7 +133,7 @@ struct ReviewPromptSheet: View {
 
     private var reviewPitchContent: some View {
         VStack(spacing: 18) {
-            Text("The Sideline is built by one indie developer — no ads, no accounts, and your team pick stays on your device.")
+            Text("The Sideline is built by one indie developer. No ads, no accounts, and your team pick stays on your device.")
                 .font(.subheadline)
                 .foregroundStyle(SidelineTheme.inkSecondary)
                 .multilineTextAlignment(.center)

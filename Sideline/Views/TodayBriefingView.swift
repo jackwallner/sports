@@ -357,7 +357,7 @@ struct TodayBriefingView: View {
     }
 
     private var offlineBanner: some View {
-        Label("Offline — showing yesterday's update.", systemImage: "wifi.slash")
+        Label("Offline. Showing yesterday's update.", systemImage: "wifi.slash")
             .font(.callout)
             .padding(12)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -368,7 +368,7 @@ struct TodayBriefingView: View {
         Label {
             VStack(alignment: .leading, spacing: 2) {
                 Text("Preview briefing").font(.callout.weight(.semibold))
-                Text("Not today's news — for demo only.").font(.caption).foregroundStyle(.secondary)
+                Text("Not today's news. For demo only.").font(.caption).foregroundStyle(.secondary)
             }
         } icon: {
             Image(systemName: "eye")

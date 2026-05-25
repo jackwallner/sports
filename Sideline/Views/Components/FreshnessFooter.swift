@@ -33,10 +33,10 @@ struct FreshnessFooter: View {
 
     private var text: String {
         if isOffline {
-            return "Offline — showing yesterday's update."
+            return "Offline. Showing yesterday's update."
         }
         if isStale {
-            return "Updated \(relativeDate) — double-check before quoting."
+            return "Updated \(relativeDate). Double-check before quoting."
         }
         return "Updated \(relativeDate) · \(briefing.sourceCount) sources"
     }

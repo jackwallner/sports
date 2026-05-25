@@ -121,24 +121,20 @@ struct PaywallView: View {
     }
 
     private var paywallContent: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 28) {
-                hero
-                benefits
-                planCards
-                if showsTrialTimeline {
-                    trialTimeline
-                }
-                purchaseSection
-            }
-            .padding(.horizontal, 24)
-            .padding(.top, 8)
-            .padding(.bottom, 32)
+        VStack(alignment: .leading, spacing: 18) {
+            hero
+            benefits
+            Spacer(minLength: 8)
+            planCards
+            purchaseSection
         }
+        .padding(.horizontal, 24)
+        .padding(.top, 8)
+        .padding(.bottom, 16)
     }
 
     private var hero: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 10) {
             if !context.isFree {
                 HStack(spacing: 6) {
                     Image(systemName: context.symbolName)
@@ -151,22 +147,21 @@ struct PaywallView: View {
             }
 
             Text(paywallHeadline)
-                .font(SidelineTheme.display(34))
+                .font(SidelineTheme.display(28))
                 .foregroundStyle(SidelineTheme.inkPrimary)
                 .fixedSize(horizontal: false, vertical: true)
 
             Text("Five 30-second briefings so you never get caught flat-footed when sports come up.")
-                .font(.body)
+                .font(.subheadline)
                 .foregroundStyle(SidelineTheme.inkSecondary)
                 .fixedSize(horizontal: false, vertical: true)
         }
     }
 
     private var benefits: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 10) {
             benefit("All 5 rooms", "Cocktail, office, family, date night, your city.")
-            benefit("Refreshed 3× a day", "Morning, midday, and evening — so you're never quoting last week.")
-            benefit("Your local team", "Sound like you grew up watching them.")
+            benefit("Refreshed 3× a day", "Morning, midday, and evening, so you're never quoting last week.")
             benefit("Built for non-fans", "No box scores, no jargon, no expectation that you care.")
         }
     }
@@ -185,66 +180,6 @@ struct PaywallView: View {
                     selectedPackage = package
                 }
             }
-        }
-    }
-
-    private var showsTrialTimeline: Bool {
-        guard let package = selectedPackage else { return false }
-        return store.isEligibleForIntroOffer(package)
-    }
-
-    private var trialTimeline: some View {
-        let days = trialDayCount ?? 7
-        return VStack(alignment: .leading, spacing: 14) {
-            Text("HOW THE FREE TRIAL WORKS")
-                .font(.caption.weight(.heavy))
-                .tracking(1.2)
-                .foregroundStyle(SidelineTheme.brandPrimary)
-
-            timelineRow(
-                badge: "Today",
-                title: "Unlock all 5 rooms",
-                subtitle: "Full access — no charge today.",
-                isLast: false
-            )
-            timelineRow(
-                badge: "Day \(days)",
-                title: "Your subscription starts",
-                subtitle: "Cancel anytime in Settings before then.",
-                isLast: true
-            )
-        }
-    }
-
-    private func timelineRow(badge: String, title: String, subtitle: String, isLast: Bool) -> some View {
-        HStack(alignment: .top, spacing: 14) {
-            VStack(spacing: 0) {
-                ZStack {
-                    Circle()
-                        .fill(SidelineTheme.brandPrimary)
-                        .frame(width: 10, height: 10)
-                }
-                .frame(width: 22, height: 22)
-                if !isLast {
-                    Rectangle()
-                        .fill(SidelineTheme.brandPrimary.opacity(0.25))
-                        .frame(width: 2)
-                        .frame(maxHeight: .infinity)
-                }
-            }
-            VStack(alignment: .leading, spacing: 2) {
-                Text(badge)
-                    .font(.caption.weight(.bold))
-                    .foregroundStyle(SidelineTheme.brandPrimary)
-                Text(title)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(SidelineTheme.inkPrimary)
-                Text(subtitle)
-                    .font(.footnote)
-                    .foregroundStyle(SidelineTheme.inkSecondary)
-            }
-            .padding(.bottom, isLast ? 0 : 8)
-            Spacer(minLength: 0)
         }
     }
 
@@ -279,13 +214,6 @@ struct PaywallView: View {
             .controlSize(.large)
             .tint(SidelineTheme.brandPrimary)
             .disabled(isPurchasing || selectedPackage == nil)
-
-            if let trustLine {
-                Text(trustLine)
-                    .font(.footnote.weight(.medium))
-                    .foregroundStyle(SidelineTheme.inkSecondary)
-                    .multilineTextAlignment(.center)
-            }
 
             if let disclosure = disclosureText {
                 Text(disclosure)
@@ -324,15 +252,6 @@ struct PaywallView: View {
         }
     }
 
-    private var trustLine: String? {
-        guard let package = selectedPackage else { return nil }
-        if package.sidelinePackageKind == .lifetime { return nil }
-        if store.isEligibleForIntroOffer(package) {
-            return "$0 today · Cancel anytime in Settings"
-        }
-        return "Cancel anytime in Settings"
-    }
-
     private var ctaTitle: String {
         guard let package = selectedPackage else { return "Continue" }
         if package.sidelinePackageKind == .lifetime { return "Unlock Lifetime" }
@@ -349,7 +268,7 @@ struct PaywallView: View {
         if package.sidelinePackageKind == .lifetime {
             return "\(price). One-time purchase. Lifetime access, no subscription."
         }
-        let renew = "Auto-renews unless cancelled at least 24 hours before the end of the current period. Manage or cancel in Settings."
+        let renew = "Auto-renews unless turned off at least 24 hours before the end of the current period."
         if store.isEligibleForIntroOffer(package), let trial = package.sidelineIntroOfferLabel {
             return "\(trial.capitalized), then \(price). \(renew)"
         }
@@ -424,8 +343,7 @@ struct PaywallView: View {
 
                 VStack(alignment: .leading, spacing: 12) {
                     benefit("All 5 rooms", "Cocktail, office, family, date night, your city.")
-                    benefit("Refreshed 3× a day", "Morning, midday, and evening — so you're never quoting last week.")
-                    benefit("Your local team", "Sound like you grew up watching them.")
+                    benefit("Refreshed 3× a day", "Morning, midday, and evening, so you're never quoting last week.")
                     benefit("Built for non-fans", "No box scores, no jargon, no expectation that you care.")
                 }
 

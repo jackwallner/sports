@@ -1,5 +1,8 @@
 import Shared
 import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#endif
 
 struct OnboardingView: View {
     @Binding var hasCompletedOnboarding: Bool
@@ -33,21 +36,26 @@ struct OnboardingView: View {
                 pickedPersona = persona
             }
             teamDraft = favoriteTeam
+            #if os(iOS)
+            let control = UIPageControl.appearance()
+            control.currentPageIndicatorTintColor = UIColor(SidelineTheme.brandPrimary)
+            control.pageIndicatorTintColor = UIColor(SidelineTheme.brandPrimary.opacity(0.25))
+            #endif
         }
     }
 
     private var valueProp: some View {
-        VStack(alignment: .leading, spacing: 18) {
+        VStack(alignment: .leading, spacing: 20) {
             Spacer(minLength: 24)
             Image(systemName: "quote.bubble.fill")
-                .font(.system(size: 56, weight: .semibold))
+                .font(.system(size: 52, weight: .semibold))
                 .foregroundStyle(SidelineTheme.brandPrimary)
             Text("Sound like you follow sports.")
-                .font(SidelineTheme.display(34))
+                .font(SidelineTheme.display(30))
                 .foregroundStyle(SidelineTheme.inkPrimary)
                 .fixedSize(horizontal: false, vertical: true)
-            Text("Three things to say and one question to ask — in under 20 seconds, before you walk into the room.")
-                .font(.title3)
+            Text("Three things to say and one question to ask, in under 20 seconds, before you walk into the room.")
+                .font(.body)
                 .foregroundStyle(SidelineTheme.inkSecondary)
                 .fixedSize(horizontal: false, vertical: true)
             Spacer()
@@ -66,6 +74,7 @@ struct OnboardingView: View {
             Text("You can switch anytime. Cocktail Party is free; the rest unlock with Pro.")
                 .font(.callout)
                 .foregroundStyle(SidelineTheme.inkSecondary)
+                .fixedSize(horizontal: false, vertical: true)
 
             ScrollView {
                 VStack(spacing: 10) {
@@ -93,6 +102,7 @@ struct OnboardingView: View {
                     HStack(spacing: 6) {
                         Text(persona.displayName)
                             .font(.headline)
+                            .foregroundStyle(SidelineTheme.inkPrimary)
                         if !persona.isFree {
                             Text("Pro")
                                 .font(.caption2.weight(.bold))
@@ -104,7 +114,7 @@ struct OnboardingView: View {
                     }
                     Text(persona.shortPitch)
                         .font(.footnote)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(SidelineTheme.inkSecondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer()
@@ -129,15 +139,15 @@ struct OnboardingView: View {
     private var teamPick: some View {
         VStack(alignment: .leading, spacing: 16) {
             Spacer(minLength: 12)
-            Text("Got a team?")
+            Text("Got a town?")
                 .font(SidelineTheme.title)
                 .foregroundStyle(SidelineTheme.inkPrimary)
-            Text("Optional. Pro briefings can lean toward your team. Skip if you'd rather not.")
+            Text("Optional. Pro briefings can lean toward your city's teams. Skip if you'd rather not.")
                 .font(.callout)
                 .foregroundStyle(SidelineTheme.inkSecondary)
                 .fixedSize(horizontal: false, vertical: true)
 
-            TextField("e.g. Philadelphia Eagles", text: $teamDraft)
+            TextField("e.g. Philadelphia", text: $teamDraft)
                 .textFieldStyle(.roundedBorder)
                 .padding(.top, 4)
                 #if os(iOS)
@@ -147,7 +157,7 @@ struct OnboardingView: View {
 
             Text("You can change or clear this anytime in Settings.")
                 .font(.caption)
-                .foregroundStyle(.tertiary)
+                .foregroundStyle(SidelineTheme.inkTertiary)
 
             Spacer()
         }
@@ -159,7 +169,7 @@ struct OnboardingView: View {
             if page > 0 {
                 Button("Back") { withAnimation { page -= 1 } }
                     .buttonStyle(.plain)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(SidelineTheme.inkSecondary)
             }
             Spacer()
             Button(primaryLabel) {
