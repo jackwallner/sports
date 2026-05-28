@@ -4,9 +4,9 @@
 
 | Field | Value |
 |---|---|
-| App Name | The Sideline |
+| App Name | The Sideline - Sports Gist (30 char max) |
 | Bundle ID | `com.jackwallner.sports` |
-| Subtitle | Sports talk for non-fans |
+| Subtitle | Talking points for non-fans (30 char max) |
 | Primary Category | Sports |
 | Secondary Category | Lifestyle |
 | Price | Free |
@@ -36,9 +36,17 @@ The Sideline Pro unlocks all contexts, fresher briefings up to 3 times a day, an
 
 Sports conversation fuel for people who do not follow sports. Read one short briefing, ask one good question, and walk in ready.
 
-## Keywords
+## Keywords (100 characters max — comma-separated, no spaces)
 
-sports,conversation,news,NFL,NBA,MLB,NHL,college,briefing,gossip,teams,fans
+```
+conversation,starters,briefing,gossip,drama,sports,news,teams,college,nfl,nba,mlb,nhl,nonfan
+```
+
+(92 characters, 15 tokens.) Hero term **talking points** lives in the **subtitle**; Apple de-duplicates repeats across name/subtitle/keywords, so the keyword field covers **conversation starters**, leagues, and intent tokens instead.
+
+Validate locally: `python3 scripts/validate-asc-metadata.py`
+
+**Previously live on ASC:** name `Casual Sports News - The Gist`, empty keywords — see `fastlane/metadata.bak.*` after pull.
 
 ## URLs
 
