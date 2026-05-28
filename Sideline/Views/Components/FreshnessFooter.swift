@@ -10,12 +10,12 @@ struct FreshnessFooter: View {
         VStack(alignment: .leading, spacing: 4) {
             Label(text, systemImage: isOffline ? "wifi.slash" : iconName)
                 .font(.footnote)
-                .foregroundStyle(isStale ? SidelineTheme.amberText : .secondary)
+                .foregroundStyle(isStale ? SidelineTheme.amberText : SidelineTheme.inkSecondary)
 
             if !isOffline, isPro {
                 Text(briefing.refreshWindow.nextUpdateHint)
                     .font(.caption)
-                    .foregroundStyle(.tertiary)
+                    .foregroundStyle(SidelineTheme.inkTertiary)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

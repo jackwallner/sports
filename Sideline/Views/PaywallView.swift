@@ -238,7 +238,7 @@ struct PaywallView: View {
 
             HStack(spacing: 14) {
                 Button(action: startRestore) {
-                    Text(isRestoring ? "Restoring…" : "Restore")
+                    Text(isRestoring ? "Restoring…" : "Restore Purchases")
                 }
                 .disabled(isRestoring || isPurchasing)
                 Text("·").foregroundStyle(SidelineTheme.inkTertiary)
@@ -268,7 +268,7 @@ struct PaywallView: View {
         if package.sidelinePackageKind == .lifetime {
             return "\(price). One-time purchase. Lifetime access, no subscription."
         }
-        let renew = "Auto-renews unless turned off at least 24 hours before the end of the current period."
+        let renew = "Auto-renews unless turned off at least 24 hours before the end of the current period. Cancel anytime."
         if store.isEligibleForIntroOffer(package), let trial = package.sidelineIntroOfferLabel {
             return "\(trial.capitalized), then \(price). \(renew)"
         }
@@ -436,7 +436,7 @@ private struct PaywallPlanCard: View {
             HStack(alignment: .center, spacing: 14) {
                 ZStack {
                     Circle()
-                        .stroke(isSelected ? SidelineTheme.brandPrimary : SidelineTheme.inkTertiary.opacity(0.4), lineWidth: 2)
+                        .stroke(isSelected ? SidelineTheme.brandPrimary : SidelineTheme.inkSecondary, lineWidth: 2)
                         .frame(width: 22, height: 22)
                     if isSelected {
                         Circle()

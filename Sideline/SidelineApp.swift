@@ -6,10 +6,16 @@ import RevenueCat
 
 @main
 struct SidelineApp: App {
+    @AppStorage("sideline.appearanceMode") private var appearanceModeRaw = AppearanceMode.system.rawValue
+
     private let entitlement: any EntitlementProviding
     private let store = StoreService.shared
     private let service: any BriefingServing
     private let isDemo: Bool
+
+    private var appearanceMode: AppearanceMode {
+        AppearanceMode(rawValue: appearanceModeRaw) ?? .system
+    }
 
     init() {
         if let config = AppConfig.fromBundle() ?? AppConfig.fromEnvironment() {
@@ -54,6 +60,7 @@ struct SidelineApp: App {
         WindowGroup {
             TodayBriefingView(service: service, entitlement: entitlement, store: store, isDemo: isDemo)
                 .environment(store)
+                .preferredColorScheme(appearanceMode.colorScheme)
         }
     }
 }

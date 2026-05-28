@@ -27,8 +27,17 @@ struct OnboardingView: View {
             .safeAreaInset(edge: .bottom) {
                 actionBar
                     .padding(.horizontal, 24)
+                    .padding(.top, 10)
                     .padding(.bottom, 12)
-                    .background(.ultraThinMaterial)
+                    .background(
+                        Color.sidelineBackground
+                            .overlay(
+                                Rectangle()
+                                    .fill(SidelineTheme.rule)
+                                    .frame(height: 1)
+                                    .frame(maxHeight: .infinity, alignment: .top)
+                            )
+                    )
             }
         }
         .onAppear {

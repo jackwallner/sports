@@ -1,5 +1,9 @@
 import Shared
+import StoreKit
 import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#endif
 #if canImport(RevenueCat)
 import RevenueCat
 #endif
@@ -8,6 +12,14 @@ struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var showingPaywall = false
     @AppStorage("favoriteTeam") private var favoriteTeam = ""
+    @AppStorage("sideline.appearanceMode") private var appearanceModeRaw = AppearanceMode.system.rawValue
+
+    private var appearanceBinding: Binding<AppearanceMode> {
+        Binding(
+            get: { AppearanceMode(rawValue: appearanceModeRaw) ?? .system },
+            set: { appearanceModeRaw = $0.rawValue }
+        )
+    }
 
     let entitlement: any EntitlementProviding
     let store: StoreService
@@ -68,6 +80,17 @@ struct SettingsView: View {
                 onTeamChanged()
             }
 
+            Section("Appearance") {
+                Picker(selection: appearanceBinding) {
+                    ForEach(AppearanceMode.allCases) { mode in
+                        Text(mode.label).tag(mode)
+                    }
+                } label: {
+                    Label("Theme", systemImage: "circle.lefthalf.filled")
+                }
+                .pickerStyle(.menu)
+            }
+
             Section("Briefing") {
                 Button {
                     if isPro {
@@ -83,6 +106,16 @@ struct SettingsView: View {
                         Text(isPro ? "Refresh now" : "Pro")
                             .foregroundStyle(.secondary)
                     }
+                }
+            }
+
+            if isPro, store.hasActiveSubscription {
+                Section {
+                    Button("Manage Subscription") {
+                        Task { await openManageSubscriptions() }
+                    }
+                } footer: {
+                    Text("Change or cancel your subscription in your Apple ID settings.")
                 }
             }
 
@@ -131,6 +164,18 @@ struct SettingsView: View {
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
         let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"
         return "\(version) (\(build))"
+    }
+
+    @MainActor
+    private func openManageSubscriptions() async {
+        #if canImport(UIKit)
+        guard let scene = UIApplication.shared.connectedScenes
+            .compactMap({ $0 as? UIWindowScene })
+            .first(where: { $0.activationState == .foregroundActive })
+            ?? UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).first
+        else { return }
+        try? await AppStore.showManageSubscriptions(in: scene)
+        #endif
     }
 }
 

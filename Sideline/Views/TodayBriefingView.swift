@@ -316,12 +316,13 @@ struct TodayBriefingView: View {
         VStack(spacing: 14) {
             Image(systemName: "newspaper")
                 .font(.system(size: 42, weight: .light))
-                .foregroundStyle(.tertiary)
+                .foregroundStyle(SidelineTheme.inkTertiary)
             Text("Can't reach today's briefing")
                 .font(.title3.weight(.semibold))
+                .foregroundStyle(SidelineTheme.inkPrimary)
             Text(message)
                 .font(.callout)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(SidelineTheme.inkSecondary)
                 .multilineTextAlignment(.center)
             Button("Try again") {
                 Task { await viewModel.load() }
@@ -346,12 +347,12 @@ struct TodayBriefingView: View {
             ForEach(0..<3, id: \.self) { _ in
                 HStack(alignment: .top, spacing: 14) {
                     RoundedRectangle(cornerRadius: 2.5)
-                        .fill(Color.secondary.opacity(0.18))
+                        .fill(SidelineTheme.rule)
                         .frame(width: 4, height: 78)
                     VStack(alignment: .leading, spacing: 8) {
-                        Capsule().fill(Color.secondary.opacity(0.16)).frame(width: 60, height: 10)
-                        Capsule().fill(Color.secondary.opacity(0.12)).frame(height: 12)
-                        Capsule().fill(Color.secondary.opacity(0.12)).frame(width: 220, height: 12)
+                        Capsule().fill(SidelineTheme.rule).frame(width: 60, height: 10)
+                        Capsule().fill(SidelineTheme.rule).frame(height: 12)
+                        Capsule().fill(SidelineTheme.rule).frame(width: 220, height: 12)
                     }
                 }
             }
@@ -361,21 +362,32 @@ struct TodayBriefingView: View {
     }
 
     private var offlineBanner: some View {
-        Label("Offline. Showing yesterday's update.", systemImage: "wifi.slash")
+        let bg = SidelineTheme.tagFill(SidelineTheme.inkPrimary)
+        return Label("Offline. Showing yesterday's update.", systemImage: "wifi.slash")
             .font(.callout)
+            .foregroundStyle(SidelineTheme.inkSecondary)
             .padding(12)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
+            .background(bg, in: RoundedRectangle(cornerRadius: 12))
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(SidelineTheme.rule, lineWidth: 1)
+            )
     }
 
     private var demoBanner: some View {
         Label {
             VStack(alignment: .leading, spacing: 2) {
-                Text("Preview briefing").font(.callout.weight(.semibold))
-                Text("Not today's news. For demo only.").font(.caption).foregroundStyle(.secondary)
+                Text("Preview briefing")
+                    .font(.callout.weight(.semibold))
+                    .foregroundStyle(SidelineTheme.inkPrimary)
+                Text("Not today's news. For demo only.")
+                    .font(.caption)
+                    .foregroundStyle(SidelineTheme.inkSecondary)
             }
         } icon: {
             Image(systemName: "eye")
+                .foregroundStyle(SidelineTheme.amberText)
         }
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)

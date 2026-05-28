@@ -19,7 +19,7 @@ struct BulletCard: View {
 
                 Text(bullet.talkingPoint)
                     .font(.callout.weight(.medium))
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(SidelineTheme.inkPrimary)
                     .lineSpacing(2)
                     .fixedSize(horizontal: false, vertical: true)
                     .contextMenu {
@@ -45,7 +45,7 @@ struct BulletCard: View {
                             .padding(.top, 3)
                         Text(tieIn)
                             .font(.footnote)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(SidelineTheme.inkSecondary)
                             .italic()
                             .fixedSize(horizontal: false, vertical: true)
                     }
@@ -72,7 +72,7 @@ struct BulletCard: View {
         HStack(spacing: 8) {
             Text("\(index) of \(total)")
                 .font(.caption2.weight(.bold))
-                .foregroundStyle(.tertiary)
+                .foregroundStyle(SidelineTheme.inkTertiary)
                 .tracking(0.5)
 
             if let tag = bullet.tag, tag != .neutral {
@@ -110,7 +110,7 @@ struct BulletCard: View {
                     .truncationMode(.tail)
             }
             .font(.caption.weight(.medium))
-            .foregroundStyle(.tertiary)
+            .foregroundStyle(SidelineTheme.inkTertiary)
             .padding(.top, 2)
         }
         .buttonStyle(.plain)
@@ -118,19 +118,19 @@ struct BulletCard: View {
     }
 
     private var accentColor: Color {
-        guard let tag = bullet.tag else { return Color.secondary.opacity(0.2) }
+        guard let tag = bullet.tag else { return SidelineTheme.rule }
         switch tag {
         case .niceGuy, .redemption: return SidelineTheme.tagNiceGuy
         case .jerk, .drama: return SidelineTheme.tagJerk
-        case .neutral: return Color.secondary.opacity(0.3)
+        case .neutral: return SidelineTheme.inkTertiary
         }
     }
 
     private func tagBG(_ tag: BriefingTag) -> Color {
         switch tag {
-        case .niceGuy, .redemption: return SidelineTheme.tagNiceGuy.opacity(0.16)
-        case .jerk, .drama: return SidelineTheme.tagJerk.opacity(0.16)
-        case .neutral: return Color.secondary.opacity(0.15)
+        case .niceGuy, .redemption: return SidelineTheme.tagFill(SidelineTheme.tagNiceGuy)
+        case .jerk, .drama: return SidelineTheme.tagFill(SidelineTheme.tagJerk)
+        case .neutral: return SidelineTheme.rule
         }
     }
 
@@ -138,7 +138,7 @@ struct BulletCard: View {
         switch tag {
         case .niceGuy, .redemption: return SidelineTheme.tagNiceGuy
         case .jerk, .drama: return SidelineTheme.tagJerk
-        case .neutral: return Color.secondary
+        case .neutral: return SidelineTheme.inkSecondary
         }
     }
 

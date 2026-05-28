@@ -31,10 +31,11 @@ struct ProPreviewSheet: View {
                 Text("Here's how this room sounds")
                     .font(.caption.weight(.heavy))
                     .tracking(1.0)
-                    .foregroundStyle(.tertiary)
+                    .foregroundStyle(SidelineTheme.inkTertiary)
 
                 Text(teaser)
                     .font(.title3.weight(.semibold))
+                    .foregroundStyle(SidelineTheme.inkPrimary)
                     .lineSpacing(4)
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(18)

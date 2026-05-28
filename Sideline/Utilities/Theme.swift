@@ -1,4 +1,7 @@
 import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#endif
 
 /// The Sideline — visual system tokens.
 ///
@@ -11,31 +14,112 @@ enum SidelineTheme {
 
     // MARK: - Brand
     /// The defining green. Selection, the eyebrow / kicker, system tint.
-    static let brandPrimary = Color(red: 0.122, green: 0.361, blue: 0.271)  // #1F5C45
+    /// Lifts in dark mode so it pops against deep paper without losing the brand.
+    static let brandPrimary: Color = {
+        #if canImport(UIKit)
+        return Color(uiColor: UIColor { trait in
+            trait.userInterfaceStyle == .dark
+                ? UIColor(red: 0.353, green: 0.682, blue: 0.502, alpha: 1)  // #5AAE80
+                : UIColor(red: 0.122, green: 0.361, blue: 0.271, alpha: 1)  // #1F5C45
+        })
+        #else
+        return Color(red: 0.122, green: 0.361, blue: 0.271)
+        #endif
+    }()
 
     /// The single accent. Reserved for sparks: the SuggestedQuestionCard
     /// tint, the "tie-in" sparkle, small markers. Never the main surface.
     static let brandAccent  = Color(red: 0.773, green: 0.565, blue: 0.102)  // #C5901A
 
     /// Darker accent for inline text on cream (AAA on #FAF6EE).
-    static let amberText    = Color(red: 0.353, green: 0.251, blue: 0.067)  // #5A4011
+    /// In dark mode, lifts to a warm gold so it stays legible on deep paper.
+    static let amberText: Color = {
+        #if canImport(UIKit)
+        return Color(uiColor: UIColor { trait in
+            trait.userInterfaceStyle == .dark
+                ? UIColor(red: 0.937, green: 0.788, blue: 0.439, alpha: 1)  // #EFC970
+                : UIColor(red: 0.353, green: 0.251, blue: 0.067, alpha: 1)  // #5A4011
+        })
+        #else
+        return Color(red: 0.353, green: 0.251, blue: 0.067)
+        #endif
+    }()
 
     // MARK: - Surfaces (Newsroom is cream-first)
     /// Paper. The single background colour for ~95% of the app.
     static let paperSurface = Color(red: 0.980, green: 0.965, blue: 0.933)  // #FAF6EE
 
     /// Ink. Headlines, body, and 100%-opacity primary content.
-    static let inkPrimary   = Color(red: 0.102, green: 0.086, blue: 0.071)  // #1A1612
+    /// Flips to a warm off-white in dark mode so type stays legible on deep paper.
+    static let inkPrimary: Color = {
+        #if canImport(UIKit)
+        return Color(uiColor: UIColor { trait in
+            trait.userInterfaceStyle == .dark
+                ? UIColor(red: 0.953, green: 0.937, blue: 0.910, alpha: 1)  // #F3EFE8
+                : UIColor(red: 0.102, green: 0.086, blue: 0.071, alpha: 1)  // #1A1612
+        })
+        #else
+        return Color(red: 0.102, green: 0.086, blue: 0.071)
+        #endif
+    }()
     /// 62% ink — secondary text (headlines under TL;DR, source links).
-    static let inkSecondary = inkPrimary.opacity(0.62)
+    static let inkSecondary = inkPrimary.opacity(0.70)
     /// 40% ink — tertiary (counts, captions, freshness footer).
-    static let inkTertiary  = inkPrimary.opacity(0.40)
+    static let inkTertiary  = inkPrimary.opacity(0.48)
     /// 10% ink — rules and dividers. Prefer a real `Divider()` when you can.
-    static let rule         = inkPrimary.opacity(0.10)
+    static let rule         = inkPrimary.opacity(0.14)
 
-    // MARK: - Tags (retuned for legibility on cream)
-    static let tagNiceGuy = Color(red: 0.180, green: 0.490, blue: 0.310)    // #2E7D4F
-    static let tagJerk    = Color(red: 0.706, green: 0.271, blue: 0.184)    // #B4452F
+    // MARK: - Tags (retuned for legibility on cream AND deep paper)
+    /// Green tag (nice-guy / redemption). Lifts in dark mode so it stays readable
+    /// at full opacity over warm-deep paper.
+    static let tagNiceGuy: Color = {
+        #if canImport(UIKit)
+        return Color(uiColor: UIColor { trait in
+            trait.userInterfaceStyle == .dark
+                ? UIColor(red: 0.451, green: 0.788, blue: 0.580, alpha: 1)  // #73C994
+                : UIColor(red: 0.180, green: 0.490, blue: 0.310, alpha: 1)  // #2E7D4F
+        })
+        #else
+        return Color(red: 0.180, green: 0.490, blue: 0.310)
+        #endif
+    }()
+
+    /// Red tag (jerk / drama). Lifts in dark mode.
+    static let tagJerk: Color = {
+        #if canImport(UIKit)
+        return Color(uiColor: UIColor { trait in
+            trait.userInterfaceStyle == .dark
+                ? UIColor(red: 0.937, green: 0.490, blue: 0.404, alpha: 1)  // #EF7D67
+                : UIColor(red: 0.706, green: 0.271, blue: 0.184, alpha: 1)  // #B4452F
+        })
+        #else
+        return Color(red: 0.706, green: 0.271, blue: 0.184)
+        #endif
+    }()
+
+    /// Opacity for tag pill fills. Lifts in dark mode so the wash stays visible
+    /// against deep paper.
+    static let tagFillOpacity: Double = {
+        #if canImport(UIKit)
+        // Best-effort: read current trait at first access; UIColor dynamic
+        // can't drive a Double directly, so call sites use a Color wrapper.
+        return 0.18
+        #else
+        return 0.16
+        #endif
+    }()
+
+    /// Dynamic tag-fill color: tints `base` and bumps opacity in dark mode.
+    static func tagFill(_ base: Color) -> Color {
+        #if canImport(UIKit)
+        return Color(uiColor: UIColor { trait in
+            let alpha: CGFloat = trait.userInterfaceStyle == .dark ? 0.26 : 0.16
+            return UIColor(base).withAlphaComponent(alpha)
+        })
+        #else
+        return base.opacity(0.16)
+        #endif
+    }
 
     // MARK: - Shape
     /// Newsroom suppresses most card chrome; reserved for surfaces that

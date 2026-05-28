@@ -161,8 +161,18 @@ extension Offering {
 }
 
 extension Offerings {
+    /// Prefer an offering named `default`, then the dashboard's `current`,
+    /// then the first non-empty offering. Falling back rather than failing
+    /// hard means a freshly-configured RevenueCat project with a
+    /// differently-named offering still renders the paywall.
     var sidelinePaywallOffering: Offering? {
-        offering(identifier: "default") ?? current
+        if let named = offering(identifier: "default"), !named.availablePackages.isEmpty {
+            return named
+        }
+        if let current, !current.availablePackages.isEmpty {
+            return current
+        }
+        return all.values.first { !$0.availablePackages.isEmpty }
     }
 }
 
@@ -178,6 +188,8 @@ public final class StoreService: NSObject, EntitlementProviding {
     public private(set) var isLoadingProducts = false
     public private(set) var lastError: String?
     public private(set) var introEligibility: [String: Bool] = [:]
+    public private(set) var introEligibilityChecked = false
+    public private(set) var customerInfo: CustomerInfo?
 
     private var paywallImpressionsThisSession: Set<String> = []
     private let entitlementIdentifier = "pro"
@@ -212,12 +224,30 @@ public final class StoreService: NSObject, EntitlementProviding {
             let offering = offerings.sidelinePaywallOffering
             currentOffering = offering
             products = offering?.sidelineSortedPackages ?? []
-            lastError = nil
+            if products.isEmpty {
+                let offeringIDs = offerings.all.keys.sorted().joined(separator: ", ")
+                print("[Sideline] No packages found. Offerings: [\(offeringIDs)], current: \(offerings.current?.identifier ?? "nil")")
+                lastError = "No subscription plans available yet. If you just set them up, give the App Store a minute and try again."
+            } else {
+                lastError = nil
+            }
             await refreshIntroEligibility()
         } catch {
             consoleError("StoreService product fetch failed", error)
-            lastError = "Couldn't load subscription options. Check your connection and try again."
+            lastError = friendlyMessage(for: error)
         }
+    }
+
+    private func friendlyMessage(for error: Error) -> String {
+        let ns = error as NSError
+        if ns.domain == NSURLErrorDomain {
+            return "Can't reach the App Store. Check your connection and try again."
+        }
+        #if DEBUG
+        return "Couldn't load plans. (\(ns.domain) \(ns.code))"
+        #else
+        return "Couldn't load subscription options. Check your connection and try again."
+        #endif
     }
 
     private func refreshIntroEligibility() async {
@@ -226,15 +256,27 @@ public final class StoreService: NSObject, EntitlementProviding {
             .map(\.storeProduct.productIdentifier)
         guard !identifiers.isEmpty else {
             introEligibility = [:]
+            introEligibilityChecked = true
             return
         }
         let result = await Purchases.shared.checkTrialOrIntroDiscountEligibility(productIdentifiers: identifiers)
         introEligibility = result.mapValues { $0.status == .eligible }
+        introEligibilityChecked = true
     }
 
     public func isEligibleForIntroOffer(_ package: Package) -> Bool {
         guard package.sidelineIntroOfferLabel != nil else { return false }
-        return introEligibility[package.storeProduct.productIdentifier] ?? true
+        guard introEligibilityChecked else { return false }
+        return introEligibility[package.storeProduct.productIdentifier] ?? false
+    }
+
+    /// True when Pro is active via an auto-renewable subscription (not lifetime).
+    public var hasActiveSubscription: Bool {
+        guard let entitlement = customerInfo?.entitlements[entitlementIdentifier], entitlement.isActive else {
+            return false
+        }
+        let productID = entitlement.productIdentifier.lowercased()
+        return !productID.contains("lifetime")
     }
 
     public func trackPaywallImpression(id: String, oncePerSession: Bool = false) {
@@ -302,6 +344,7 @@ public final class StoreService: NSObject, EntitlementProviding {
     }
 
     func apply(customerInfo: CustomerInfo) {
+        self.customerInfo = customerInfo
         let active = customerInfo.entitlements[entitlementIdentifier]?.isActive == true
         if isPro != active {
             isPro = active
