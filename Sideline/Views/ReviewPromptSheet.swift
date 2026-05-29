@@ -9,7 +9,7 @@ final class ReviewPromptCoordinator: ObservableObject {
     static let shared = ReviewPromptCoordinator()
 
     enum Presentation {
-        case enjoymentPrompt
+        case rateOrFeedback
         case feedbackOnly
     }
 
@@ -17,8 +17,8 @@ final class ReviewPromptCoordinator: ObservableObject {
 
     private init() {}
 
-    func requestEnjoymentPrompt() {
-        pendingPresentation = .enjoymentPrompt
+    func requestRateOrFeedback() {
+        pendingPresentation = .rateOrFeedback
     }
 
     func requestFeedback() {
@@ -34,13 +34,16 @@ enum ReviewPromptDismissOutcome: Sendable {
     case notNow
     case feedbackSubmitted
     case openedWriteReview
-    case enjoyedMaybeLater
 }
 
+/// Manual rate-or-feedback sheet. Per App Store Guideline 1.1.7 we do NOT
+/// pre-screen sentiment and route only happy users to the store: "Rate on the
+/// App Store" and "Send feedback" are peer options shown to everyone on the
+/// same screen. The automatic, behaviorally-gated prompt uses the native
+/// `requestReview()` instead (see TodayBriefingView).
 struct ReviewPromptSheet: View {
     enum Step {
-        case enjoyment
-        case reviewPitch
+        case choose
         case feedback
     }
 
@@ -52,7 +55,7 @@ struct ReviewPromptSheet: View {
     @State private var feedbackText = ""
     @FocusState private var feedbackFocused: Bool
 
-    init(initialStep: Step = .enjoyment, onFinish: @escaping (ReviewPromptDismissOutcome) -> Void) {
+    init(initialStep: Step = .choose, onFinish: @escaping (ReviewPromptDismissOutcome) -> Void) {
         self.initialStep = initialStep
         self.onFinish = onFinish
         _step = State(initialValue: initialStep)
@@ -62,10 +65,8 @@ struct ReviewPromptSheet: View {
         NavigationStack {
             Group {
                 switch step {
-                case .enjoyment:
-                    enjoymentContent
-                case .reviewPitch:
-                    reviewPitchContent
+                case .choose:
+                    chooseContent
                 case .feedback:
                     feedbackContent
                 }
@@ -86,13 +87,12 @@ struct ReviewPromptSheet: View {
 
     private var navigationTitle: String {
         switch step {
-        case .enjoyment: "Enjoying The Sideline?"
-        case .reviewPitch: "Support an indie app"
+        case .choose: "Rate or send feedback"
         case .feedback: "Help us improve"
         }
     }
 
-    private var enjoymentContent: some View {
+    private var chooseContent: some View {
         VStack(spacing: 20) {
             ZStack {
                 Circle()
@@ -104,47 +104,12 @@ struct ReviewPromptSheet: View {
             }
             .padding(.top, 8)
 
-            Text("If The Sideline is helping you stay on top of sports news, a quick App Store rating makes a real difference.")
+            Text("A quick App Store rating helps more non-fans find The Sideline. Got a problem or an idea instead? Send feedback and it goes straight to the developer.")
                 .font(.subheadline)
                 .foregroundStyle(SidelineTheme.inkSecondary)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.horizontal, 8)
-
-            VStack(spacing: 10) {
-                Button {
-                    step = .reviewPitch
-                } label: {
-                    primaryButtonLabel("Yes, I'm enjoying it")
-                }
-                .buttonStyle(.plain)
-
-                Button {
-                    step = .feedback
-                } label: {
-                    secondaryButtonLabel("Not really")
-                }
-                .buttonStyle(.plain)
-            }
-        }
-        .padding(.horizontal, 24)
-        .padding(.bottom, 24)
-    }
-
-    private var reviewPitchContent: some View {
-        VStack(spacing: 18) {
-            Text("The Sideline is built by one indie developer. No ads, no accounts, and your team pick stays on your device.")
-                .font(.subheadline)
-                .foregroundStyle(SidelineTheme.inkSecondary)
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.top, 8)
-
-            Text("An honest App Store review takes seconds and helps more fans find a simple daily sports briefing.")
-                .font(.footnote)
-                .foregroundStyle(SidelineTheme.inkSecondary)
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
 
             VStack(spacing: 10) {
                 Button {
@@ -157,10 +122,9 @@ struct ReviewPromptSheet: View {
                 .buttonStyle(.plain)
 
                 Button {
-                    ReviewPromptTracker.markShown()
-                    finish(.enjoyedMaybeLater)
+                    step = .feedback
                 } label: {
-                    secondaryButtonLabel("Maybe later")
+                    secondaryButtonLabel("Send feedback")
                 }
                 .buttonStyle(.plain)
             }

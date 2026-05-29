@@ -14,11 +14,11 @@ struct TodayBriefingView: View {
     @State private var pendingPaywallContext: Persona?
     @StateObject private var reviewPromptCoordinator = ReviewPromptCoordinator.shared
     @State private var reviewPromptShownThisSession = false
-    @State private var pendingNativeReviewAfterDismiss = false
 
     private enum ActiveSheet: Identifiable {
         case proPreview(Persona)
         case paywall(Persona)
+        case onboardingPaywall
         case review(ReviewPromptSheet.Step)
         case source(URL)
 
@@ -26,6 +26,7 @@ struct TodayBriefingView: View {
             switch self {
             case .proPreview(let persona): return "preview-\(persona.rawValue)"
             case .paywall(let persona): return "paywall-\(persona.rawValue)"
+            case .onboardingPaywall: return "onboarding-paywall"
             case .review: return "review"
             case .source(let url): return "source-\(url.absoluteString)"
             }
@@ -35,6 +36,7 @@ struct TodayBriefingView: View {
     @Environment(\.requestReview) private var requestReview
 
     @AppStorage("sideline.hasCompletedOnboarding") private var hasCompletedOnboarding = false
+    @AppStorage("sideline.hasSeenOnboardingPaywall") private var hasSeenOnboardingPaywall = false
     @AppStorage("sideline.lastPersona") private var lastPersonaRaw = Persona.cocktailParty.rawValue
     @AppStorage("favoriteTeam") private var favoriteTeam = ""
 
@@ -127,6 +129,11 @@ struct TodayBriefingView: View {
                         context: persona,
                         impressionId: "sideline_paywall_sheet"
                     )
+                case .onboardingPaywall:
+                    PaywallView(
+                        entitlement: entitlement,
+                        impressionId: "sideline_onboarding_paywall"
+                    )
                 case .review(let step):
                     ReviewPromptSheet(initialStep: step, onFinish: handleReviewPromptFinish)
                 case .source(let url):
@@ -154,6 +161,7 @@ struct TodayBriefingView: View {
                             viewModel.selectedPersona = persona
                         }
                         Task { await viewModel.load() }
+                        presentOnboardingPaywallIfNeeded()
                     }
                 }
             ))
@@ -165,8 +173,8 @@ struct TodayBriefingView: View {
                 defer { reviewPromptCoordinator.clear() }
                 guard activeSheet == nil else { return }
                 switch presentation {
-                case .enjoymentPrompt:
-                    presentReviewPrompt(step: .enjoyment)
+                case .rateOrFeedback:
+                    presentReviewPrompt(step: .choose)
                 case .feedbackOnly:
                     presentReviewPrompt(step: .feedback)
                 }
@@ -187,8 +195,25 @@ struct TodayBriefingView: View {
             guard activeSheet == nil,
                   ReviewPromptTracker.shouldShowAfterPositiveMoment(hasCompletedSetup: hasCompletedOnboarding)
             else { return }
+            // Guideline 1.1.7: ask everyone who reaches the engagement
+            // thresholds via Apple's native, rate-limited prompt. No sentiment
+            // pre-screen that would hide the rating from dissatisfied users.
+            reviewPromptShownThisSession = true
             ReviewPromptTracker.consumePendingPositiveMoment()
-            presentReviewPrompt(step: .enjoyment)
+            ReviewPromptTracker.markShown()
+            requestReview()
+        }
+    }
+
+    private func presentOnboardingPaywallIfNeeded() {
+        guard !hasSeenOnboardingPaywall, !isDemo, !isPro else { return }
+        hasSeenOnboardingPaywall = true
+        // Frame Pro/trial once before the free experience. Wait for the
+        // onboarding cover to finish dismissing so the sheet isn't dropped.
+        Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 500_000_000)
+            guard activeSheet == nil else { return }
+            activeSheet = .onboardingPaywall
         }
     }
 
@@ -198,17 +223,10 @@ struct TodayBriefingView: View {
             activeSheet = .paywall(persona)
             return
         }
-        if pendingNativeReviewAfterDismiss {
-            pendingNativeReviewAfterDismiss = false
-            requestReview()
-        }
     }
 
     private func handleReviewPromptFinish(_ outcome: ReviewPromptDismissOutcome) {
         activeSheet = nil
-        if outcome == .enjoyedMaybeLater {
-            pendingNativeReviewAfterDismiss = true
-        }
     }
 
     private func presentReviewPrompt(step: ReviewPromptSheet.Step) {
