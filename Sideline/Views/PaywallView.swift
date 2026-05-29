@@ -350,9 +350,11 @@ struct PaywallView: View {
                 Spacer()
 
                 Button {
+                    #if DEBUG
                     if let local = entitlement as? LocalEntitlementStore {
                         local.setProForDebug(true)
                     }
+                    #endif
                     dismiss()
                 } label: {
                     Text("Continue")
