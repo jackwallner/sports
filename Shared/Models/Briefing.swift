@@ -78,6 +78,7 @@ public struct Briefing: Identifiable, Codable, Equatable, Sendable {
 public struct BriefingBullet: Identifiable, Codable, Equatable, Sendable {
     public let id: UUID
     public let talkingPoint: String
+    public let subject: String?
     public let tieIn: String?
     public let tag: BriefingTag?
     public let tagReason: String?
@@ -87,6 +88,7 @@ public struct BriefingBullet: Identifiable, Codable, Equatable, Sendable {
     public init(
         id: UUID = UUID(),
         talkingPoint: String,
+        subject: String? = nil,
         tieIn: String? = nil,
         tag: BriefingTag? = nil,
         tagReason: String? = nil,
@@ -95,6 +97,7 @@ public struct BriefingBullet: Identifiable, Codable, Equatable, Sendable {
     ) {
         self.id = id
         self.talkingPoint = talkingPoint
+        self.subject = subject
         self.tieIn = tieIn
         self.tag = tag
         self.tagReason = tagReason
@@ -105,6 +108,7 @@ public struct BriefingBullet: Identifiable, Codable, Equatable, Sendable {
     enum CodingKeys: String, CodingKey {
         case id
         case talkingPoint = "talking_point"
+        case subject
         case tieIn = "tie_in"
         case tag
         case tagReason = "tag_reason"
@@ -123,6 +127,7 @@ public extension Briefing {
         bullets: [
             BriefingBullet(
                 talkingPoint: "The team benched their longtime starter. Fans are split between 'about time' and 'how dare they.'",
+                subject: "Cowboys",
                 tieIn: "His wife posted a cryptic quote about loyalty, which did not help.",
                 tag: .drama,
                 tagReason: "Locker-room sources are frustrated, per reporters.",
@@ -131,6 +136,7 @@ public extension Briefing {
             ),
             BriefingBullet(
                 talkingPoint: "The 23-year-old replacement is the feel-good story: undrafted, was working a normal job 2 years ago.",
+                subject: "NFL",
                 tag: .niceGuy,
                 tagReason: "Donated his first big check to his old high school.",
                 sourceHeadline: "From warehouse shifts to starting QB - ESPN",
@@ -138,6 +144,7 @@ public extension Briefing {
             ),
             BriefingBullet(
                 talkingPoint: "A star player from another team called the benching disrespectful, and now those 2 teams play Sunday.",
+                subject: "Eagles",
                 tag: .drama,
                 tagReason: "He has a history of saying the quiet part loud.",
                 sourceHeadline: "Rival star sounds off - Yahoo Sports",

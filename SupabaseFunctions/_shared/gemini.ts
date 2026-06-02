@@ -103,8 +103,11 @@ function buildPrompt(target: GenerationTarget, sourceItems: SourceItemRow[]): st
     `Persona: ${target.persona}. ${personaVoice}`,
     coverage,
     "Do not write like ESPN. Use plain language, warm wit, and zero stats jargon.",
+    "Write like a real person texting a friend, not like an AI or a press release.",
+    "Never use em dashes (—). Use periods or commas. Avoid AI tells: no 'not just X but Y', no 'in a world where', no 'it's important to note', no 'buckle up', no rhetorical questions as filler, no overuse of colons. Keep sentences varied and human.",
     "Do not reproduce article bodies. Use the provided headlines/summaries only and link to the original source URL.",
     "Every bullet must cite exactly one provided source URL.",
+    "Each bullet's subject is a 1-3 word label for the team, league, or athlete it is about (for example: 'Cowboys', 'NBA', 'Serena Williams'). Use the most specific one that fits.",
     "Return strict JSON only. No markdown. No code fences.",
     "Schema:",
     JSON.stringify({
@@ -113,6 +116,7 @@ function buildPrompt(target: GenerationTarget, sourceItems: SourceItemRow[]): st
       bullets: [
         {
           talking_point: "plain-language point, 1-2 sentences",
+          subject: "1-3 word sport/team/athlete label, e.g. 'Cowboys' or 'NBA'",
           tie_in: "optional pop-culture/social angle or null",
           tag: "nice_guy | jerk | redemption | drama | neutral | null",
           tag_reason: "optional short reason or null",

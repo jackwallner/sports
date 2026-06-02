@@ -61,6 +61,7 @@ export interface SourceItemRow {
 export interface GeneratedBullet {
   id?: string;
   talking_point: string;
+  subject?: string | null;
   tie_in?: string | null;
   tag?: BriefingTag | null;
   tag_reason?: string | null;

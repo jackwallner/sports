@@ -12,6 +12,8 @@ struct TodayBriefingView: View {
     @State private var viewModel: TodayBriefingViewModel
     @State private var activeSheet: ActiveSheet?
     @State private var pendingPaywallContext: Persona?
+    @State private var currentBullet = 0
+    @ScaledMetric(relativeTo: .body) private var cardHeight: CGFloat = 360
     @StateObject private var reviewPromptCoordinator = ReviewPromptCoordinator.shared
     @State private var reviewPromptShownThisSession = false
 
@@ -269,29 +271,49 @@ struct TodayBriefingView: View {
                 .foregroundStyle(SidelineTheme.inkTertiary)
                 .padding(.top, 2)
 
-            Divider()
-
-            VStack(spacing: 0) {
-                ForEach(Array(briefing.bullets.enumerated()), id: \.element.id) { index, bullet in
-                    BulletCard(
-                        bullet: bullet,
-                        index: index + 1,
-                        total: briefing.bullets.count
-                    ) { url in
-                        activeSheet = .source(url)
-                    }
-
-                    if index < briefing.bullets.count - 1 {
-                        Divider()
-                            .padding(.leading, 18)
-                    }
-                }
-            }
+            bulletCarousel(briefing)
 
             SuggestedQuestionCard(question: briefing.suggestedQuestion)
 
             FreshnessFooter(briefing: briefing, isOffline: isOffline, isPro: isPro)
                 .padding(.top, 4)
+        }
+    }
+
+    @ViewBuilder
+    private func bulletCarousel(_ briefing: Briefing) -> some View {
+        let count = briefing.bullets.count
+        VStack(spacing: 12) {
+            TabView(selection: $currentBullet) {
+                ForEach(Array(briefing.bullets.enumerated()), id: \.element.id) { index, bullet in
+                    BulletCard(
+                        bullet: bullet,
+                        index: index + 1,
+                        total: count
+                    ) { url in
+                        activeSheet = .source(url)
+                    }
+                    .tag(index)
+                }
+            }
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            .frame(height: cardHeight)
+
+            if count > 1 {
+                HStack(spacing: 7) {
+                    ForEach(0..<count, id: \.self) { i in
+                        Capsule()
+                            .fill(i == currentBullet ? SidelineTheme.brandPrimary : SidelineTheme.rule)
+                            .frame(width: i == currentBullet ? 18 : 6, height: 6)
+                            .animation(.snappy(duration: 0.2), value: currentBullet)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .accessibilityHidden(true)
+            }
+        }
+        .onChange(of: briefing.id) { _, _ in
+            currentBullet = 0
         }
     }
 
@@ -362,18 +384,21 @@ struct TodayBriefingView: View {
                 Capsule().fill(SidelineTheme.rule).frame(width: 200, height: 22)
             }
 
-            ForEach(0..<3, id: \.self) { _ in
-                HStack(alignment: .top, spacing: 14) {
-                    RoundedRectangle(cornerRadius: 2.5)
-                        .fill(SidelineTheme.rule)
-                        .frame(width: 4, height: 78)
-                    VStack(alignment: .leading, spacing: 8) {
-                        Capsule().fill(SidelineTheme.rule).frame(width: 60, height: 10)
-                        Capsule().fill(SidelineTheme.rule).frame(height: 12)
-                        Capsule().fill(SidelineTheme.rule).frame(width: 220, height: 12)
-                    }
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(spacing: 8) {
+                    Capsule().fill(SidelineTheme.rule).frame(width: 44, height: 12)
+                    Capsule().fill(SidelineTheme.rule).frame(width: 64, height: 12)
                 }
+                Capsule().fill(SidelineTheme.rule).frame(height: 18)
+                Capsule().fill(SidelineTheme.rule).frame(width: 240, height: 18)
+                Capsule().fill(SidelineTheme.rule).frame(width: 180, height: 12)
+                Spacer(minLength: 0)
+                Capsule().fill(SidelineTheme.rule).frame(width: 150, height: 12)
             }
+            .padding(20)
+            .frame(maxWidth: .infinity, alignment: .topLeading)
+            .frame(height: 200)
+            .background(Color.sidelineCard, in: RoundedRectangle(cornerRadius: SidelineTheme.cardCornerRadius))
         }
         .redacted(reason: .placeholder)
         .accessibilityLabel("Loading briefing")
