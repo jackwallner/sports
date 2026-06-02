@@ -1,0 +1,5 @@
+No account or login required. The free tier shows the "Cocktail Party" daily
+briefing. The Sideline Pro unlocks the other rooms, more frequent refreshes,
+and Local Team, via standard StoreKit in-app purchase — please test purchases
+with a sandbox Apple ID. All briefing content is generated daily by our backend;
+there is no user-generated content. Contact: jackwallner@gmail.com

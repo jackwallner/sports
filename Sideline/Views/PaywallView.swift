@@ -350,9 +350,11 @@ struct PaywallView: View {
                 Spacer()
 
                 Button {
+                    #if DEBUG
                     if let local = entitlement as? LocalEntitlementStore {
                         local.setProForDebug(true)
                     }
+                    #endif
                     dismiss()
                 } label: {
                     Text("Continue")
@@ -452,14 +454,14 @@ private struct PaywallPlanCard: View {
                             .foregroundStyle(SidelineTheme.inkPrimary)
                         if let savings = savingsPercent {
                             Text("SAVE \(savings)%")
-                                .font(.system(size: 9, weight: .bold))
+                                .font(.caption2.weight(.bold))
                                 .foregroundStyle(.white)
                                 .padding(.horizontal, 6)
                                 .padding(.vertical, 2)
                                 .background(SidelineTheme.brandPrimary, in: Capsule())
                         } else if isBestValue {
                             Text("BEST VALUE")
-                                .font(.system(size: 9, weight: .bold))
+                                .font(.caption2.weight(.bold))
                                 .foregroundStyle(.white)
                                 .padding(.horizontal, 6)
                                 .padding(.vertical, 2)

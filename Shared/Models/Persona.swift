@@ -68,6 +68,23 @@ public enum Persona: String, Codable, CaseIterable, Identifiable, Sendable {
         }
     }
 
+    /// A real, readable taste of how this room sounds. Shown unblurred in the
+    /// Pro preview so the user can actually evaluate the value before upselling.
+    public var proPreviewTeaser: String {
+        switch self {
+        case .cocktailParty:
+            return "\"Everyone's calling it the upset of the year, but honestly the favorite looked tired all night.\" Drop that and you're in the conversation."
+        case .sportsTalkForMoms:
+            return "Your kid won't stop talking about the rookie everyone's hyping. Try: \"Is he actually better than the guy who got hurt?\" Watch them light up."
+        case .officeWatercooler:
+            return "Someone will bring up last night's blown call. Safe line: \"The refs are having a rough season, huh?\" Agreeable, current, done."
+        case .dateNight:
+            return "Lead with the comeback: a player benched all year won it in the final seconds. Then ask, \"Do you root for the underdog or the favorite?\""
+        case .localTeam:
+            return "Your city's team is one win from the playoffs and the group chat is unhinged. You: \"If they blow this, I'm done.\" Pure local."
+        }
+    }
+
     public var paywallHook: String {
         switch self {
         case .cocktailParty: return "Sound prepared anywhere"
