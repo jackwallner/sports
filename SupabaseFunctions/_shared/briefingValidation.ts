@@ -40,6 +40,7 @@ export function normalizeBriefing(value: GeneratedBriefing): GeneratedBriefing {
     bullets: value.bullets.map((bullet) => ({
       id: bullet.id ?? crypto.randomUUID(),
       talking_point: bullet.talking_point.trim(),
+      subject: bullet.subject?.trim() || null,
       tie_in: bullet.tie_in?.trim() || null,
       tag: bullet.tag ?? null,
       tag_reason: bullet.tag_reason?.trim() || null,
@@ -58,6 +59,7 @@ function validateBullet(value: unknown, index: number, errors: string[]) {
   }
 
   requireString(value, "talking_point", 30, 260, errors, `bullet ${index}`);
+  optionalString(value, "subject", 0, 40, errors, `bullet ${index}`);
   optionalString(value, "tie_in", 0, 180, errors, `bullet ${index}`);
   optionalString(value, "tag_reason", 0, 160, errors, `bullet ${index}`);
   requireString(value, "source_headline", 8, 180, errors, `bullet ${index}`);
