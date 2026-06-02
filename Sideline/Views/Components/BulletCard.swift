@@ -88,7 +88,7 @@ struct BulletCard: View {
             Image(systemName: tag.symbolName)
                 .font(.caption2.weight(.bold))
             Text(tag.displayName.uppercased())
-                .font(.system(size: 10, weight: .heavy, design: .rounded))
+                .font(.system(.caption2, design: .rounded).weight(.heavy))
                 .tracking(0.8)
         }
         .padding(.horizontal, 8)

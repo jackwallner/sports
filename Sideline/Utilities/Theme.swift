@@ -64,8 +64,9 @@ enum SidelineTheme {
     }()
     /// 62% ink — secondary text (headlines under TL;DR, source links).
     static let inkSecondary = inkPrimary.opacity(0.70)
-    /// 40% ink — tertiary (counts, captions, freshness footer).
-    static let inkTertiary  = inkPrimary.opacity(0.48)
+    /// 60% ink — tertiary (counts, captions, freshness footer). Bumped from
+    /// 48% so small text clears WCAG AA contrast on the cream surface.
+    static let inkTertiary  = inkPrimary.opacity(0.60)
     /// 10% ink — rules and dividers. Prefer a real `Divider()` when you can.
     static let rule         = inkPrimary.opacity(0.14)
 
@@ -146,8 +147,20 @@ enum SidelineTheme {
     // ship in the bundle. Body text stays on the default system font.
 
     /// Display — TL;DR hero, large surfaces.
+    ///
+    /// Keeps the editorial serif at a deliberate point size but scales it with
+    /// the user's Dynamic Type setting (via `UIFontMetrics`), so the hero
+    /// TL;DR, onboarding, and paywall headlines grow for larger text settings
+    /// instead of staying frozen.
     static func display(_ size: CGFloat = 28) -> Font {
-        .system(size: size, weight: .semibold, design: .serif)
+        #if canImport(UIKit)
+        let base = UIFont.systemFont(ofSize: size, weight: .semibold)
+        let descriptor = base.fontDescriptor.withDesign(.serif) ?? base.fontDescriptor
+        let serif = UIFont(descriptor: descriptor, size: size)
+        return Font(UIFontMetrics(forTextStyle: .largeTitle).scaledFont(for: serif))
+        #else
+        return .system(size: size, weight: .semibold, design: .serif)
+        #endif
     }
 
     /// Title — section headings and floated-card titles.

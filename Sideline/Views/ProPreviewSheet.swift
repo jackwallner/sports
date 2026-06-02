@@ -33,7 +33,7 @@ struct ProPreviewSheet: View {
                     .tracking(1.0)
                     .foregroundStyle(SidelineTheme.inkTertiary)
 
-                Text(teaser)
+                Text(persona.proPreviewTeaser)
                     .font(.title3.weight(.semibold))
                     .foregroundStyle(SidelineTheme.inkPrimary)
                     .lineSpacing(4)
@@ -48,12 +48,11 @@ struct ProPreviewSheet: View {
                         RoundedRectangle(cornerRadius: SidelineTheme.cardCornerRadius)
                             .stroke(SidelineTheme.brandPrimary.opacity(0.18), lineWidth: 1)
                     )
-                    .blur(radius: 4)
-                    .overlay(
-                        Image(systemName: "lock.fill")
-                            .font(.title)
-                            .foregroundStyle(SidelineTheme.brandPrimary)
-                    )
+
+                Label("Pro unlocks the full daily briefing for this room, refreshed up to 3× a day.", systemImage: "lock.open.fill")
+                    .font(.footnote)
+                    .foregroundStyle(SidelineTheme.inkSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
 
                 Spacer()
 
@@ -78,9 +77,5 @@ struct ProPreviewSheet: View {
                 }
             }
         }
-    }
-
-    private var teaser: String {
-        Briefing.sample.tlDR
     }
 }
