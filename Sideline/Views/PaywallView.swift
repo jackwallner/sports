@@ -290,10 +290,15 @@ struct PaywallView: View {
             defer { isPurchasing = false }
             do {
                 switch try await store.purchase(package) {
-                case .purchased, .pending:
+                case .purchased:
+                    // store.isPro flips and the onChange handler dismisses.
                     break
+                case .pending:
+                    restoreMessage = "Your purchase is pending approval. The Sideline Pro unlocks automatically once it's approved."
                 case .cancelled:
-                    errorMessage = "Purchase cancelled. Tap again to continue."
+                    // A deliberate cancel is not an error. Stay quiet; the
+                    // button re-enables so they can try again.
+                    break
                 }
             } catch {
                 errorMessage = "Couldn't complete the purchase. Please try again."
