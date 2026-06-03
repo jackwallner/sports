@@ -8,10 +8,15 @@ struct OnboardingView: View {
     @Binding var hasCompletedOnboarding: Bool
     @Binding var lastPersona: String
     @Binding var favoriteTeam: String
+    var isPro: Bool = false
 
     @State private var page = 0
     @State private var pickedPersona: Persona = .cocktailParty
     @State private var teamDraft = ""
+
+    private func isLocked(_ persona: Persona) -> Bool {
+        !persona.isFree && !isPro
+    }
 
     var body: some View {
         NavigationStack {
@@ -99,21 +104,28 @@ struct OnboardingView: View {
     }
 
     private func personaRow(_ persona: Persona) -> some View {
-        Button {
+        let locked = isLocked(persona)
+        let isSelected = persona == pickedPersona && !locked
+        return Button {
+            // A free user can't start in a Pro room. Locked rows preview what
+            // Pro unlocks (the paywall is framed right after onboarding) but
+            // don't become the start room, so the choice is never silently lost.
+            guard !locked else { return }
             pickedPersona = persona
         } label: {
             HStack(alignment: .top, spacing: 12) {
                 Image(systemName: persona.symbolName)
                     .font(.title3)
-                    .foregroundStyle(SidelineTheme.brandPrimary)
+                    .foregroundStyle(locked ? SidelineTheme.inkTertiary : SidelineTheme.brandPrimary)
                     .frame(width: 28)
                 VStack(alignment: .leading, spacing: 3) {
                     HStack(spacing: 6) {
                         Text(persona.displayName)
                             .font(.headline)
                             .foregroundStyle(SidelineTheme.inkPrimary)
-                        if !persona.isFree {
-                            Text("Pro")
+                        if locked {
+                            Label("Pro", systemImage: "lock.fill")
+                                .labelStyle(.titleAndIcon)
                                 .font(.caption2.weight(.bold))
                                 .padding(.horizontal, 6)
                                 .padding(.vertical, 2)
@@ -127,7 +139,7 @@ struct OnboardingView: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer()
-                if persona == pickedPersona {
+                if isSelected {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundStyle(SidelineTheme.brandPrimary)
                 }
@@ -135,14 +147,17 @@ struct OnboardingView: View {
             .padding(14)
             .background(
                 RoundedRectangle(cornerRadius: SidelineTheme.cardCornerRadius)
-                    .fill(persona == pickedPersona ? SidelineTheme.brandPrimary.opacity(0.10) : Color.clear)
+                    .fill(isSelected ? SidelineTheme.brandPrimary.opacity(0.10) : Color.clear)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: SidelineTheme.cardCornerRadius)
-                    .stroke(persona == pickedPersona ? SidelineTheme.brandPrimary.opacity(0.45) : SidelineTheme.rule, lineWidth: persona == pickedPersona ? 1.5 : 1)
+                    .stroke(isSelected ? SidelineTheme.brandPrimary.opacity(0.45) : SidelineTheme.rule, lineWidth: isSelected ? 1.5 : 1)
             )
+            .opacity(locked ? 0.85 : 1)
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(locked ? "\(persona.displayName), Pro, unlocks with The Sideline Pro" : persona.displayName)
+        .accessibilityAddTraits(isSelected ? [.isSelected, .isButton] : .isButton)
     }
 
     private var teamPick: some View {
@@ -159,6 +174,8 @@ struct OnboardingView: View {
             TextField("e.g. Philadelphia", text: $teamDraft)
                 .textFieldStyle(.roundedBorder)
                 .padding(.top, 4)
+                .submitLabel(.done)
+                .onSubmit { advance() }
                 #if os(iOS)
                 .autocorrectionDisabled()
                 .textInputAutocapitalization(.words)
@@ -210,7 +227,8 @@ struct OnboardingView: View {
     }
 
     private func finish() {
-        lastPersona = pickedPersona.rawValue
+        // Never persist a locked Pro room as the start room for a free user.
+        lastPersona = isLocked(pickedPersona) ? Persona.cocktailParty.rawValue : pickedPersona.rawValue
         favoriteTeam = teamDraft.trimmingCharacters(in: .whitespacesAndNewlines)
         hasCompletedOnboarding = true
     }

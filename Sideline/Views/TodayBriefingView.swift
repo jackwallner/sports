@@ -12,8 +12,7 @@ struct TodayBriefingView: View {
     @State private var viewModel: TodayBriefingViewModel
     @State private var activeSheet: ActiveSheet?
     @State private var pendingPaywallContext: Persona?
-    @State private var currentBullet = 0
-    @ScaledMetric(relativeTo: .body) private var cardHeight: CGFloat = 360
+    @State private var deckIndex = 0
     @StateObject private var reviewPromptCoordinator = ReviewPromptCoordinator.shared
     @State private var reviewPromptShownThisSession = false
 
@@ -69,120 +68,186 @@ struct TodayBriefingView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    PersonaRail(selected: viewModel.selectedPersona, isPro: isPro) { persona in
-                        Task {
-                            let didSelect = await viewModel.select(persona)
-                            if !didSelect {
-                                activeSheet = .proPreview(persona)
-                            }
+            mainContent
+                .background(Color.sidelineBackground)
+                .navigationTitle("The Sideline")
+                #if os(iOS)
+                .navigationBarTitleDisplayMode(.inline)
+                #endif
+                .toolbar {
+                    ToolbarItem(placement: .primaryAction) {
+                        NavigationLink {
+                            SettingsView(
+                                entitlement: entitlement,
+                                store: store,
+                                onManualRefresh: { Task { await viewModel.refresh() } },
+                                onTeamChanged: { Task { await viewModel.reloadAfterPreferenceChange() } }
+                            )
+                        } label: {
+                            Image(systemName: "gearshape")
                         }
+                        .accessibilityLabel("Settings")
                     }
-
-                    content
-                        .padding(.horizontal)
                 }
-                .padding(.bottom, 32)
-            }
-            .background(Color.sidelineBackground)
-            .navigationTitle("The Sideline")
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    NavigationLink {
-                        SettingsView(
-                            entitlement: entitlement,
-                            store: store,
-                            onManualRefresh: { Task { await viewModel.refresh() } },
-                            onTeamChanged: { Task { await viewModel.reloadAfterPreferenceChange() } }
+                .task {
+                    if case .idle = viewModel.state {
+                        applyUsablePersonaFromStorage()
+                        await viewModel.load()
+                        #if DEBUG
+                        if let start = Self.debugDeckStart() {
+                            deckIndex = min(start, (viewModel.lastBriefing?.bullets.count ?? 0) + 1)
+                        }
+                        #endif
+                    }
+                }
+                .sheet(item: $activeSheet, onDismiss: handleSheetDismiss) { sheet in
+                    switch sheet {
+                    case .proPreview(let persona):
+                        ProPreviewSheet(
+                            persona: persona,
+                            onSeePro: {
+                                pendingPaywallContext = persona
+                                activeSheet = nil
+                            },
+                            onDismiss: { activeSheet = nil }
                         )
-                    } label: {
-                        Image(systemName: "gearshape")
+                    case .paywall(let persona):
+                        PaywallView(
+                            entitlement: entitlement,
+                            context: persona,
+                            impressionId: "sideline_paywall_sheet"
+                        )
+                    case .onboardingPaywall:
+                        PaywallView(
+                            entitlement: entitlement,
+                            impressionId: "sideline_onboarding_paywall"
+                        )
+                    case .review(let step):
+                        ReviewPromptSheet(initialStep: step, onFinish: handleReviewPromptFinish)
+                    case .source(let url):
+                        #if canImport(SafariServices) && canImport(UIKit)
+                        SafariView(url: url)
+                        #else
+                        EmptyView()
+                        #endif
                     }
-                    .accessibilityLabel("Settings")
                 }
-            }
-            .refreshable {
-                await viewModel.refresh()
-            }
-            .task {
-                if case .idle = viewModel.state {
-                    if let persona = Persona(rawValue: lastPersonaRaw),
-                       entitlement.canUse(persona: persona) {
-                        viewModel.selectedPersona = persona
-                    }
-                    await viewModel.load()
-                }
-            }
-            .sheet(item: $activeSheet, onDismiss: handleSheetDismiss) { sheet in
-                switch sheet {
-                case .proPreview(let persona):
-                    ProPreviewSheet(
-                        persona: persona,
-                        onSeePro: {
-                            pendingPaywallContext = persona
-                            activeSheet = nil
-                        },
-                        onDismiss: { activeSheet = nil }
-                    )
-                case .paywall(let persona):
-                    PaywallView(
-                        entitlement: entitlement,
-                        context: persona,
-                        impressionId: "sideline_paywall_sheet"
-                    )
-                case .onboardingPaywall:
-                    PaywallView(
-                        entitlement: entitlement,
-                        impressionId: "sideline_onboarding_paywall"
-                    )
-                case .review(let step):
-                    ReviewPromptSheet(initialStep: step, onFinish: handleReviewPromptFinish)
-                case .source(let url):
-                    #if canImport(SafariServices) && canImport(UIKit)
-                    SafariView(url: url)
-                    #else
-                    EmptyView()
-                    #endif
-                }
-            }
-            .modifier(OnboardingPresenter(
-                isPresented: Binding(
-                    get: { !hasCompletedOnboarding },
-                    set: { newValue in hasCompletedOnboarding = !newValue }
-                ),
-                content: {
-                    OnboardingView(
-                        hasCompletedOnboarding: $hasCompletedOnboarding,
-                        lastPersona: $lastPersonaRaw,
-                        favoriteTeam: $favoriteTeam
-                    )
-                    .onDisappear {
-                        if let persona = Persona(rawValue: lastPersonaRaw),
-                           entitlement.canUse(persona: persona) {
-                            viewModel.selectedPersona = persona
+                .modifier(OnboardingPresenter(
+                    isPresented: Binding(
+                        get: { !hasCompletedOnboarding },
+                        set: { newValue in hasCompletedOnboarding = !newValue }
+                    ),
+                    content: {
+                        OnboardingView(
+                            hasCompletedOnboarding: $hasCompletedOnboarding,
+                            lastPersona: $lastPersonaRaw,
+                            favoriteTeam: $favoriteTeam,
+                            isPro: isPro
+                        )
+                        .onDisappear {
+                            applyUsablePersonaFromStorage()
+                            Task { await viewModel.load() }
+                            presentOnboardingPaywallIfNeeded()
                         }
-                        Task { await viewModel.load() }
-                        presentOnboardingPaywallIfNeeded()
+                    }
+                ))
+                .onReceive(NotificationCenter.default.publisher(for: .sidelinePositiveMomentForReview)) { _ in
+                    scheduleReviewPromptAfterPositiveMoment()
+                }
+                .onChange(of: reviewPromptCoordinator.pendingPresentation) { _, presentation in
+                    guard let presentation else { return }
+                    defer { reviewPromptCoordinator.clear() }
+                    guard activeSheet == nil else { return }
+                    switch presentation {
+                    case .rateOrFeedback:
+                        presentReviewPrompt(step: .choose)
+                    case .feedbackOnly:
+                        presentReviewPrompt(step: .feedback)
                     }
                 }
-            ))
-            .onReceive(NotificationCenter.default.publisher(for: .sidelinePositiveMomentForReview)) { _ in
-                scheduleReviewPromptAfterPositiveMoment()
-            }
-            .onChange(of: reviewPromptCoordinator.pendingPresentation) { _, presentation in
-                guard let presentation else { return }
-                defer { reviewPromptCoordinator.clear() }
-                guard activeSheet == nil else { return }
-                switch presentation {
-                case .rateOrFeedback:
-                    presentReviewPrompt(step: .choose)
-                case .feedbackOnly:
-                    presentReviewPrompt(step: .feedback)
-                }
-            }
         }
     }
+
+    // MARK: - Layout
+
+    private var mainContent: some View {
+        VStack(spacing: 0) {
+            PersonaRail(selected: viewModel.selectedPersona, isPro: isPro) { persona in
+                Task {
+                    let didSelect = await viewModel.select(persona)
+                    if !didSelect {
+                        activeSheet = .proPreview(persona)
+                    }
+                }
+            }
+
+            stateContent
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+    }
+
+    @ViewBuilder
+    private var stateContent: some View {
+        switch viewModel.state {
+        case .idle, .loading:
+            skeletonCard
+        case .populated(let briefing, let isOffline):
+            deckArea(briefing, isOffline: isOffline)
+                .transition(.opacity)
+        case .failed(let message):
+            emptyState(message: message)
+        case .refreshLimit:
+            refreshLimitArea
+        }
+    }
+
+    private func deckArea(_ briefing: Briefing, isOffline: Bool, caughtUp: Bool = false) -> some View {
+        VStack(spacing: 12) {
+            if isDemo {
+                demoBanner.padding(.horizontal, 18)
+            } else if caughtUp {
+                caughtUpBanner.padding(.horizontal, 18)
+            } else if isOffline {
+                offlineBanner.padding(.horizontal, 18)
+            }
+
+            BriefingDeck(briefing: briefing, index: $deckIndex) { url in
+                activeSheet = .source(url)
+            }
+
+            FreshnessFooter(briefing: briefing, isOffline: isOffline, isPro: isPro)
+                .padding(.horizontal, 26)
+                .padding(.bottom, 6)
+        }
+        .padding(.top, 4)
+        .onChange(of: briefing.id) { _, _ in
+            deckIndex = 0
+        }
+    }
+
+    @ViewBuilder
+    private var refreshLimitArea: some View {
+        if let briefing = viewModel.lastBriefing {
+            deckArea(briefing, isOffline: false, caughtUp: true)
+        } else {
+            caughtUpEmptyState
+        }
+    }
+
+    // MARK: - Persona restore
+
+    /// Restore the last persona, but only if the user can still use it. A free
+    /// user whose stored persona is a Pro room (e.g. picked during onboarding)
+    /// self-corrects back to Cocktail Party instead of loading a locked room.
+    private func applyUsablePersonaFromStorage() {
+        if let persona = Persona(rawValue: lastPersonaRaw), entitlement.canUse(persona: persona) {
+            viewModel.selectedPersona = persona
+        } else if !entitlement.canUse(persona: viewModel.selectedPersona) {
+            viewModel.selectedPersona = .cocktailParty
+        }
+    }
+
+    // MARK: - Review prompt
 
     private func scheduleReviewPromptAfterPositiveMoment() {
         guard !isDemo,
@@ -207,14 +272,19 @@ struct TodayBriefingView: View {
         }
     }
 
-    private func presentOnboardingPaywallIfNeeded() {
+    private func presentOnboardingPaywallIfNeeded(attempt: Int = 0) {
         guard !hasSeenOnboardingPaywall, !isDemo, !isPro else { return }
-        hasSeenOnboardingPaywall = true
-        // Frame Pro/trial once before the free experience. Wait for the
-        // onboarding cover to finish dismissing so the sheet isn't dropped.
+        // Frame Pro/trial once before the free experience. Only burn the
+        // one-time flag at the moment the sheet actually presents; if another
+        // sheet is up, retry a few times rather than dropping it forever.
         Task { @MainActor in
             try? await Task.sleep(nanoseconds: 500_000_000)
-            guard activeSheet == nil else { return }
+            guard !hasSeenOnboardingPaywall, !isPro else { return }
+            guard activeSheet == nil else {
+                if attempt < 3 { presentOnboardingPaywallIfNeeded(attempt: attempt + 1) }
+                return
+            }
+            hasSeenOnboardingPaywall = true
             activeSheet = .onboardingPaywall
         }
     }
@@ -231,126 +301,22 @@ struct TodayBriefingView: View {
         activeSheet = nil
     }
 
+    #if DEBUG
+    /// Screenshot helper: `-SidelineDeckStart N` opens the deck on card N
+    /// (0 = lead, 1..n = talking points, n+1 = "Your move"). DEBUG only.
+    private static func debugDeckStart() -> Int? {
+        let args = ProcessInfo.processInfo.arguments
+        guard let i = args.firstIndex(of: "-SidelineDeckStart"), i + 1 < args.count else { return nil }
+        return Int(args[i + 1])
+    }
+    #endif
+
     private func presentReviewPrompt(step: ReviewPromptSheet.Step) {
         reviewPromptShownThisSession = true
         activeSheet = .review(step)
     }
 
-    @ViewBuilder
-    private var content: some View {
-        switch viewModel.state {
-        case .idle, .loading:
-            skeleton
-        case .populated(let briefing, let isOffline):
-            briefingView(briefing, isOffline: isOffline)
-                .transition(.opacity)
-        case .failed(let message):
-            emptyState(message: message)
-        case .refreshLimit:
-            refreshLimitCard
-            if let briefing = viewModel.lastBriefing {
-                briefingView(briefing, isOffline: false, suppressOfflineBanner: true)
-                    .transition(.opacity)
-            }
-        }
-    }
-
-    private func briefingView(_ briefing: Briefing, isOffline: Bool, suppressOfflineBanner: Bool = false) -> some View {
-        VStack(alignment: .leading, spacing: 22) {
-            if isDemo {
-                demoBanner
-            } else if isOffline && !suppressOfflineBanner {
-                offlineBanner
-            }
-
-            heroBlock(briefing: briefing)
-
-            Text("\(briefing.bullets.count) talking points".uppercased())
-                .font(.caption2.weight(.bold))
-                .tracking(1.3)
-                .foregroundStyle(SidelineTheme.inkTertiary)
-                .padding(.top, 2)
-
-            bulletCarousel(briefing)
-
-            SuggestedQuestionCard(question: briefing.suggestedQuestion)
-
-            FreshnessFooter(briefing: briefing, isOffline: isOffline, isPro: isPro)
-                .padding(.top, 4)
-        }
-    }
-
-    @ViewBuilder
-    private func bulletCarousel(_ briefing: Briefing) -> some View {
-        let count = briefing.bullets.count
-        VStack(spacing: 12) {
-            TabView(selection: $currentBullet) {
-                ForEach(Array(briefing.bullets.enumerated()), id: \.element.id) { index, bullet in
-                    BulletCard(
-                        bullet: bullet,
-                        index: index + 1,
-                        total: count
-                    ) { url in
-                        activeSheet = .source(url)
-                    }
-                    .tag(index)
-                }
-            }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            .frame(height: cardHeight)
-
-            if count > 1 {
-                HStack(spacing: 7) {
-                    ForEach(0..<count, id: \.self) { i in
-                        Capsule()
-                            .fill(i == currentBullet ? SidelineTheme.brandPrimary : SidelineTheme.rule)
-                            .frame(width: i == currentBullet ? 18 : 6, height: 6)
-                            .animation(.snappy(duration: 0.2), value: currentBullet)
-                    }
-                }
-                .frame(maxWidth: .infinity)
-                .accessibilityHidden(true)
-            }
-        }
-        .onChange(of: briefing.id) { _, _ in
-            currentBullet = 0
-        }
-    }
-
-    private func heroBlock(briefing: Briefing) -> some View {
-        // Newsroom: no card chrome — the eyebrow, a serif headline, and
-        // spacing carry the hero. The page background does the rest.
-        VStack(alignment: .leading, spacing: SidelineTheme.Spacing.sm) {
-            HStack(spacing: 6) {
-                Image(systemName: viewModel.selectedPersona.symbolName)
-                    .font(.caption2.weight(.bold))
-                Text(viewModel.selectedPersona.contextHeader.uppercased())
-                    .font(SidelineTheme.eyebrow)
-                    .tracking(1.4)
-            }
-            .foregroundStyle(SidelineTheme.brandPrimary)
-
-            Text(briefing.tlDR)
-                .font(SidelineTheme.display())
-                .foregroundStyle(SidelineTheme.inkPrimary)
-                .lineSpacing(3)
-                .fixedSize(horizontal: false, vertical: true)
-                .contextMenu {
-                    Button {
-                        copyToClipboard(briefing.tlDR)
-                    } label: {
-                        Label("Copy", systemImage: "doc.on.doc")
-                    }
-                }
-
-            Text(briefing.headline)
-                .font(.subheadline.weight(.medium))
-                .foregroundStyle(SidelineTheme.inkSecondary)
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.top, 2)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
+    // MARK: - States
 
     private func emptyState(message: String) -> some View {
         VStack(spacing: 14) {
@@ -370,101 +336,97 @@ struct TodayBriefingView: View {
             .buttonStyle(.bordered)
             .padding(.top, 4)
         }
-        .frame(maxWidth: .infinity)
-        .padding(.top, 80)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(.horizontal, 24)
     }
 
-    private var skeleton: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            VStack(alignment: .leading, spacing: 10) {
-                Capsule().fill(SidelineTheme.rule).frame(width: 90, height: 10)
-                Capsule().fill(SidelineTheme.rule).frame(height: 22)
-                Capsule().fill(SidelineTheme.rule).frame(height: 22)
-                Capsule().fill(SidelineTheme.rule).frame(width: 200, height: 22)
-            }
-
-            VStack(alignment: .leading, spacing: 12) {
-                HStack(spacing: 8) {
-                    Capsule().fill(SidelineTheme.rule).frame(width: 44, height: 12)
-                    Capsule().fill(SidelineTheme.rule).frame(width: 64, height: 12)
-                }
-                Capsule().fill(SidelineTheme.rule).frame(height: 18)
-                Capsule().fill(SidelineTheme.rule).frame(width: 240, height: 18)
-                Capsule().fill(SidelineTheme.rule).frame(width: 180, height: 12)
-                Spacer(minLength: 0)
-                Capsule().fill(SidelineTheme.rule).frame(width: 150, height: 12)
-            }
-            .padding(20)
-            .frame(maxWidth: .infinity, alignment: .topLeading)
-            .frame(height: 200)
-            .background(Color.sidelineCard, in: RoundedRectangle(cornerRadius: SidelineTheme.cardCornerRadius))
-        }
-        .redacted(reason: .placeholder)
-        .accessibilityLabel("Loading briefing")
-    }
-
-    private var offlineBanner: some View {
-        let bg = SidelineTheme.tagFill(SidelineTheme.inkPrimary)
-        return Label("Offline. Showing yesterday's update.", systemImage: "wifi.slash")
-            .font(.callout)
-            .foregroundStyle(SidelineTheme.inkSecondary)
-            .padding(12)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(bg, in: RoundedRectangle(cornerRadius: 12))
-            .overlay(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(SidelineTheme.rule, lineWidth: 1)
-            )
-    }
-
-    private var demoBanner: some View {
-        Label {
-            VStack(alignment: .leading, spacing: 2) {
-                Text("Preview briefing")
-                    .font(.callout.weight(.semibold))
-                    .foregroundStyle(SidelineTheme.inkPrimary)
-                Text("Not today's news. For demo only.")
-                    .font(.caption)
-                    .foregroundStyle(SidelineTheme.inkSecondary)
-            }
-        } icon: {
-            Image(systemName: "eye")
-                .foregroundStyle(SidelineTheme.amberText)
-        }
-        .padding(12)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(SidelineTheme.brandAccent.opacity(0.15), in: RoundedRectangle(cornerRadius: 12))
-    }
-
-    private var refreshLimitCard: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("You're caught up".uppercased())
-                .font(.caption2.weight(.bold))
-                .tracking(1.2)
-                .foregroundStyle(SidelineTheme.amberText)
-            Text("Today's free briefing is already the latest. Pro refreshes 3× a day: morning, midday, and evening.")
+    private var caughtUpEmptyState: some View {
+        VStack(spacing: 14) {
+            Image(systemName: "checkmark.circle")
+                .font(.system(size: 42, weight: .light))
+                .foregroundStyle(SidelineTheme.brandPrimary)
+            Text("You're caught up")
+                .font(.title3.weight(.semibold))
+                .foregroundStyle(SidelineTheme.inkPrimary)
+            Text("Today's free briefing is the latest. Pro refreshes 3 times a day.")
                 .font(.callout)
                 .foregroundStyle(SidelineTheme.inkSecondary)
+                .multilineTextAlignment(.center)
             Button("See Pro") {
                 activeSheet = .paywall(viewModel.selectedPersona)
             }
             .buttonStyle(.borderedProminent)
             .tint(SidelineTheme.brandPrimary)
+            .padding(.top, 4)
         }
-        .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.sidelineCard, in: RoundedRectangle(cornerRadius: SidelineTheme.cardCornerRadius))
-        .overlay(
-            RoundedRectangle(cornerRadius: SidelineTheme.cardCornerRadius)
-                .stroke(SidelineTheme.brandAccent, lineWidth: 1)
-        )
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.horizontal, 24)
     }
 
-    private func copyToClipboard(_ text: String) {
-        #if canImport(UIKit)
-        UIPasteboard.general.string = text
-        #endif
+    private var skeletonCard: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Capsule().fill(SidelineTheme.rule).frame(width: 110, height: 12)
+            Capsule().fill(SidelineTheme.rule).frame(height: 26)
+            Capsule().fill(SidelineTheme.rule).frame(height: 26)
+            Capsule().fill(SidelineTheme.rule).frame(width: 220, height: 26)
+            Spacer()
+            Capsule().fill(SidelineTheme.rule).frame(width: 160, height: 12)
+        }
+        .padding(26)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .background(
+            RoundedRectangle(cornerRadius: 26, style: .continuous)
+                .fill(Color.sidelineDeckCard)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 26, style: .continuous)
+                .stroke(SidelineTheme.rule, lineWidth: 1)
+        )
+        .padding(.horizontal, 18)
+        .padding(.top, 8)
+        .padding(.bottom, 30)
+        .redacted(reason: .placeholder)
+        .accessibilityLabel("Loading briefing")
+    }
+
+    private var offlineBanner: some View {
+        Label("Offline. Showing yesterday's update.", systemImage: "wifi.slash")
+            .font(.footnote)
+            .foregroundStyle(SidelineTheme.inkSecondary)
+            .padding(10)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(SidelineTheme.tagFill(SidelineTheme.inkPrimary), in: RoundedRectangle(cornerRadius: 12))
+    }
+
+    private var caughtUpBanner: some View {
+        HStack(spacing: 10) {
+            Label("You're caught up. Pro refreshes 3 times a day.", systemImage: "checkmark.circle")
+                .font(.footnote)
+                .foregroundStyle(SidelineTheme.inkSecondary)
+            Spacer(minLength: 8)
+            Button("See Pro") {
+                activeSheet = .paywall(viewModel.selectedPersona)
+            }
+            .font(.footnote.weight(.semibold))
+            .foregroundStyle(SidelineTheme.brandPrimary)
+        }
+        .padding(10)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(SidelineTheme.brandAccent.opacity(0.12), in: RoundedRectangle(cornerRadius: 12))
+    }
+
+    private var demoBanner: some View {
+        Label {
+            Text("Preview briefing. Not today's news.")
+                .font(.footnote.weight(.medium))
+                .foregroundStyle(SidelineTheme.inkSecondary)
+        } icon: {
+            Image(systemName: "eye")
+                .foregroundStyle(SidelineTheme.amberText)
+        }
+        .padding(10)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(SidelineTheme.brandAccent.opacity(0.12), in: RoundedRectangle(cornerRadius: 12))
     }
 }
 

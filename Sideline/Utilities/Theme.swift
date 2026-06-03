@@ -64,9 +64,10 @@ enum SidelineTheme {
     }()
     /// 62% ink — secondary text (headlines under TL;DR, source links).
     static let inkSecondary = inkPrimary.opacity(0.70)
-    /// 60% ink — tertiary (counts, captions, freshness footer). Bumped from
-    /// 48% so small text clears WCAG AA contrast on the cream surface.
-    static let inkTertiary  = inkPrimary.opacity(0.60)
+    /// 64% ink — tertiary (counts, captions, freshness footer). Bumped from
+    /// 48% so small text clears WCAG AA contrast on both the cream surface
+    /// and the elevated card surface (source links on cards).
+    static let inkTertiary  = inkPrimary.opacity(0.64)
     /// 10% ink — rules and dividers. Prefer a real `Divider()` when you can.
     static let rule         = inkPrimary.opacity(0.14)
 
@@ -202,5 +203,21 @@ extension Color {
     static var sidelineCard: Color {
         // Same tint, day and night — used so rarely it doesn't need a flip.
         SidelineTheme.brandAccent.opacity(0.10)
+    }
+
+    /// Elevated card surface for the swipeable briefing deck. A clean near-white
+    /// in light mode (floats above the cream page) and a lifted deep-paper tone
+    /// in dark mode. Pairs with a hairline border + soft shadow so each card
+    /// reads as a physical card you can swipe.
+    static var sidelineDeckCard: Color {
+        #if os(iOS)
+        Color(uiColor: UIColor { trait in
+            trait.userInterfaceStyle == .dark
+                ? UIColor(red: 0.118, green: 0.106, blue: 0.090, alpha: 1)  // lifted deep paper
+                : UIColor(red: 1.0, green: 0.996, blue: 0.984, alpha: 1)     // #FFFEFB clean card
+        })
+        #else
+        SidelineTheme.paperSurface
+        #endif
     }
 }
