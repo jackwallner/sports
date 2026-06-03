@@ -142,8 +142,19 @@ private func sidelineFallbackPriceFormatter() -> NumberFormatter {
 }
 
 extension CustomerInfo {
+    /// The active Sideline Pro entitlement, if any.
+    ///
+    /// Prefers the dashboard entitlement by identifier, then falls back to any
+    /// active entitlement. The app ships a single entitlement, so "any active"
+    /// is unambiguous and keeps purchases unlocking even if the RevenueCat
+    /// entitlement identifier is later renamed.
+    var sidelineProEntitlement: EntitlementInfo? {
+        entitlements.active[StoreService.entitlementIdentifier]
+            ?? entitlements.active.values.first
+    }
+
     var hasSidelineProEntitlement: Bool {
-        entitlements["pro"]?.isActive == true
+        sidelineProEntitlement != nil
     }
 }
 
@@ -192,7 +203,10 @@ public final class StoreService: NSObject, EntitlementProviding {
     public private(set) var customerInfo: CustomerInfo?
 
     private var paywallImpressionsThisSession: Set<String> = []
-    private let entitlementIdentifier = "pro"
+
+    /// RevenueCat dashboard entitlement identifier. Must match the entitlement
+    /// configured in RevenueCat (currently "Sports Pro").
+    nonisolated public static let entitlementIdentifier = "Sports Pro"
 
     private override init() {
         super.init()
@@ -272,7 +286,7 @@ public final class StoreService: NSObject, EntitlementProviding {
 
     /// True when Pro is active via an auto-renewable subscription (not lifetime).
     public var hasActiveSubscription: Bool {
-        guard let entitlement = customerInfo?.entitlements[entitlementIdentifier], entitlement.isActive else {
+        guard let entitlement = customerInfo?.sidelineProEntitlement else {
             return false
         }
         let productID = entitlement.productIdentifier.lowercased()
@@ -345,7 +359,7 @@ public final class StoreService: NSObject, EntitlementProviding {
 
     func apply(customerInfo: CustomerInfo) {
         self.customerInfo = customerInfo
-        let active = customerInfo.entitlements[entitlementIdentifier]?.isActive == true
+        let active = customerInfo.hasSidelineProEntitlement
         if isPro != active {
             isPro = active
         }
