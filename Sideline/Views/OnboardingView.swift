@@ -7,12 +7,10 @@ import UIKit
 struct OnboardingView: View {
     @Binding var hasCompletedOnboarding: Bool
     @Binding var lastPersona: String
-    @Binding var favoriteTeam: String
     var isPro: Bool = false
 
     @State private var page = 0
     @State private var pickedPersona: Persona = .cocktailParty
-    @State private var teamDraft = ""
 
     private func isLocked(_ persona: Persona) -> Bool {
         !persona.isFree && !isPro
@@ -23,7 +21,6 @@ struct OnboardingView: View {
             TabView(selection: $page) {
                 valueProp.tag(0)
                 personaPick.tag(1)
-                teamPick.tag(2)
             }
             #if os(iOS)
             .tabViewStyle(.page(indexDisplayMode: .always))
@@ -49,7 +46,6 @@ struct OnboardingView: View {
             if let persona = Persona(rawValue: lastPersona) {
                 pickedPersona = persona
             }
-            teamDraft = favoriteTeam
             #if os(iOS)
             let control = UIPageControl.appearance()
             control.currentPageIndicatorTintColor = UIColor(SidelineTheme.brandPrimary)
@@ -160,36 +156,6 @@ struct OnboardingView: View {
         .accessibilityAddTraits(isSelected ? [.isSelected, .isButton] : .isButton)
     }
 
-    private var teamPick: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Spacer(minLength: 12)
-            Text("Got a town?")
-                .font(SidelineTheme.title)
-                .foregroundStyle(SidelineTheme.inkPrimary)
-            Text("Optional. Pro briefings can lean toward your city's teams. Skip if you'd rather not.")
-                .font(.callout)
-                .foregroundStyle(SidelineTheme.inkSecondary)
-                .fixedSize(horizontal: false, vertical: true)
-
-            TextField("e.g. Philadelphia", text: $teamDraft)
-                .textFieldStyle(.roundedBorder)
-                .padding(.top, 4)
-                .submitLabel(.done)
-                .onSubmit { advance() }
-                #if os(iOS)
-                .autocorrectionDisabled()
-                .textInputAutocapitalization(.words)
-                #endif
-
-            Text("You can change or clear this anytime in Settings.")
-                .font(.caption)
-                .foregroundStyle(SidelineTheme.inkTertiary)
-
-            Spacer()
-        }
-        .padding(.horizontal, 28)
-    }
-
     private var actionBar: some View {
         HStack {
             if page > 0 {
@@ -208,20 +174,13 @@ struct OnboardingView: View {
     }
 
     private var primaryLabel: String {
-        switch page {
-        case 0: return "Start"
-        case 1: return "Use this room"
-        default: return "Done"
-        }
+        page == 0 ? "Start" : "Use this room"
     }
 
     private func advance() {
-        switch page {
-        case 0:
+        if page == 0 {
             withAnimation { page = 1 }
-        case 1:
-            withAnimation { page = 2 }
-        default:
+        } else {
             finish()
         }
     }
@@ -229,7 +188,6 @@ struct OnboardingView: View {
     private func finish() {
         // Never persist a locked Pro room as the start room for a free user.
         lastPersona = isLocked(pickedPersona) ? Persona.cocktailParty.rawValue : pickedPersona.rawValue
-        favoriteTeam = teamDraft.trimmingCharacters(in: .whitespacesAndNewlines)
         hasCompletedOnboarding = true
     }
 }

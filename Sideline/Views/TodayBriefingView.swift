@@ -39,7 +39,6 @@ struct TodayBriefingView: View {
     @AppStorage("sideline.hasCompletedOnboarding") private var hasCompletedOnboarding = false
     @AppStorage("sideline.hasSeenOnboardingPaywall") private var hasSeenOnboardingPaywall = false
     @AppStorage("sideline.lastPersona") private var lastPersonaRaw = Persona.cocktailParty.rawValue
-    @AppStorage("favoriteTeam") private var favoriteTeam = ""
 
     private let entitlement: any EntitlementProviding
     private let store: StoreService
@@ -95,7 +94,7 @@ struct TodayBriefingView: View {
                         await viewModel.load()
                         #if DEBUG
                         if let start = Self.debugDeckStart() {
-                            deckIndex = min(start, (viewModel.lastBriefing?.bullets.count ?? 0) + 1)
+                            deckIndex = min(start, viewModel.lastBriefing?.bullets.count ?? 0)
                         }
                         #endif
                     }
@@ -141,7 +140,6 @@ struct TodayBriefingView: View {
                         OnboardingView(
                             hasCompletedOnboarding: $hasCompletedOnboarding,
                             lastPersona: $lastPersonaRaw,
-                            favoriteTeam: $favoriteTeam,
                             isPro: isPro
                         )
                         .onDisappear {
@@ -303,7 +301,7 @@ struct TodayBriefingView: View {
 
     #if DEBUG
     /// Screenshot helper: `-SidelineDeckStart N` opens the deck on card N
-    /// (0 = lead, 1..n = talking points, n+1 = "Your move"). DEBUG only.
+    /// (0..n-1 = stories, n = "Your move"). DEBUG only.
     private static func debugDeckStart() -> Int? {
         let args = ProcessInfo.processInfo.arguments
         guard let i = args.firstIndex(of: "-SidelineDeckStart"), i + 1 < args.count else { return nil }
