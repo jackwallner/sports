@@ -4,11 +4,13 @@ import SwiftUI
 import UIKit
 #endif
 
-/// The whole briefing as one full-bleed deck of swipeable cards:
-/// Lead (the line to say) -> one card per talking point -> "Your move".
+/// The briefing as a small deck of swipeable cards: one self-contained story
+/// per card, then a single "Your move" question to keep the conversation going.
 ///
-/// One idea per card, lots of air. The deck is the screen, so the user only
-/// ever reads a single thought at a time instead of a wall of stacked text.
+/// Each story card is the whole job in one glance — the line to say, one beat
+/// of backup so you sound like you actually know, and a Learn-more link to the
+/// real source. Swipe and you're on a brand-new story. No summary cover, no
+/// fragments: one card, one story.
 struct BriefingDeck: View {
     let briefing: Briefing
     @Binding var index: Int
@@ -18,8 +20,7 @@ struct BriefingDeck: View {
     @ScaledMetric(relativeTo: .footnote) private var activeDotWidth: CGFloat = 22
 
     private var cards: [DeckCard] {
-        [.lead(briefing)]
-            + briefing.bullets.map(DeckCard.point)
+        briefing.bullets.map(DeckCard.point)
             + [.question(briefing.suggestedQuestion)]
     }
 
@@ -31,7 +32,7 @@ struct BriefingDeck: View {
                     DeckCardView(
                         card: card,
                         position: position,
-                        talkingPointCount: briefing.bullets.count,
+                        storyCount: briefing.bullets.count,
                         onOpenSource: onOpenSource
                     )
                     .padding(.horizontal, 18)
@@ -70,7 +71,6 @@ struct BriefingDeck: View {
 }
 
 enum DeckCard {
-    case lead(Briefing)
     case point(BriefingBullet)
     case question(String)
 }
@@ -78,7 +78,7 @@ enum DeckCard {
 private struct DeckCardView: View {
     let card: DeckCard
     let position: Int
-    let talkingPointCount: Int
+    let storyCount: Int
     let onOpenSource: (URL) -> Void
 
     var body: some View {
@@ -112,28 +112,23 @@ private struct DeckCardView: View {
     @ViewBuilder
     private var kicker: some View {
         switch card {
-        case .lead(let briefing):
-            eyebrow(symbol: briefing.persona.symbolName,
-                    text: briefing.persona.contextHeader,
-                    color: SidelineTheme.brandPrimary)
         case .point(let bullet):
             HStack(spacing: 8) {
                 if let tag = bullet.tag, tag != .neutral {
                     tagPill(tag)
                 }
                 if let subject = bullet.subject, !subject.isEmpty {
-                    Text(subject)
-                        .font(.caption2.weight(.semibold))
+                    Text(subject.uppercased())
+                        .font(.caption2.weight(.bold))
+                        .tracking(0.6)
                         .foregroundStyle(SidelineTheme.inkSecondary)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(SidelineTheme.rule, in: Capsule())
                 }
                 Spacer(minLength: 0)
-                Text("\(position) / \(talkingPointCount)")
+                Text("\(position + 1) / \(storyCount)")
                     .font(.caption2.weight(.bold))
                     .foregroundStyle(SidelineTheme.inkTertiary)
                     .tracking(0.5)
+                    .accessibilityLabel("Story \(position + 1) of \(storyCount)")
             }
         case .question:
             eyebrow(symbol: "arrow.turn.down.right",
@@ -153,26 +148,37 @@ private struct DeckCardView: View {
         .foregroundStyle(color)
     }
 
-    // MARK: Body (the single idea)
+    // MARK: Body (the line + one beat of backup)
 
     @ViewBuilder
     private func body(for card: DeckCard) -> some View {
         switch card {
-        case .lead(let briefing):
-            Text(briefing.tlDR)
-                .font(SidelineTheme.display(26))
-                .foregroundStyle(SidelineTheme.inkPrimary)
-                .lineSpacing(3)
-                .fixedSize(horizontal: false, vertical: true)
-                .copyable(briefing.tlDR)
-
         case .point(let bullet):
-            Text(bullet.talkingPoint)
-                .font(.title2.weight(.semibold))
-                .foregroundStyle(SidelineTheme.inkPrimary)
-                .lineSpacing(4)
-                .fixedSize(horizontal: false, vertical: true)
-                .copyable(bullet.talkingPoint)
+            VStack(alignment: .leading, spacing: 18) {
+                // The line to say — the hero of the card.
+                Text(bullet.talkingPoint)
+                    .font(SidelineTheme.display(24))
+                    .foregroundStyle(SidelineTheme.inkPrimary)
+                    .lineSpacing(3)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .copyable(bullet.talkingPoint)
+
+                // One beat of backup so you sound in-the-know. Prefer the
+                // spicy tie-in; fall back to why it's a story.
+                if let backup = backupDetail(for: bullet) {
+                    HStack(alignment: .top, spacing: 12) {
+                        Capsule()
+                            .fill(SidelineTheme.brandAccent.opacity(0.55))
+                            .frame(width: 3)
+                        Text(backup)
+                            .font(.callout)
+                            .foregroundStyle(SidelineTheme.inkSecondary)
+                            .lineSpacing(3)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .fixedSize(horizontal: false, vertical: true)
+                }
+            }
 
         case .question(let question):
             HStack(alignment: .top, spacing: 8) {
@@ -190,36 +196,44 @@ private struct DeckCardView: View {
         }
     }
 
+    /// The supporting beat for a story: the gossipy tie-in if we have one,
+    /// otherwise the reason it earned its tag. Nil when the line stands alone.
+    private func backupDetail(for bullet: BriefingBullet) -> String? {
+        if let tieIn = bullet.tieIn, !tieIn.isEmpty { return tieIn }
+        if let reason = bullet.tagReason, !reason.isEmpty { return reason }
+        return nil
+    }
+
     // MARK: Footer
 
     @ViewBuilder
     private var footer: some View {
         switch card {
-        case .lead:
-            HStack(spacing: 5) {
-                Text(talkingPointCount == 1 ? "Swipe for the talking point" : "Swipe for \(talkingPointCount) talking points")
-                Image(systemName: "chevron.right")
-            }
-            .font(.caption.weight(.semibold))
-            .foregroundStyle(SidelineTheme.brandPrimary)
-            .accessibilityHidden(true)
-
         case .point(let bullet):
             Button {
                 onOpenSource(bullet.sourceURL)
             } label: {
-                HStack(spacing: 5) {
-                    Image(systemName: "link")
-                        .font(.caption2)
+                VStack(alignment: .leading, spacing: 3) {
+                    HStack(spacing: 5) {
+                        Image(systemName: "link")
+                            .font(.caption2)
+                        Text("Learn more")
+                    }
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(SidelineTheme.brandPrimary)
+
                     Text(bullet.sourceHeadline)
+                        .font(.caption)
+                        .foregroundStyle(SidelineTheme.inkTertiary)
                         .lineLimit(1)
                         .truncationMode(.tail)
                 }
-                .font(.caption.weight(.medium))
-                .foregroundStyle(SidelineTheme.inkTertiary)
             }
             .buttonStyle(.plain)
-            .accessibilityLabel("Source: \(bullet.sourceHeadline), opens link")
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("Learn more. Source: \(bullet.sourceHeadline)")
+            .accessibilityHint("Opens the original story")
+            .accessibilityAddTraits(.isButton)
 
         case .question:
             Text("Ask a fan to keep it going.")
