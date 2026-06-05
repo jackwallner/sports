@@ -64,7 +64,7 @@ struct OnboardingView: View {
                 .font(SidelineTheme.display(30))
                 .foregroundStyle(SidelineTheme.inkPrimary)
                 .fixedSize(horizontal: false, vertical: true)
-            Text("Three things to say and one question to ask, in under 20 seconds, before you walk into the room.")
+            Text("A few things to say and one question to ask, in under 20 seconds, before you walk into the room.")
                 .font(.body)
                 .foregroundStyle(SidelineTheme.inkSecondary)
                 .fixedSize(horizontal: false, vertical: true)
