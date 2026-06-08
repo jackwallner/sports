@@ -23,6 +23,12 @@ struct BriefingDeck: View {
 
     @State private var drag: CGSize = .zero
     @State private var isFlinging = false
+    @State private var crossedThreshold = false
+    @State private var didHint = false
+
+    /// Flips true the first time the user actually swipes, ever. Gates the
+    /// one-time "here's how this works" nudge.
+    @AppStorage("sideline.hasSwipedDeck") private var hasSwipedDeck = false
 
     @ScaledMetric(relativeTo: .footnote) private var dotSize: CGFloat = 7
     @ScaledMetric(relativeTo: .footnote) private var activeDotWidth: CGFloat = 22
@@ -53,7 +59,7 @@ struct BriefingDeck: View {
                             .scaleEffect(scale(forSlot: slot))
                             .offset(y: yOffset(forSlot: slot))
                             .offset(slot == 0 ? drag : .zero)
-                            .rotationEffect(slot == 0 ? topRotation : .zero)
+                            .rotationEffect(slot == 0 ? topRotation : .zero, anchor: .bottom)
                             .zIndex(Double(count - slot))
                             .allowsHitTesting(slot == 0)
                             .gesture(dragGesture(size: size, count: count))
@@ -62,7 +68,8 @@ struct BriefingDeck: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .padding(.horizontal, 18)
                 .padding(.top, 4)
-                .padding(.bottom, 8)
+                // Room below the front card for the stacked edges to peek.
+                .padding(.bottom, 30)
                 .accessibilityElement(children: .contain)
                 .accessibilityValue("Card \(index + 1) of \(count)")
                 .accessibilityAdjustableAction { direction in
@@ -72,6 +79,7 @@ struct BriefingDeck: View {
                     default: break
                     }
                 }
+                .onAppear { maybeHintSwipe() }
             }
 
             pageDots(count: count)
@@ -92,8 +100,8 @@ struct BriefingDeck: View {
         min(1, abs(drag.width) / 110)
     }
 
-    private func restingScale(_ slot: Int) -> CGFloat { 1 - CGFloat(slot) * 0.05 }
-    private func restingY(_ slot: Int) -> CGFloat { CGFloat(slot) * 22 }
+    private func restingScale(_ slot: Int) -> CGFloat { 1 - CGFloat(slot) * 0.04 }
+    private func restingY(_ slot: Int) -> CGFloat { CGFloat(slot) * 26 }
 
     /// A behind card interpolates toward the slot in front of it as the top
     /// card leaves, so the next card grows into place instead of snapping.
@@ -122,9 +130,17 @@ struct BriefingDeck: View {
             .onChanged { value in
                 guard !isFlinging else { return }
                 drag = value.translation
+                // Light tick the moment the card crosses into "let go and it
+                // flies" territory, so the threshold is felt, not guessed.
+                let past = abs(value.translation.width) > dismissDistance(size)
+                if past != crossedThreshold {
+                    crossedThreshold = past
+                    if past { impact(.soft, intensity: 0.6) }
+                }
             }
             .onEnded { value in
                 guard !isFlinging else { return }
+                crossedThreshold = false
                 let dx = value.translation.width
                 let flung = abs(dx) > dismissDistance(size)
                     || abs(value.predictedEndTranslation.width) > size.width * 0.75
@@ -143,6 +159,8 @@ struct BriefingDeck: View {
     /// animation suppressed) nothing jumps — the risen card is already in place.
     private func fling(direction: CGFloat, size: CGSize, count: Int) {
         isFlinging = true
+        hasSwipedDeck = true
+        impact(.rigid, intensity: 0.7)
         let exit = CGSize(
             width: direction * size.width * 1.5,
             height: drag.height * 1.1
@@ -158,6 +176,33 @@ struct BriefingDeck: View {
                 isFlinging = false
             }
         }
+    }
+
+    /// One-time teaching beat: on the very first deck the top card eases over
+    /// and springs back, which both shows the gesture and previews the card
+    /// rising behind it. Never fires again once the user has actually swiped.
+    private func maybeHintSwipe() {
+        guard !hasSwipedDeck, !didHint, cards.count > 1 else { return }
+        didHint = true
+        Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 750_000_000)
+            guard !hasSwipedDeck, !isFlinging, drag == .zero else { return }
+            withAnimation(.spring(response: 0.38, dampingFraction: 0.6)) {
+                drag = CGSize(width: 52, height: 0)
+            }
+            try? await Task.sleep(nanoseconds: 430_000_000)
+            guard !isFlinging else { return }
+            withAnimation(.spring(response: 0.55, dampingFraction: 0.72)) {
+                drag = .zero
+            }
+        }
+    }
+
+    private func impact(_ style: ImpactStyle, intensity: CGFloat) {
+        #if canImport(UIKit)
+        let generator = UIImpactFeedbackGenerator(style: style.uiStyle)
+        generator.impactOccurred(intensity: intensity)
+        #endif
     }
 
     // MARK: - Page dots
@@ -179,6 +224,20 @@ struct BriefingDeck: View {
 enum DeckCard {
     case point(BriefingBullet)
     case question(String)
+}
+
+/// Thin wrapper so the deck can ask for haptics without leaking UIKit types
+/// into call sites (and so it no-ops cleanly on non-UIKit platforms).
+private enum ImpactStyle {
+    case soft, rigid
+    #if canImport(UIKit)
+    var uiStyle: UIImpactFeedbackGenerator.FeedbackStyle {
+        switch self {
+        case .soft:  return .soft
+        case .rigid: return .rigid
+        }
+    }
+    #endif
 }
 
 private struct DeckCardView: View {
