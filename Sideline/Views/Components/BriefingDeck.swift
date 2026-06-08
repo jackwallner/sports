@@ -4,17 +4,25 @@ import SwiftUI
 import UIKit
 #endif
 
-/// The briefing as a small deck of swipeable cards: one self-contained story
-/// per card, then a single "Your move" question to keep the conversation going.
+/// The briefing as a Tinder-style deck: one self-contained story per card, then
+/// a single "Your move" question to keep the conversation going.
 ///
-/// Each story card leads with a generated art band (a tag-keyed gradient and a
-/// big faded sport glyph) so it reads as a visual, not a wall of text, then the
-/// line to say, one beat of backup, and a Learn-more link to the source. The
-/// deck swipes with depth: cards scale, tilt, and the art parallaxes as you go.
+/// You fling the top card off in either direction and the next card — already
+/// peeking and rising live behind it — takes its place. The deck is a loop:
+/// the discarded card drops to the back, so on a 4-card deck you just keep
+/// swiping and everything comes back around. No dead ends, no buttons.
+///
+/// Each card is a full-bleed, tag-keyed gradient that leads with the line to
+/// say (white, editorial), a sport chip that actually tells you the sport, and
+/// a clean footer with one beat of backup and the source. No wall of text, no
+/// decorative graphic that does nothing.
 struct BriefingDeck: View {
     let briefing: Briefing
     @Binding var index: Int
     let onOpenSource: (URL) -> Void
+
+    @State private var drag: CGSize = .zero
+    @State private var isFlinging = false
 
     @ScaledMetric(relativeTo: .footnote) private var dotSize: CGFloat = 7
     @ScaledMetric(relativeTo: .footnote) private var activeDotWidth: CGFloat = 22
@@ -24,54 +32,135 @@ struct BriefingDeck: View {
             + [.question(briefing.suggestedQuestion)]
     }
 
+    /// How many cards are mounted in the peek stack at once (front + up to two
+    /// behind). Capped to the deck size so a tiny deck doesn't render dupes.
+    private var slotCount: Int { min(3, cards.count) }
+
     var body: some View {
         let cards = self.cards
+        let count = cards.count
         VStack(spacing: 14) {
-            GeometryReader { container in
-                let containerMidX = container.frame(in: .global).midX
-                let width = max(container.size.width, 1)
-                TabView(selection: $index) {
-                    ForEach(Array(cards.enumerated()), id: \.offset) { position, card in
-                        GeometryReader { geo in
-                            // How far this page is from dead-center, ~[-1, 1].
-                            // Drives the depth transform and the art parallax.
-                            let delta = (geo.frame(in: .global).midX - containerMidX) / width
-                            DeckCardView(
-                                card: card,
-                                position: position,
-                                storyCount: briefing.bullets.count,
-                                parallax: delta,
-                                onOpenSource: onOpenSource
-                            )
-                            .scaleEffect(1 - min(abs(delta), 1) * 0.07)
-                            .rotation3DEffect(
-                                .degrees(Double(delta) * 7),
-                                axis: (x: 0, y: 1, z: 0),
-                                perspective: 0.6
-                            )
-                            .opacity(1 - min(abs(delta), 1) * 0.35)
-                        }
-                        .padding(.horizontal, 18)
-                        .padding(.top, 4)
-                        .padding(.bottom, 8)
-                        .tag(position)
+            GeometryReader { geo in
+                let size = geo.size
+                ZStack {
+                    ForEach(visiblePositions(count: count), id: \.self) { position in
+                        let slot = (position - index + count) % count
+                        DeckCardView(
+                            card: cards[position],
+                            parallax: slot == 0 ? drag.width / 60 : 0,
+                            onOpenSource: onOpenSource
+                        )
+                            .scaleEffect(scale(forSlot: slot))
+                            .offset(y: yOffset(forSlot: slot))
+                            .offset(slot == 0 ? drag : .zero)
+                            .rotationEffect(slot == 0 ? topRotation : .zero)
+                            .zIndex(Double(count - slot))
+                            .allowsHitTesting(slot == 0)
+                            .gesture(dragGesture(size: size, count: count))
                     }
                 }
-                .tabViewStyle(.page(indexDisplayMode: .never))
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .padding(.horizontal, 18)
+                .padding(.top, 4)
+                .padding(.bottom, 8)
                 .accessibilityElement(children: .contain)
-                .accessibilityValue("Card \(min(index, cards.count - 1) + 1) of \(cards.count)")
+                .accessibilityValue("Card \(index + 1) of \(count)")
                 .accessibilityAdjustableAction { direction in
                     switch direction {
-                    case .increment: if index < cards.count - 1 { index += 1 }
-                    case .decrement: if index > 0 { index -= 1 }
+                    case .increment: index = (index + 1) % count
+                    case .decrement: index = (index - 1 + count) % count
                     default: break
                     }
                 }
             }
 
-            pageDots(count: cards.count)
+            pageDots(count: count)
         }
     }
+
+    // MARK: - Stack geometry
+
+    /// Drag travel (points) that counts as a full swipe. Past this the card
+    /// flings; the behind cards are fully risen by the time you get here.
+    private func dismissDistance(_ size: CGSize) -> CGFloat {
+        max(90, size.width * 0.30)
+    }
+
+    /// 0 at rest, 1 when the top card has been dragged a full swipe. Drives the
+    /// behind cards rising as you pull the front one away.
+    private var progress: CGFloat {
+        min(1, abs(drag.width) / 110)
+    }
+
+    private func restingScale(_ slot: Int) -> CGFloat { 1 - CGFloat(slot) * 0.05 }
+    private func restingY(_ slot: Int) -> CGFloat { CGFloat(slot) * 22 }
+
+    /// A behind card interpolates toward the slot in front of it as the top
+    /// card leaves, so the next card grows into place instead of snapping.
+    private func scale(forSlot slot: Int) -> CGFloat {
+        guard slot > 0 else { return 1 }
+        return restingScale(slot) + (restingScale(slot - 1) - restingScale(slot)) * progress
+    }
+
+    private func yOffset(forSlot slot: Int) -> CGFloat {
+        guard slot > 0 else { return 0 }
+        return restingY(slot) + (restingY(slot - 1) - restingY(slot)) * progress
+    }
+
+    private var topRotation: Angle {
+        .degrees(Double(max(-12, min(12, drag.width / 14))))
+    }
+
+    private func visiblePositions(count: Int) -> [Int] {
+        (0..<min(slotCount, count)).map { (index + $0) % count }
+    }
+
+    // MARK: - Swipe
+
+    private func dragGesture(size: CGSize, count: Int) -> some Gesture {
+        DragGesture(minimumDistance: 8)
+            .onChanged { value in
+                guard !isFlinging else { return }
+                drag = value.translation
+            }
+            .onEnded { value in
+                guard !isFlinging else { return }
+                let dx = value.translation.width
+                let flung = abs(dx) > dismissDistance(size)
+                    || abs(value.predictedEndTranslation.width) > size.width * 0.75
+                if flung {
+                    fling(direction: dx >= 0 ? 1 : -1, size: size, count: count)
+                } else {
+                    withAnimation(.spring(response: 0.32, dampingFraction: 0.78)) {
+                        drag = .zero
+                    }
+                }
+            }
+    }
+
+    /// Throw the top card off-screen, then drop it to the back of the loop. The
+    /// behind cards finish rising during the throw, so when we swap `index` (with
+    /// animation suppressed) nothing jumps — the risen card is already in place.
+    private func fling(direction: CGFloat, size: CGSize, count: Int) {
+        isFlinging = true
+        let exit = CGSize(
+            width: direction * size.width * 1.5,
+            height: drag.height * 1.1
+        )
+        withAnimation(.easeIn(duration: 0.26)) {
+            drag = exit
+        } completion: {
+            var t = Transaction()
+            t.disablesAnimations = true
+            withTransaction(t) {
+                index = (index + 1) % count
+                drag = .zero
+                isFlinging = false
+            }
+        }
+    }
+
+    // MARK: - Page dots
 
     private func pageDots(count: Int) -> some View {
         HStack(spacing: 6) {
@@ -94,166 +183,154 @@ enum DeckCard {
 
 private struct DeckCardView: View {
     let card: DeckCard
-    let position: Int
-    let storyCount: Int
+    /// Tiny horizontal drift of the gradient sheen, tied to the live drag, so
+    /// the top card feels like it has depth as you push it.
     let parallax: CGFloat
     let onOpenSource: (URL) -> Void
-
-    @ScaledMetric(relativeTo: .largeTitle) private var heroHeight: CGFloat = 150
 
     var body: some View {
         VStack(spacing: 0) {
             hero
-            content
+            footer
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(
-            RoundedRectangle(cornerRadius: 26, style: .continuous)
-                .fill(Color.sidelineDeckCard)
-        )
-        .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.sidelineDeckCard)
+        .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: 26, style: .continuous)
+            RoundedRectangle(cornerRadius: 28, style: .continuous)
                 .stroke(SidelineTheme.rule, lineWidth: 1)
         )
-        .shadow(color: SidelineTheme.inkPrimary.opacity(0.10), radius: 18, x: 0, y: 10)
+        .shadow(color: SidelineTheme.inkPrimary.opacity(0.16), radius: 22, x: 0, y: 12)
         .accessibilityElement(children: .contain)
     }
 
-    // MARK: Hero (generated art band)
+    // MARK: Hero — the full-bleed gradient that carries the line
 
     @ViewBuilder
     private var hero: some View {
         switch card {
         case .point(let bullet):
-            heroBand(colors: heroColors(for: bullet.tag), glyph: sportSymbol(for: bullet)) {
-                HStack(alignment: .top, spacing: 8) {
-                    if let tag = bullet.tag, tag != .neutral {
-                        lightTagPill(tag)
+            heroBand(colors: heroColors(for: bullet.tag)) {
+                VStack(alignment: .leading, spacing: 0) {
+                    HStack(alignment: .top, spacing: 8) {
+                        if let tag = bullet.tag, tag != .neutral {
+                            lightTagPill(tag)
+                        }
+                        Spacer(minLength: 0)
+                        sportChip(for: bullet)
                     }
-                    Spacer(minLength: 0)
-                    Text("\(position + 1) / \(storyCount)")
-                        .font(.caption2.weight(.bold))
-                        .tracking(0.5)
-                        .foregroundStyle(.white.opacity(0.85))
-                        .accessibilityLabel("Story \(position + 1) of \(storyCount)")
-                }
-                Spacer(minLength: 0)
-                if let subject = bullet.subject, !subject.isEmpty {
-                    Text(subject)
-                        .font(SidelineTheme.display(26))
+
+                    Spacer(minLength: 16)
+
+                    if let subject = bullet.subject, !subject.isEmpty {
+                        Text(subject.uppercased())
+                            .font(.caption.weight(.heavy))
+                            .tracking(1.2)
+                            .foregroundStyle(.white.opacity(0.78))
+                            .lineLimit(1)
+                    }
+
+                    // The line to say — the hero of the whole card.
+                    Text(bullet.talkingPoint)
+                        .font(SidelineTheme.display(23))
                         .foregroundStyle(.white)
-                        .lineLimit(2)
+                        .lineSpacing(2)
+                        .lineLimit(5)
                         .minimumScaleFactor(0.7)
-                        .shadow(color: .black.opacity(0.25), radius: 6, x: 0, y: 2)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .shadow(color: .black.opacity(0.22), radius: 8, x: 0, y: 3)
+                        .padding(.top, 6)
+                        .copyable(bullet.talkingPoint)
                 }
             }
-        case .question:
-            heroBand(colors: SidelineTheme.heroGold, glyph: "bubble.left.and.bubble.right.fill") {
-                HStack(spacing: 6) {
-                    Image(systemName: "arrow.turn.down.right")
-                        .font(.caption2.weight(.bold))
-                    Text("YOUR MOVE")
-                        .font(SidelineTheme.eyebrow)
-                        .tracking(1.4)
+        case .question(let question):
+            heroBand(colors: SidelineTheme.heroGold, alignment: .leading) {
+                VStack(alignment: .leading, spacing: 14) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "arrow.turn.down.right")
+                            .font(.caption2.weight(.bold))
+                        Text("YOUR MOVE")
+                            .font(SidelineTheme.eyebrow)
+                            .tracking(1.4)
+                    }
+                    .foregroundStyle(.white.opacity(0.95))
+
+                    Text(question)
+                        .font(SidelineTheme.display(25))
+                        .foregroundStyle(.white)
+                        .lineSpacing(2)
+                        .lineLimit(6)
+                        .minimumScaleFactor(0.7)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .shadow(color: .black.opacity(0.22), radius: 8, x: 0, y: 3)
+                        .copyable(question)
                 }
-                .foregroundStyle(.white.opacity(0.95))
-                Spacer(minLength: 0)
-                Text("\u{201C}")
-                    .font(.system(size: 56, weight: .black, design: .serif))
-                    .foregroundStyle(.white)
-                    .offset(y: 14)
-                    .accessibilityHidden(true)
             }
         }
     }
 
     private func heroBand<Overlay: View>(
         colors: [Color],
-        glyph: String,
+        alignment: Alignment = .bottomLeading,
         @ViewBuilder overlay: () -> Overlay
     ) -> some View {
         ZStack {
             LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing)
 
-            // Oversized, faded sport glyph. Drifts with the swipe for depth.
-            Image(systemName: glyph)
-                .font(.system(size: 150, weight: .black))
-                .foregroundStyle(.white.opacity(0.14))
-                .rotationEffect(.degrees(-14))
-                .offset(x: 52 + parallax * 30, y: 26)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
-                .accessibilityHidden(true)
+            // Soft sheen for depth — ambient, not a "graphic." Drifts with the swipe.
+            RadialGradient(
+                colors: [.white.opacity(0.22), .clear],
+                center: .init(x: 0.82 + parallax * 0.02, y: 0.12),
+                startRadius: 0,
+                endRadius: 240
+            )
+            .blendMode(.softLight)
+            .allowsHitTesting(false)
 
-            VStack(alignment: .leading, spacing: 0) {
-                overlay()
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-            .padding(18)
+            overlay()
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: alignment)
+                .padding(20)
         }
-        .frame(height: heroHeight)
-        .clipped()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
-    // MARK: Content (the line + one beat of backup)
+    // MARK: Footer — one beat of backup + the source
 
     @ViewBuilder
-    private var content: some View {
+    private var footer: some View {
         switch card {
         case .point(let bullet):
-            VStack(alignment: .leading, spacing: 14) {
-                ScrollView(.vertical, showsIndicators: false) {
-                    VStack(alignment: .leading, spacing: 12) {
-                        // The line to say — the hero of the text.
-                        Text(bullet.talkingPoint)
-                            .font(SidelineTheme.display(22))
-                            .foregroundStyle(SidelineTheme.inkPrimary)
-                            .lineSpacing(3)
-                            .fixedSize(horizontal: false, vertical: true)
-                            .copyable(bullet.talkingPoint)
-
-                        // One beat of backup so you sound in-the-know. Prefer
-                        // the spicy tie-in; fall back to why it's a story.
-                        if let backup = backupDetail(for: bullet) {
-                            Text(backup)
-                                .font(.callout)
-                                .foregroundStyle(SidelineTheme.inkSecondary)
-                                .lineSpacing(3)
-                                .fixedSize(horizontal: false, vertical: true)
-                        }
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
+            VStack(alignment: .leading, spacing: 12) {
+                if let backup = backupDetail(for: bullet) {
+                    Text(backup)
+                        .font(.callout)
+                        .foregroundStyle(SidelineTheme.inkSecondary)
+                        .lineSpacing(2)
+                        .lineLimit(3)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                .frame(maxHeight: .infinity)
-
                 learnMore(bullet)
             }
-            .padding(22)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(20)
 
-        case .question(let question):
-            VStack(alignment: .leading, spacing: 14) {
-                ScrollView(.vertical, showsIndicators: false) {
-                    Text(question)
-                        .font(SidelineTheme.display(24))
-                        .foregroundStyle(SidelineTheme.inkPrimary)
-                        .lineSpacing(3)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .copyable(question)
-                }
-                .frame(maxHeight: .infinity)
-
+        case .question:
+            HStack(spacing: 8) {
+                Image(systemName: "person.2.fill")
+                    .font(.footnote)
+                    .foregroundStyle(SidelineTheme.brandPrimary)
                 Text("Ask a fan to keep it going.")
-                    .font(.caption)
-                    .foregroundStyle(SidelineTheme.inkTertiary)
-                    .accessibilityHidden(true)
+                    .font(.subheadline)
+                    .foregroundStyle(SidelineTheme.inkSecondary)
             }
-            .padding(22)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(20)
+            .accessibilityHidden(true)
         }
     }
 
-    /// The supporting beat for a story: the gossipy tie-in if we have one,
-    /// otherwise the reason it earned its tag. Nil when the line stands alone.
+    /// The supporting beat: the gossipy tie-in if we have one, otherwise the
+    /// reason it earned its tag. Nil when the line stands on its own.
     private func backupDetail(for bullet: BriefingBullet) -> String? {
         if let tieIn = bullet.tieIn, !tieIn.isEmpty { return tieIn }
         if let reason = bullet.tagReason, !reason.isEmpty { return reason }
@@ -264,21 +341,22 @@ private struct DeckCardView: View {
         Button {
             onOpenSource(bullet.sourceURL)
         } label: {
-            VStack(alignment: .leading, spacing: 3) {
-                HStack(spacing: 5) {
-                    Image(systemName: "link")
-                        .font(.caption2)
-                    Text("Learn more")
-                }
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(SidelineTheme.brandPrimary)
-
+            HStack(spacing: 8) {
+                Image(systemName: "link")
+                    .font(.caption2.weight(.bold))
                 Text(bullet.sourceHeadline)
                     .font(.caption)
-                    .foregroundStyle(SidelineTheme.inkTertiary)
                     .lineLimit(1)
                     .truncationMode(.tail)
+                Spacer(minLength: 4)
+                Image(systemName: "arrow.up.right")
+                    .font(.caption2.weight(.bold))
             }
+            .foregroundStyle(SidelineTheme.brandPrimary)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 9)
+            .frame(maxWidth: .infinity)
+            .background(SidelineTheme.brandPrimary.opacity(0.10), in: Capsule())
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .ignore)
@@ -289,8 +367,8 @@ private struct DeckCardView: View {
 
     // MARK: Art helpers
 
-    /// Tag-keyed gradient for the hero band. Drama runs hot, good news runs
-    /// green, everything else stays on the brand navy.
+    /// Tag-keyed gradient. Drama runs hot, good news runs green, the rest stays
+    /// on brand navy.
     private func heroColors(for tag: BriefingTag?) -> [Color] {
         switch tag {
         case .niceGuy, .redemption: return SidelineTheme.heroGreen
@@ -299,29 +377,60 @@ private struct DeckCardView: View {
         }
     }
 
-    /// Best-effort sport glyph from the subject/headline. Never blank: falls
-    /// back to a tag-flavored mark, then a generic court.
-    private func sportSymbol(for bullet: BriefingBullet) -> String {
+    /// A real, legible chip that names the sport — the graphic that earns its
+    /// place. Falls back to a tag-flavored, icon-only chip when we can't tell.
+    private func sportChip(for bullet: BriefingBullet) -> some View {
+        let sport = sport(for: bullet)
+        return HStack(spacing: 5) {
+            Image(systemName: sport.symbol)
+                .font(.caption2.weight(.bold))
+            if !sport.name.isEmpty {
+                Text(sport.name)
+                    .font(.system(.caption2, design: .rounded).weight(.heavy))
+                    .tracking(0.6)
+            }
+        }
+        .padding(.horizontal, 9)
+        .padding(.vertical, 5)
+        .foregroundStyle(.white)
+        .background(.white.opacity(0.20), in: Capsule())
+        .overlay(Capsule().stroke(.white.opacity(0.30), lineWidth: 1))
+        .accessibilityHidden(true)
+    }
+
+    private func sport(for bullet: BriefingBullet) -> (symbol: String, name: String) {
         let hay = ((bullet.subject ?? "") + " " + bullet.sourceHeadline).lowercased()
         func has(_ words: [String]) -> Bool { words.contains { hay.contains($0) } }
 
-        if has(["nfl", "football", "quarterback", "touchdown", "super bowl", " qb"]) { return "football.fill" }
-        if has(["nba", "wnba", "basketball", "dunk", "three-pointer"]) { return "basketball.fill" }
-        if has(["mlb", "baseball", "pitcher", "home run", "world series"]) { return "baseball.fill" }
-        if has(["soccer", "fifa", "premier league", "la liga", " mls", "world cup", "messi", "ronaldo"]) { return "soccerball" }
-        if has(["tennis", "wimbledon", "grand slam", "djokovic", "serena", "alcaraz"]) { return "tennis.racket" }
-        if has(["nhl", "hockey", "stanley cup"]) { return "figure.hockey" }
-        if has(["golf", "pga", "masters", "mcilroy"]) { return "figure.golf" }
-        if has(["olympic", "medal"]) { return "trophy.fill" }
+        // League keywords first, then a curated set of league-unique team
+        // nicknames (no cross-league collisions) so the chip names the league
+        // even when the story only mentions the team.
+        if has(["nfl", "football", "quarterback", "touchdown", "super bowl", " qb",
+                "cowboys", "eagles", "chiefs", "packers", "steelers", "49ers", "niners",
+                "patriots", "bills", "ravens", "dolphins", "bengals", "broncos", "raiders",
+                "browns", "seahawks", "vikings", "buccaneers", "commanders"]) { return ("football.fill", "NFL") }
+        if has(["wnba"]) { return ("basketball.fill", "WNBA") }
+        if has(["nba", "basketball", "dunk", "three-pointer",
+                "knicks", "lakers", "celtics", "warriors", "bulls", "mavericks", "nuggets",
+                "bucks", "sixers", "76ers", "timberwolves", "cavaliers", "thunder"]) { return ("basketball.fill", "NBA") }
+        if has(["mlb", "baseball", "pitcher", "home run", "world series",
+                "yankees", "dodgers", "red sox", "mets", "cubs", "astros", "braves",
+                "phillies", "orioles"]) { return ("baseball.fill", "MLB") }
+        if has(["soccer", "fifa", "premier league", "la liga", " mls", "world cup", "messi", "ronaldo"]) { return ("soccerball", "SOCCER") }
+        if has(["tennis", "wimbledon", "grand slam", "djokovic", "serena", "alcaraz"]) { return ("tennis.racket", "TENNIS") }
+        if has(["nhl", "hockey", "stanley cup",
+                "bruins", "oilers", "maple leafs", "canadiens", "blackhawks", "penguins"]) { return ("figure.hockey", "NHL") }
+        if has(["golf", "pga", "masters", "mcilroy"]) { return ("figure.golf", "GOLF") }
+        if has(["olympic", "medal"]) { return ("trophy.fill", "OLYMPICS") }
 
         switch bullet.tag {
-        case .drama, .jerk:          return "flame.fill"
-        case .niceGuy, .redemption:  return "star.fill"
-        default:                     return "sportscourt.fill"
+        case .drama, .jerk:         return ("flame.fill", "")
+        case .niceGuy, .redemption: return ("star.fill", "")
+        default:                    return ("sportscourt.fill", "")
         }
     }
 
-    /// White-on-glass tag pill that reads on the dark art band.
+    /// White-on-glass tag pill that reads on the dark gradient.
     private func lightTagPill(_ tag: BriefingTag) -> some View {
         HStack(spacing: 4) {
             Image(systemName: tag.symbolName)
