@@ -123,6 +123,21 @@ enum SidelineTheme {
         #endif
     }
 
+    // MARK: - Deck hero art bands
+    //
+    // Full-bleed gradient panels that top each swipe card so a story leads with
+    // a visual, not a wall of text. Tuned deep on purpose: white type and a
+    // faded glyph sit on top, so these stay fixed (not Dynamic) and clear
+    // contrast in both light and dark mode. Keyed to the story's tag.
+    static let heroGreen: [Color] = [Color(red: 0.07, green: 0.36, blue: 0.27),
+                                     Color(red: 0.16, green: 0.52, blue: 0.40)]
+    static let heroRed: [Color]   = [Color(red: 0.50, green: 0.15, blue: 0.12),
+                                     Color(red: 0.78, green: 0.45, blue: 0.16)]
+    static let heroNavy: [Color]  = [Color(red: 0.10, green: 0.19, blue: 0.31),
+                                     Color(red: 0.15, green: 0.34, blue: 0.30)]
+    static let heroGold: [Color]  = [Color(red: 0.46, green: 0.31, blue: 0.06),
+                                     Color(red: 0.77, green: 0.56, blue: 0.10)]
+
     // MARK: - Shape
     /// Newsroom suppresses most card chrome; reserved for surfaces that
     /// MUST visually float (SuggestedQuestionCard, refreshLimitCard).
