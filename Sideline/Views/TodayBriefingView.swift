@@ -94,7 +94,8 @@ struct TodayBriefingView: View {
                         await viewModel.load()
                         #if DEBUG
                         if let start = Self.debugDeckStart() {
-                            deckIndex = min(start, viewModel.lastBriefing?.bullets.count ?? 0)
+                            // Deck order: 0 = lead TL;DR, 1..n = stories, n+1 = "Your move".
+                            deckIndex = min(start, (viewModel.lastBriefing?.bullets.count ?? 0) + 1)
                         }
                         #endif
                     }
@@ -142,13 +143,18 @@ struct TodayBriefingView: View {
                             lastPersona: $lastPersonaRaw,
                             isPro: isPro
                         )
-                        .onDisappear {
-                            applyUsablePersonaFromStorage()
-                            Task { await viewModel.load() }
-                            presentOnboardingPaywallIfNeeded()
-                        }
                     }
                 ))
+                // Post-onboarding work hangs off the persisted flag, not the
+                // cover's onDisappear — SwiftUI doesn't reliably call
+                // onDisappear on fullScreenCover content torn down by a state
+                // change, which silently dropped the one-time Pro framing.
+                .onChange(of: hasCompletedOnboarding) { _, completed in
+                    guard completed else { return }
+                    applyUsablePersonaFromStorage()
+                    Task { await viewModel.load() }
+                    presentOnboardingPaywallIfNeeded()
+                }
                 .onReceive(NotificationCenter.default.publisher(for: .sidelinePositiveMomentForReview)) { _ in
                     scheduleReviewPromptAfterPositiveMoment()
                 }
@@ -275,8 +281,10 @@ struct TodayBriefingView: View {
         // Frame Pro/trial once before the free experience. Only burn the
         // one-time flag at the moment the sheet actually presents; if another
         // sheet is up, retry a few times rather than dropping it forever.
+        // The wait must outlast the onboarding cover's dismissal animation or
+        // the sheet presentation is silently swallowed.
         Task { @MainActor in
-            try? await Task.sleep(nanoseconds: 500_000_000)
+            try? await Task.sleep(nanoseconds: 800_000_000)
             guard !hasSeenOnboardingPaywall, !isPro else { return }
             guard activeSheet == nil else {
                 if attempt < 3 { presentOnboardingPaywallIfNeeded(attempt: attempt + 1) }
@@ -301,7 +309,7 @@ struct TodayBriefingView: View {
 
     #if DEBUG
     /// Screenshot helper: `-SidelineDeckStart N` opens the deck on card N
-    /// (0..n-1 = stories, n = "Your move"). DEBUG only.
+    /// (0 = lead TL;DR, 1..n = stories, n+1 = "Your move"). DEBUG only.
     private static func debugDeckStart() -> Int? {
         let args = ProcessInfo.processInfo.arguments
         guard let i = args.firstIndex(of: "-SidelineDeckStart"), i + 1 < args.count else { return nil }

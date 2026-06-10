@@ -14,3 +14,8 @@ Config/*.local.xcconfig
 
 SupabaseFunctions/.supabase/
 supabase/.temp/
+
+# ASC metadata pull/upload snapshots
+fastlane/metadata.bak.*
+fastlane/report.xml
+fastlane/screenshots/
