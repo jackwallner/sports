@@ -30,7 +30,7 @@ enum CardArt {
         // warmed that exact URL onto the CDN, so it loads instantly.
         if let stamped = bullet.imageURL { return stamped }
         let sport = sport(for: bullet)
-        let prompt = "\(sport.scene), \(mood(for: bullet.tag)), \(style)"
+        let prompt = "\(stylePrefix) \(sport.scene), \(mood(for: bullet.tag)). \(style)"
         // Seed on the source URL, not the talking point: the same story keeps
         // the same art across personas and refresh windows.
         return pollinationsURL(prompt: prompt, seed: stableSeed(bullet.sourceURL.absoluteString))
@@ -41,13 +41,18 @@ enum CardArt {
         // pipeline-stamped (storage-hosted, always-fast) art when available.
         if let stamped = briefing.bullets.first?.imageURL { return stamped }
         let scene = briefing.bullets.first.map { sport(for: $0).scene } ?? fallbackScene
-        let prompt = "\(scene), grand cinematic atmosphere, deep navy and emerald palette, \(style)"
+        let prompt = "\(stylePrefix) \(scene), grand cinematic atmosphere. \(style)"
         return pollinationsURL(prompt: prompt, seed: stableSeed(briefing.tlDR))
     }
 
-    private static let style = "modern editorial sports illustration, bold graphic shapes, "
-        + "screen print texture, high contrast, dramatic lighting, no readable faces, "
-        + "no text, no words, no letters, no logos, no watermark"
+    /// The house style, kept in lockstep with the pipeline's wrapper in
+    /// `SupabaseFunctions/_shared/cardArt.ts` so fallback art matches stored art.
+    private static let stylePrefix = "Retro editorial sports poster illustration:"
+    private static let style = "Flat bold graphic shapes, screen print risograph texture, "
+        + "limited palette of deep navy, warm cream, forest green and antique gold, "
+        + "dramatic side lighting, grainy shadows, 1960s sports magazine poster aesthetic. "
+        + "No real people's likenesses, no readable faces, no text, no words, no letters, "
+        + "no numbers, no logos, no watermark."
 
     private static let fallbackScene = "packed sports stadium at night under floodlights, "
         + "crowd in silhouette, confetti in the air"
