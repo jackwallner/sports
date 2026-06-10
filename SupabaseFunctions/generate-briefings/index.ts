@@ -1,4 +1,5 @@
 import { normalizeBriefing, validateBriefing } from "../_shared/briefingValidation.ts";
+import { imageURLForBullet } from "../_shared/cardArt.ts";
 import { generateBriefingWithGemini, paceGeminiCalls } from "../_shared/gemini.ts";
 import { logError, logInfo, normalizeError, requireCronSecret, traceId } from "../_shared/logger.ts";
 import { serviceClient } from "../_shared/supabase.ts";
@@ -75,6 +76,13 @@ async function generateOne(
     }
 
     const normalized = normalizeBriefing(briefing);
+    // Stamp deterministic card art on each bullet. Gemini never sees or
+    // produces this; it's derived from the bullet's own source/tag so the
+    // same story keeps the same art across personas and refresh windows.
+    normalized.bullets = normalized.bullets.map((bullet) => ({
+      ...bullet,
+      image_url: imageURLForBullet(bullet),
+    }));
     const { error: insertError } = await supabase.from("briefings").insert({
       persona: target.persona,
       scope: target.scope,
@@ -110,7 +118,13 @@ async function generateOne(
       source_count: normalized.source_count,
     });
 
-    return { run_id: run.id, target, status: "succeeded" };
+    return {
+      run_id: run.id,
+      target,
+      status: "succeeded",
+      // Surfaced so the cron can warm these onto the image CDN right away.
+      image_urls: normalized.bullets.map((bullet) => bullet.image_url).filter(Boolean),
+    };
   } catch (error) {
     logError(trace_id, "target_generation_failed", error, {
       run_id: run.id,

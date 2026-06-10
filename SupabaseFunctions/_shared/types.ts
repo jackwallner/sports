@@ -67,6 +67,8 @@ export interface GeneratedBullet {
   tag_reason?: string | null;
   source_headline: string;
   source_url: string;
+  /** Deck card art, stamped post-validation by generate-briefings. */
+  image_url?: string;
 }
 
 export interface GeneratedBriefing {
