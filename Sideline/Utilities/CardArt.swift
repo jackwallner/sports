@@ -78,16 +78,18 @@ enum CardArt {
         return components.url
     }
 
-    /// FNV-1a. Swift's `hashValue` is randomly seeded per launch; the art URL
-    /// must be identical across launches (and users) or every open regenerates
-    /// a brand-new image and the cache never hits.
+    /// FNV-1a, masked to 31 bits (Pollinations rejects seeds above int32 max).
+    /// Swift's `hashValue` is randomly seeded per launch; the art URL must be
+    /// identical across launches (and users) or every open regenerates a
+    /// brand-new image and the cache never hits. Twin of the pipeline's
+    /// `fnv1a32` in `SupabaseFunctions/_shared/cardArt.ts`.
     private static func stableSeed(_ text: String) -> UInt32 {
         var hash: UInt32 = 2_166_136_261
         for byte in text.utf8 {
             hash ^= UInt32(byte)
             hash = hash &* 16_777_619
         }
-        return hash
+        return hash & 0x7fff_ffff
     }
 
     // MARK: - Sport detection
