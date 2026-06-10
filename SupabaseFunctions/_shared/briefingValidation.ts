@@ -46,6 +46,11 @@ export function normalizeBriefing(value: GeneratedBriefing): GeneratedBriefing {
       tag_reason: bullet.tag_reason?.trim() || null,
       source_headline: bullet.source_headline.trim(),
       source_url: bullet.source_url.trim(),
+      // Art is decoration: tolerate anything Gemini puts here (or omits)
+      // rather than failing the briefing, hence no validation rule.
+      image_prompt: typeof bullet.image_prompt === "string" && bullet.image_prompt.trim()
+        ? bullet.image_prompt.trim().slice(0, 400)
+        : null,
     })),
     suggested_question: value.suggested_question.trim(),
     source_count: value.source_count,

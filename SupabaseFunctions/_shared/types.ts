@@ -67,6 +67,8 @@ export interface GeneratedBullet {
   tag_reason?: string | null;
   source_headline: string;
   source_url: string;
+  /** Gemini's literal visual scene for the card art (content, not style). */
+  image_prompt?: string | null;
   /** Deck card art, stamped post-validation by generate-briefings. */
   image_url?: string;
 }

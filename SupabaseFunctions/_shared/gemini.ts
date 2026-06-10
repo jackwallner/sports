@@ -108,6 +108,7 @@ function buildPrompt(target: GenerationTarget, sourceItems: SourceItemRow[]): st
     "Do not reproduce article bodies. Use the provided headlines/summaries only and link to the original source URL.",
     "Every bullet must cite exactly one provided source URL.",
     "Each bullet's subject is a 1-3 word label for the team, league, or athlete it is about (for example: 'Cowboys', 'NBA', 'Serena Williams'). Use the most specific one that fits.",
+    "Each bullet's image_prompt is the literal visual scene for that story's card art. Describe only WHAT is in the picture: concrete objects, setting, action, mascots, and pop-culture imagery (a cartoon great dane in a quarterback jersey, a torn jersey on a locker room floor, a phone glowing with angry posts). Lean into the story's hook, including silly comparisons. Never name or depict a real person, never describe an art style, and never include words, numbers, or signs to render.",
     "Return strict JSON only. No markdown. No code fences.",
     "Schema:",
     JSON.stringify({
@@ -120,6 +121,7 @@ function buildPrompt(target: GenerationTarget, sourceItems: SourceItemRow[]): st
           tie_in: "optional pop-culture/social angle or null",
           tag: "nice_guy | jerk | redemption | drama | neutral | null",
           tag_reason: "optional short reason or null",
+          image_prompt: "1-2 sentence literal visual scene for this story's card art",
           source_headline: "headline from one source below",
           source_url: "source URL from one source below",
         },
