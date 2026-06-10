@@ -34,7 +34,8 @@ struct BriefingDeck: View {
     @ScaledMetric(relativeTo: .footnote) private var activeDotWidth: CGFloat = 22
 
     private var cards: [DeckCard] {
-        briefing.bullets.map(DeckCard.point)
+        [.lead(briefing.tlDR)]
+            + briefing.bullets.map(DeckCard.point)
             + [.question(briefing.suggestedQuestion)]
     }
 
@@ -222,6 +223,7 @@ struct BriefingDeck: View {
 }
 
 enum DeckCard {
+    case lead(String)
     case point(BriefingBullet)
     case question(String)
 }
@@ -268,6 +270,29 @@ private struct DeckCardView: View {
     @ViewBuilder
     private var hero: some View {
         switch card {
+        case .lead(let tlDR):
+            heroBand(colors: SidelineTheme.heroNavy, alignment: .leading) {
+                VStack(alignment: .leading, spacing: 14) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "quote.opening")
+                            .font(.caption2.weight(.bold))
+                        Text("LEAD WITH THIS")
+                            .font(SidelineTheme.eyebrow)
+                            .tracking(1.4)
+                    }
+                    .foregroundStyle(.white.opacity(0.95))
+
+                    Text(tlDR)
+                        .font(SidelineTheme.display(25))
+                        .foregroundStyle(.white)
+                        .lineSpacing(2)
+                        .lineLimit(7)
+                        .minimumScaleFactor(0.7)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .shadow(color: .black.opacity(0.22), radius: 8, x: 0, y: 3)
+                        .copyable(tlDR)
+                }
+            }
         case .point(let bullet):
             heroBand(colors: heroColors(for: bullet.tag)) {
                 VStack(alignment: .leading, spacing: 0) {
@@ -358,6 +383,19 @@ private struct DeckCardView: View {
     @ViewBuilder
     private var footer: some View {
         switch card {
+        case .lead:
+            HStack(spacing: 8) {
+                Image(systemName: "hand.draw.fill")
+                    .font(.footnote)
+                    .foregroundStyle(SidelineTheme.brandPrimary)
+                Text("Say this first. Swipe for the stories behind it.")
+                    .font(.subheadline)
+                    .foregroundStyle(SidelineTheme.inkSecondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(20)
+            .accessibilityHidden(true)
+
         case .point(let bullet):
             VStack(alignment: .leading, spacing: 12) {
                 if let backup = backupDetail(for: bullet) {
