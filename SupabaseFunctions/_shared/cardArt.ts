@@ -1,19 +1,93 @@
+import { logError, logInfo } from "./logger.ts";
 import type { BriefingTag, GeneratedBullet } from "./types.ts";
 
-// Card art for the briefing deck, generated for free by pollinations.ai from a
-// prompt embedded in the URL. This module is the server-side twin of the app's
-// `Sideline/Utilities/CardArt.swift` — keep prompt text, query order, and the
-// FNV-1a seed in sync so both ends agree on a story's art.
+// Card art for the briefing deck.
 //
-// The pipeline stamps `image_url` on every bullet at generation time, and the
-// GitHub Actions cron then fetches each URL once. Pollinations caches a
-// generated image by URL, so by the time a phone asks, the art is a CDN hit
-// instead of a multi-second generation that counts against the free tier's
-// one-request-per-IP queue.
+// Preferred path (POLLINATIONS_API_KEY set): generate each image once via
+// gen.pollinations.ai using the API key, upload it to the public `card-art`
+// storage bucket, and stamp the storage URL on the bullet. Every phone then
+// downloads the same image from our own storage — no third-party rate limits
+// at runtime, fully deterministic. Images are keyed by prompt+seed, so the
+// same story reuses the same file across personas and refresh windows.
+//
+// Fallback path (no key, or generation/upload fails): stamp the legacy
+// pollinations.ai on-demand URL. The app can still fetch that from a
+// residential IP, and its own gradient is the floor below that. This module
+// is the server-side twin of `Sideline/Utilities/CardArt.swift` — keep prompt
+// text, query order, and the FNV-1a seed in sync.
 //
 // Prompts ask for editorial illustration of the sport's scene and the story's
 // mood, never a named player: generated faces of real athletes look uncanny
 // and read as fake news.
+
+const BUCKET = "card-art";
+
+/** Stamp `image_url` on every bullet, generating + storing art when possible. */
+export async function stampCardArt(
+  supabase: any,
+  trace_id: string,
+  bullets: GeneratedBullet[],
+): Promise<GeneratedBullet[]> {
+  const apiKey = Deno.env.get("POLLINATIONS_API_KEY");
+  const stamped: GeneratedBullet[] = [];
+  for (const bullet of bullets) {
+    stamped.push({
+      ...bullet,
+      image_url: apiKey
+        ? await storedImageURL(supabase, trace_id, bullet, apiKey)
+        : imageURLForBullet(bullet),
+    });
+  }
+  return stamped;
+}
+
+async function storedImageURL(
+  supabase: any,
+  trace_id: string,
+  bullet: GeneratedBullet,
+  apiKey: string,
+): Promise<string> {
+  const prompt = promptFor(bullet);
+  const seed = fnv1a32(bullet.source_url);
+  const path = `${seed}-${fnv1a32(prompt)}.jpg`;
+  const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
+  const publicUrl: string = data.publicUrl;
+
+  try {
+    // Same story already rendered (other persona, earlier window)? Reuse it.
+    const head = await fetch(publicUrl, { method: "HEAD" });
+    if (head.ok) {
+      return publicUrl;
+    }
+
+    const generated = await fetch(
+      `https://gen.pollinations.ai/image/${encodePromptPath(prompt)}` +
+        `?width=768&height=960&seed=${seed}&safe=true`,
+      { headers: { Authorization: `Bearer ${apiKey}` } },
+    );
+    if (!generated.ok) {
+      throw new Error(`gen.pollinations.ai returned ${generated.status}`);
+    }
+    const bytes = new Uint8Array(await generated.arrayBuffer());
+
+    // Self-provision the public bucket on first ever use.
+    await supabase.storage.createBucket(BUCKET, { public: true }).catch(() => {});
+    const { error: uploadError } = await supabase.storage
+      .from(BUCKET)
+      .upload(path, bytes, { contentType: "image/jpeg", upsert: true });
+    if (uploadError) {
+      throw uploadError;
+    }
+
+    logInfo(trace_id, "card_art_stored", { path, bytes: bytes.length });
+    return publicUrl;
+  } catch (error) {
+    // Art is decoration, never a reason to fail a briefing. Fall back to the
+    // legacy on-demand URL the app can fetch itself.
+    logError(trace_id, "card_art_generation_failed", error, { path });
+    return imageURLForBullet(bullet);
+  }
+}
 
 const STYLE = "modern editorial sports illustration, bold graphic shapes, " +
   "screen print texture, high contrast, dramatic lighting, no readable faces, " +
@@ -23,8 +97,15 @@ const FALLBACK_SCENE = "packed sports stadium at night under floodlights, " +
   "crowd in silhouette, confetti in the air";
 
 export function imageURLForBullet(bullet: GeneratedBullet): string {
-  const prompt = `${sceneFor(bullet)}, ${moodFor(bullet.tag ?? null)}, ${STYLE}`;
-  return pollinationsURL(prompt, fnv1a32(bullet.source_url));
+  return pollinationsURL(promptFor(bullet), fnv1a32(bullet.source_url));
+}
+
+function promptFor(bullet: GeneratedBullet): string {
+  return `${sceneFor(bullet)}, ${moodFor(bullet.tag ?? null)}, ${STYLE}`;
+}
+
+function encodePromptPath(prompt: string): string {
+  return encodeURIComponent(prompt).replace(/%2C/g, ",");
 }
 
 function moodFor(tag: BriefingTag | null): string {
@@ -97,8 +178,7 @@ function sceneFor(bullet: GeneratedBullet): string {
 
 function pollinationsURL(prompt: string, seed: number): string {
   // Match Swift's URLComponents encoding: spaces become %20, commas stay.
-  const path = encodeURIComponent(prompt).replace(/%2C/g, ",");
-  return `https://image.pollinations.ai/prompt/${path}` +
+  return `https://image.pollinations.ai/prompt/${encodePromptPath(prompt)}` +
     `?width=768&height=960&nologo=true&safe=true&seed=${seed}`;
 }
 
