@@ -1,0 +1,187 @@
+{
+  "ranked": [
+    {
+      "keyword": "talking points",
+      "popularity": 56,
+      "difficulty": 23,
+      "opportunity": 2.435,
+      "rank": 1000
+    },
+    {
+      "keyword": "conversation starters",
+      "popularity": 22,
+      "difficulty": 19,
+      "opportunity": 1.158,
+      "rank": 1000
+    },
+    {
+      "keyword": "conversation starter sports",
+      "popularity": 5,
+      "difficulty": 5,
+      "opportunity": 1.0,
+      "rank": 1000
+    },
+    {
+      "keyword": "source link",
+      "popularity": 5,
+      "difficulty": 5,
+      "opportunity": 1.0,
+      "rank": 1000
+    },
+    {
+      "keyword": "just enough",
+      "popularity": 5,
+      "difficulty": 5,
+      "opportunity": 1.0,
+      "rank": 1000
+    },
+    {
+      "keyword": "mlb",
+      "popularity": 62,
+      "difficulty": 63,
+      "opportunity": 0.984,
+      "rank": 1000
+    },
+    {
+      "keyword": "nba",
+      "popularity": 70,
+      "difficulty": 77,
+      "opportunity": 0.909,
+      "rank": 1000
+    },
+    {
+      "keyword": "nhl",
+      "popularity": 60,
+      "difficulty": 66,
+      "opportunity": 0.909,
+      "rank": 1000
+    },
+    {
+      "keyword": "teams",
+      "popularity": 77,
+      "difficulty": 85,
+      "opportunity": 0.906,
+      "rank": 1000
+    },
+    {
+      "keyword": "nfl",
+      "popularity": 70,
+      "difficulty": 82,
+      "opportunity": 0.854,
+      "rank": 1000
+    },
+    {
+      "keyword": "college",
+      "popularity": 54,
+      "difficulty": 67,
+      "opportunity": 0.806,
+      "rank": 1000
+    },
+    {
+      "keyword": "the room",
+      "popularity": 50,
+      "difficulty": 63,
+      "opportunity": 0.794,
+      "rank": 1000
+    },
+    {
+      "keyword": "news",
+      "popularity": 69,
+      "difficulty": 89,
+      "opportunity": 0.775,
+      "rank": 1000
+    },
+    {
+      "keyword": "sports",
+      "popularity": 64,
+      "difficulty": 83,
+      "opportunity": 0.771,
+      "rank": 1000
+    },
+    {
+      "keyword": "fans",
+      "popularity": 45,
+      "difficulty": 59,
+      "opportunity": 0.763,
+      "rank": 1000
+    },
+    {
+      "keyword": "briefing",
+      "popularity": 12,
+      "difficulty": 17,
+      "opportunity": 0.706,
+      "rank": 1000
+    },
+    {
+      "keyword": "conversation",
+      "popularity": 25,
+      "difficulty": 40,
+      "opportunity": 0.625,
+      "rank": 1000
+    },
+    {
+      "keyword": "sideline gives",
+      "popularity": 5,
+      "difficulty": 10,
+      "opportunity": 0.5,
+      "rank": 1000
+    },
+    {
+      "keyword": "the conversation",
+      "popularity": 20,
+      "difficulty": 41,
+      "opportunity": 0.488,
+      "rank": 1000
+    },
+    {
+      "keyword": "briefing the",
+      "popularity": 5,
+      "difficulty": 11,
+      "opportunity": 0.455,
+      "rank": 1000
+    },
+    {
+      "keyword": "sports questions",
+      "popularity": 5,
+      "difficulty": 13,
+      "opportunity": 0.385,
+      "rank": 1000
+    },
+    {
+      "keyword": "sports live",
+      "popularity": 25,
+      "difficulty": 77,
+      "opportunity": 0.325,
+      "rank": 1000
+    },
+    {
+      "keyword": "sports news",
+      "popularity": 24,
+      "difficulty": 78,
+      "opportunity": 0.308,
+      "rank": 1000
+    },
+    {
+      "keyword": "learn sports",
+      "popularity": 5,
+      "difficulty": 23,
+      "opportunity": 0.217,
+      "rank": 1000
+    },
+    {
+      "keyword": "the app",
+      "popularity": 21,
+      "difficulty": 97,
+      "opportunity": 0.216,
+      "rank": 1000
+    },
+    {
+      "keyword": "gossip",
+      "popularity": 9,
+      "difficulty": 60,
+      "opportunity": 0.15,
+      "rank": 1000
+    }
+  ],
+  "all_count": 228
+}

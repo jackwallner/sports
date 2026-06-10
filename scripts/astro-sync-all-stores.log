@@ -1,0 +1,369 @@
+
+==> ae (UAE) locales=[ar-SA, en-GB, en-US] — 45 kw
+    batch fail: HTTP Error 500: Internal Server Error
+    batch fail: HTTP Error 500: Internal Server Error
+    batch fail: HTTP Error 500: Internal Server Error
+    batch fail: HTTP Error 500: Internal Server Error
+    added ~0 new (16 existing)
+
+==> al (Albania) locales=[en-GB, en-US] — 45 kw
+
+==> ae (UAE) locales=[ar-SA, en-GB, en-US] — 45 kw
+    added ~19 new (0 existing)
+
+==> al (Albania) locales=[en-GB, en-US] — 45 kw
+    added ~16 new (27 existing)
+
+==> am (Armenia) locales=[ru, en-GB, en-US] — 45 kw
+    added ~0 new (21 existing)
+
+==> ar (Argentina) locales=[es-ES, es-MX, en-US] — 45 kw
+    batch fail: timed out
+    added ~0 new (0 existing)
+
+==> at (Austria) locales=[de-DE, en-US] — 45 kw
+    batch fail: timed out
+    added ~40 new (0 existing)
+
+==> au (Australia) locales=[en-AU, en-US] — 45 kw
+    added ~48 new (0 existing)
+
+==> az (Azerbaijan) locales=[tr, ru, en-US] — 45 kw
+    batch fail: timed out
+    added ~28 new (0 existing)
+
+==> be (Belgium) locales=[fr-FR, nl-NL, de-DE, en-US] — 45 kw
+    batch fail: timed out
+    added ~40 new (0 existing)
+
+==> bg (Bulgaria) locales=[en-GB, en-US] — 45 kw
+    added ~45 new (0 existing)
+
+==> bh (Bahrain) locales=[ar-SA, en-US] — 45 kw
+    batch fail: timed out
+    batch fail: timed out
+    added ~32 new (0 existing)
+
+==> bo (Bolivia) locales=[es-ES, es-MX, en-US] — 45 kw
+    batch fail: timed out
+    batch fail: HTTP Error 500: Internal Server Error
+    batch fail: timed out
+    batch fail: timed out
+    added ~16 new (0 existing)
+
+==> br (Brazil) locales=[pt-BR, en-US] — 45 kw
+    batch fail: timed out
+    batch fail: timed out
+
+==> ae (UAE) locales=[ar-SA, en-GB, en-US] — 45 kw
+    added ~0 new (45 existing)
+
+==> al (Albania) locales=[en-GB, en-US] — 45 kw
+    batch fail: HTTP Error 500: Internal Server Error
+    added ~0 new (43 existing)
+
+==> am (Armenia) locales=[ru, en-GB, en-US] — 45 kw
+    batch fail: HTTP Error 500: Internal Server Error
+    batch fail: HTTP Error 500: Internal Server Error
+    batch fail: HTTP Error 500: Internal Server Error
+    added ~0 new (21 existing)
+
+==> ar (Argentina) locales=[es-ES, es-MX, en-US] — 45 kw
+=== syncing us ===
+
+==> us (United States) locales=[en-US] — 45 kw
+    batch fail: timed out
+    batch fail: timed out
+  File "<stdin>", line 4
+    done = {p.stem for p in Path("scripts/astro-keywords-by-store").glob("*.json") if p.name != "_summary.json"}
+    ^
+SyntaxError: invalid syntax
+    batch fail: timed out
+skip us
+=== syncing ca ===
+
+==> ca (Canada) locales=[en-CA, fr-CA, en-US] — 45 kw
+FAIL ca rc=-15
+=== syncing mx ===
+
+==> mx (Mexico) locales=[es-MX, en-US] — 45 kw
+    batch fail: HTTP Error 500: Internal Server Error
+    batch fail: HTTP Error 500: Internal Server Error
+    batch fail: HTTP Error 500: Internal Server Error
+    added ~24 new (0 existing)
+
+Wrote /Users/jackwallner/sports/scripts/astro-keywords-by-store/ (1 stores) — playbook: astro-global-aso-go-2026.md
+skip br
+skip ar
+skip bo
+=== syncing cl ===
+
+==> cl (Chile) locales=[es-ES, es-MX, en-US] — 45 kw
+    batch fail: HTTP Error 500: Internal Server Error
+=== sync us ===
+
+==> us (United States) locales=[en-US] — 45 kw
+    batch fail: HTTP Error 500: Internal Server Error
+    added ~0 new (68 existing)
+
+Wrote /Users/jackwallner/sports/scripts/astro-keywords-by-store/ (1 stores) — playbook: astro-global-aso-go-2026.md
+=== sync ca ===
+
+==> ca (Canada) locales=[en-CA, fr-CA, en-US] — 45 kw
+
+==> ae (UAE) locales=[ar-SA, en-GB, en-US] — 45 kw
+    added ~0 new (45 existing)
+
+==> al (Albania) locales=[en-GB, en-US] — 45 kw
+SYNC us: had None keywords
+  retry 1/3 (None keywords)
+error: Astro MCP not reachable — open Astro and enable MCP
+  retry 2/3 (0 keywords)
+  retry 3/3 (None keywords)
+FAIL us: only None keywords after 3 attempts
+SYNC ca: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  -> ca: 45 keywords (attempt 3)
+OK   mx: 16 keywords (skip sync)
+OK   br: 45 keywords (skip sync)
+SYNC ar: had 14 keywords
+  retry 1/3 (None keywords)
+  -> ar: 45 keywords (attempt 2)
+OK   bo: 45 keywords (skip sync)
+OK   cl: 32 keywords (skip sync)
+SYNC co: had 0 keywords
+  -> co: 45 keywords (attempt 1)
+SYNC cr: had 0 keywords
+  retry 1/3 (None keywords)
+  -> cr: 45 keywords (attempt 2)
+SYNC do: had 0 keywords
+  retry 1/3 (None keywords)
+  -> do: 43 keywords (attempt 2)
+OK   ec: 38 keywords (skip sync)
+OK   sv: 24 keywords (skip sync)
+OK   gt: 24 keywords (skip sync)
+SYNC hn: had 0 keywords
+  -> hn: 29 keywords (attempt 1)
+SYNC pa: had None keywords
+  -> pa: 27 keywords (attempt 1)
+SYNC py: had None keywords
+  -> py: 45 keywords (attempt 1)
+SYNC pe: had 0 keywords
+  -> pe: 37 keywords (attempt 1)
+SYNC gb: had 0 keywords
+  -> gb: 32 keywords (attempt 1)
+SYNC de: had None keywords
+  -> de: 37 keywords (attempt 1)
+OK   fr: 45 keywords (skip sync)
+SYNC es: had 8 keywords
+  -> es: 21 keywords (attempt 1)
+SYNC it: had 0 keywords
+  retry 1/3 (None keywords)
+  -> it: 45 keywords (attempt 2)
+SYNC nl: had 0 keywords
+  -> nl: 22 keywords (attempt 1)
+OK   at: 45 keywords (skip sync)
+OK   be: 39 keywords (skip sync)
+OK   ch: 16 keywords (skip sync)
+OK   se: 33 keywords (skip sync)
+SYNC no: had 8 keywords
+  retry 1/3 (None keywords)
+  -> no: 45 keywords (attempt 2)
+SYNC dk: had 0 keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  -> dk: 45 keywords (attempt 3)
+OK   fi: 45 keywords (skip sync)
+OK   pl: 21 keywords (skip sync)
+OK   pt: 32 keywords (skip sync)
+SYNC ie: had 0 keywords
+  retry 1/3 (None keywords)
+  -> ie: 45 keywords (attempt 2)
+OK   ru: 16 keywords (skip sync)
+SYNC ua: had 0 keywords
+  -> ua: 40 keywords (attempt 1)
+OK   cz: 37 keywords (skip sync)
+OK   sk: 16 keywords (skip sync)
+SYNC hu: had 0 keywords
+  -> hu: 21 keywords (attempt 1)
+SYNC ro: had 0 keywords
+  -> ro: 37 keywords (attempt 1)
+OK   gr: 32 keywords (skip sync)
+SYNC hr: had 0 keywords
+  retry 1/3 (None keywords)
+  -> hr: 24 keywords (attempt 2)
+SYNC bg: had None keywords
+  -> bg: 45 keywords (attempt 1)
+SYNC si: had 13 keywords
+  -> si: 26 keywords (attempt 1)
+SYNC ee: had None keywords
+  -> ee: 45 keywords (attempt 1)
+OK   lv: 24 keywords (skip sync)
+SYNC lu: had 0 keywords
+  -> lu: 45 keywords (attempt 1)
+SYNC is: had 0 keywords
+  retry 1/3 (None keywords)
+  -> is: 45 keywords (attempt 2)
+SYNC cy: had 0 keywords
+  retry 1/3 (None keywords)
+  -> cy: 37 keywords (attempt 2)
+SYNC tr: had None keywords
+  -> tr: 37 keywords (attempt 1)
+SYNC az: had None keywords
+  -> az: 44 keywords (attempt 1)
+OK   kz: 16 keywords (skip sync)
+SYNC kg: had 0 keywords
+  -> kg: 39 keywords (attempt 1)
+SYNC uz: had None keywords
+  retry 1/3 (13 keywords)
+  -> uz: 45 keywords (attempt 2)
+OK   al: 41 keywords (skip sync)
+OK   au: 44 keywords (skip sync)
+OK   nz: 45 keywords (skip sync)
+OK   jp: 45 keywords (skip sync)
+SYNC kr: had 8 keywords
+  retry 1/3 (None keywords)
+  -> kr: 45 keywords (attempt 2)
+SYNC cn: had 0 keywords
+  retry 1/3 (None keywords)
+  -> cn: 27 keywords (attempt 2)
+SYNC hk: had None keywords
+  retry 1/3 (0 keywords)
+  retry 2/3 (0 keywords)
+  retry 3/3 (None keywords)
+FAIL hk: only None keywords after 3 attempts
+SYNC tw: had None keywords
+  retry 1/3 (0 keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL tw: only None keywords after 3 attempts
+OK   mo: 21 keywords (skip sync)
+SYNC sg: had 0 keywords
+  retry 1/3 (8 keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL sg: only None keywords after 3 attempts
+SYNC my: had None keywords
+  -> my: 37 keywords (attempt 1)
+SYNC th: had 0 keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (8 keywords)
+FAIL th: only 8 keywords after 3 attempts
+SYNC vn: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL vn: only None keywords after 3 attempts
+SYNC id: had None keywords
+  retry 1/3 (0 keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL id: only None keywords after 3 attempts
+SYNC ph: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (8 keywords)
+  retry 3/3 (None keywords)
+FAIL ph: only None keywords after 3 attempts
+SYNC in: had 0 keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (0 keywords)
+FAIL in: only 0 keywords after 3 attempts
+SYNC kh: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL kh: only None keywords after 3 attempts
+SYNC mn: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (0 keywords)
+  retry 3/3 (None keywords)
+FAIL mn: only None keywords after 3 attempts
+SYNC np: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL np: only None keywords after 3 attempts
+SYNC lk: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL lk: only None keywords after 3 attempts
+SYNC sa: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL sa: only None keywords after 3 attempts
+OK   ae: 45 keywords (skip sync)
+SYNC eg: had 0 keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL eg: only None keywords after 3 attempts
+SYNC il: had None keywords
+  retry 1/3 (0 keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL il: only None keywords after 3 attempts
+SYNC jo: had None keywords
+  retry 1/3 (0 keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL jo: only None keywords after 3 attempts
+SYNC kw: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL kw: only None keywords after 3 attempts
+SYNC lb: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL lb: only None keywords after 3 attempts
+SYNC om: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (8 keywords)
+FAIL om: only 8 keywords after 3 attempts
+SYNC qa: had 0 keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL qa: only None keywords after 3 attempts
+OK   bh: 45 keywords (skip sync)
+SYNC iq: had 0 keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL iq: only None keywords after 3 attempts
+SYNC ma: had None keywords
+  retry 1/3 (0 keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL ma: only None keywords after 3 attempts
+SYNC dz: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL dz: only None keywords after 3 attempts
+SYNC gh: had None keywords
+  -> gh: 24 keywords (attempt 1)
+OK   ke: 16 keywords (skip sync)
+SYNC za: had 4 keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL za: only None keywords after 3 attempts
+SYNC pk: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (0 keywords)
+  retry 3/3 (None keywords)
+FAIL pk: only None keywords after 3 attempts
+SYNC am: had None keywords
+  retry 1/3 (None keywords)
+  -> am: 29 keywords (attempt 2)
+
+Done: 65/91 stores verified (≥15 keywords)
+Failed: us, hk, tw, sg, th, vn, id, ph, in, kh, mn, np, lk, sa, eg, il, jo, kw, lb, om, qa, iq, ma, dz, za, pk

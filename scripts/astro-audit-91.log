@@ -1,0 +1,166 @@
+waiting for MCP... (1)
+waiting for MCP... (2)
+waiting for MCP... (3)
+OK   us: 76
+OK   ca: 45
+OK   mx: 16
+OK   br: 45
+OK   ar: 45
+OK   bo: 45
+OK   cl: 45
+OK   co: 45
+OK   cr: 45
+OK   do: 24
+OK   ec: 24
+SYNC sv: None
+  retry 1/3 (None)
+  retry 2/3 (None)
+  retry 3/3 (None)
+FAIL sv: None
+OK   gt: 45
+OK   hn: 29
+OK   pa: 27
+OK   py: 45
+OK   pe: 45
+OK   gb: 32
+OK   de: 37
+OK   fr: 45
+OK   es: 29
+OK   it: 45
+SYNC nl: None
+  -> nl: 30
+OK   at: 45
+OK   be: 39
+SYNC ch: None
+  -> ch: 24
+OK   se: 33
+OK   no: 45
+OK   dk: 45
+OK   fi: 45
+SYNC pl: None
+  retry 1/3 (None)
+  -> pl: 21
+OK   pt: 45
+OK   ie: 45
+SYNC ru: None
+  retry 1/3 (None)
+  retry 2/3 (None)
+  retry 3/3 (None)
+FAIL ru: None
+SYNC ua: None
+  -> ua: 45
+OK   cz: 37
+OK   sk: 37
+OK   hu: 21
+OK   ro: 37
+OK   gr: 32
+SYNC hr: None
+  retry 1/3 (None)
+  retry 2/3 (None)
+  -> hr: 45
+SYNC bg: None
+  -> bg: 45
+OK   si: 45
+OK   ee: 45
+OK   lv: 24
+SYNC lu: None
+  -> lu: 45
+SYNC is: None
+  retry 1/3 (None)
+  -> is: 45
+SYNC cy: None
+  retry 1/3 (None)
+  retry 2/3 (None)
+  -> cy: 45
+SYNC tr: None
+  -> tr: 37
+SYNC az: None
+  -> az: 44
+OK   kz: 21
+SYNC kg: None
+  -> kg: 45
+OK   uz: 45
+SYNC al: None
+  -> al: 44
+OK   au: 45
+OK   nz: 45
+OK   jp: 45
+OK   kr: 45
+SYNC cn: None
+  retry 1/3 (None)
+  retry 2/3 (None)
+  retry 3/3 (None)
+FAIL cn: None
+SYNC hk: 0
+  retry 1/3 (None)
+  -> hk: 37
+SYNC tw: None
+  retry 1/3 (None)
+  retry 2/3 (0)
+  retry 3/3 (None)
+FAIL tw: None
+OK   mo: 21
+SYNC sg: None
+  retry 1/3 (None)
+  retry 2/3 (8)
+  -> sg: 29
+OK   my: 45
+SYNC th: 8
+  retry 1/3 (None)
+  retry 2/3 (None)
+  retry 3/3 (None)
+FAIL th: None
+SYNC vn: None
+  retry 1/3 (None)
+  retry 2/3 (None)
+  -> vn: 21
+OK   id: 24
+OK   ph: 16
+OK   in: 21
+OK   kh: 15
+SYNC mn: None
+  retry 1/3 (8)
+  -> mn: 32
+SYNC np: None
+  retry 1/3 (None)
+  retry 2/3 (None)
+  retry 3/3 (None)
+FAIL np: None
+SYNC lk: None
+  retry 1/3 (None)
+  retry 2/3 (8)
+  retry 3/3 (None)
+FAIL lk: None
+SYNC sa: None
+  retry 1/3 (None)
+  retry 2/3 (None)
+  retry 3/3 (None)
+FAIL sa: None
+SYNC ae: None
+  retry 1/3 (None)
+  -> ae: 45
+OK   eg: 16
+OK   il: 16
+SYNC jo: None
+  -> jo: 29
+OK   kw: 24
+OK   lb: 16
+OK   om: 32
+SYNC qa: None
+  -> qa: 35
+OK   bh: 45
+OK   iq: 31
+SYNC ma: 0
+  retry 1/3 (None)
+  retry 2/3 (None)
+  retry 3/3 (8)
+FAIL ma: 8
+OK   dz: 40
+OK   gh: 24
+OK   ke: 16
+OK   za: 28
+OK   pk: 24
+OK   am: 29
+
+Done: 82/91
+Still failing: sv, ru, cn, tw, th, np, lk, sa, ma

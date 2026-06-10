@@ -1,0 +1,105 @@
+# Remove these in Astro UI (Sports → US). MCP cannot delete keywords.
+# Generated 2026-05-25 — description junk + wrong-category terms from v1 bulk import.
+
+# Wrong category (health / vitals bleed)
+apple health
+healthkit
+health app
+daily tracker
+free tracker
+app tracker
+
+# Competitor brands / wrong product type
+betting app
+fantasy app
+espn
+bleacher report
+the athletic alternative
+espn alternative
+sports scores
+nfl stats
+
+# Description sentence fragments (pop ≤5)
+built for
+their life
+points framed
+when you
+conversation the
+the room
+the app
+the conversation
+the party
+the sideline
+# the gist  ← KEEP (pop 5, diff 7 — brand match)
+the free
+the cocktail
+the original
+pick the
+open the
+walk into
+walking into
+say out
+news the
+gist sports
+talk for
+for non
+for people
+not follow
+follow sports
+sports but
+still have
+have sports
+sports people
+life coworkers
+coworkers partners
+partners friends
+friends kids
+kids parents
+parents and
+and everyone
+party who
+who suddenly
+suddenly has
+opinion about
+quarterback open
+app pick
+room you
+you are
+are walking
+into and
+and read
+briefing one
+one plain
+one question
+every point
+source link
+just enough
+culture angles
+culture talking
+talking points before
+points before
+before you
+you walk
+you quick
+you want
+you can
+quick sports
+sports pop
+pop culture
+culture talking
+gives you
+sideline gives
+includes the
+free version
+sideline pro
+local team
+all contexts
+original reporting
+keep the
+enough context
+conversation going
+reporting one
+pro unlocks
+fans pop
+context with
+what to say about sports

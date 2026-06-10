@@ -1,0 +1,208 @@
+==> prune us
+No keywords to prune for store=us
+==> prune ca
+No keywords to prune for store=ca
+==> prune mx
+No keywords to prune for store=mx
+==> prune br
+No keywords to prune for store=br
+==> prune ar
+No keywords to prune for store=ar
+==> prune bo
+No keywords to prune for store=bo
+==> prune cl
+No keywords to prune for store=cl
+==> prune co
+No keywords to prune for store=co
+==> prune cr
+No keywords to prune for store=cr
+==> prune do
+No keywords to prune for store=do
+==> prune ec
+No keywords to prune for store=ec
+==> prune sv
+No keywords to prune for store=sv
+==> prune gt
+No keywords to prune for store=gt
+==> prune hn
+No keywords to prune for store=hn
+==> prune pa
+No keywords to prune for store=pa
+==> prune py
+No keywords to prune for store=py
+==> prune pe
+No keywords to prune for store=pe
+==> prune gb
+No keywords to prune for store=gb
+==> prune de
+No keywords to prune for store=de
+==> prune fr
+No keywords to prune for store=fr
+==> prune es
+No keywords to prune for store=es
+==> prune it
+No keywords to prune for store=it
+==> prune nl
+No keywords to prune for store=nl
+==> prune at
+No keywords to prune for store=at
+==> prune be
+No keywords to prune for store=be
+==> prune ch
+No keywords to prune for store=ch
+==> prune se
+No keywords to prune for store=se
+==> prune no
+No keywords to prune for store=no
+==> prune dk
+No keywords to prune for store=dk
+==> prune fi
+No keywords to prune for store=fi
+==> prune pl
+No keywords to prune for store=pl
+==> prune pt
+No keywords to prune for store=pt
+==> prune ie
+No keywords to prune for store=ie
+==> prune ru
+No keywords to prune for store=ru
+==> prune ua
+No keywords to prune for store=ua
+==> prune cz
+No keywords to prune for store=cz
+==> prune sk
+Traceback (most recent call last):
+  File "/Users/jackwallner/sports/scripts/astro-optimize.py", line 221, in <module>
+    main()
+  File "/Users/jackwallner/sports/scripts/astro-optimize.py", line 190, in main
+    data = analyze_store(app_id, store)
+  File "/Users/jackwallner/sports/scripts/astro-optimize.py", line 98, in analyze_store
+    kws = call(MCP_URL, "get_app_keywords", {"appId": app_id, "store": store})
+  File "/Users/jackwallner/sports/scripts/astro_mcp.py", line 27, in call
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/urllib/request.py", line 214, in urlopen
+    return opener.open(url, data, timeout)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/urllib/request.py", line 523, in open
+    response = meth(req, response)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/urllib/request.py", line 632, in http_response
+    response = self.parent.error(
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/urllib/request.py", line 561, in error
+    return self._call_chain(*args)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/urllib/request.py", line 494, in _call_chain
+    result = func(*args)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/urllib/request.py", line 641, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 500: Internal Server Error
+==> prune hu
+No keywords to prune for store=hu
+==> prune ro
+No keywords to prune for store=ro
+==> prune gr
+No keywords to prune for store=gr
+==> prune hr
+No keywords to prune for store=hr
+==> prune bg
+No keywords to prune for store=bg
+==> prune si
+No keywords to prune for store=si
+==> prune ee
+No keywords to prune for store=ee
+==> prune lv
+No keywords to prune for store=lv
+==> prune lu
+No keywords to prune for store=lu
+==> prune is
+No keywords to prune for store=is
+==> prune cy
+No keywords to prune for store=cy
+==> prune tr
+No keywords to prune for store=tr
+==> prune az
+No keywords to prune for store=az
+==> prune kz
+No keywords to prune for store=kz
+==> prune kg
+No keywords to prune for store=kg
+==> prune uz
+No keywords to prune for store=uz
+==> prune al
+Removing 4 keywords from al...
+  - headache tracker
+  - migraine diary
+  - headache log
+  - migraine tracker
+Removed 4.
+==> prune au
+No keywords to prune for store=au
+==> prune nz
+No keywords to prune for store=nz
+==> prune jp
+No keywords to prune for store=jp
+==> prune kr
+No keywords to prune for store=kr
+==> prune cn
+No keywords to prune for store=cn
+==> prune hk
+No keywords to prune for store=hk
+==> prune tw
+No keywords to prune for store=tw
+==> prune mo
+No keywords to prune for store=mo
+==> prune sg
+No keywords to prune for store=sg
+==> prune my
+No keywords to prune for store=my
+==> prune th
+No keywords to prune for store=th
+==> prune vn
+No keywords to prune for store=vn
+==> prune id
+No keywords to prune for store=id
+==> prune ph
+No keywords to prune for store=ph
+==> prune in
+No keywords to prune for store=in
+==> prune kh
+No keywords to prune for store=kh
+==> prune mn
+No keywords to prune for store=mn
+==> prune np
+No keywords to prune for store=np
+==> prune lk
+No keywords to prune for store=lk
+==> prune sa
+No keywords to prune for store=sa
+==> prune ae
+No keywords to prune for store=ae
+==> prune eg
+No keywords to prune for store=eg
+==> prune il
+No keywords to prune for store=il
+==> prune jo
+No keywords to prune for store=jo
+==> prune kw
+No keywords to prune for store=kw
+==> prune lb
+No keywords to prune for store=lb
+==> prune om
+No keywords to prune for store=om
+==> prune qa
+No keywords to prune for store=qa
+==> prune bh
+No keywords to prune for store=bh
+==> prune iq
+No keywords to prune for store=iq
+==> prune ma
+No keywords to prune for store=ma
+==> prune dz
+No keywords to prune for store=dz
+==> prune gh
+No keywords to prune for store=gh
+==> prune ke
+No keywords to prune for store=ke
+==> prune za
+No keywords to prune for store=za
+==> prune pk
+No keywords to prune for store=pk
+==> prune am
+No keywords to prune for store=am

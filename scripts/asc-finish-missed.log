@@ -1,0 +1,122 @@
+==> fastlane 2.234.0
+==> Ensure editable ASC draft version
+==> Version localizations via API (fast pre-pass)
+App: 6770138156 (com.jackwallner.sports)
+Version: 1.0 (PREPARE_FOR_SUBMISSION)
+Existing appInfo locales: 50
+Existing version locales: 50
+
+Done. Processed 0 missing locale(s).
+==> PATCH keywords/descriptions via API
+Uploading to version 1.0 (PREPARE_FOR_SUBMISSION)
+ar-SA: ok +info
+bn-BD: ok +info
+ca: ok +info
+cs: ok +info
+da: ok +info
+de-DE: ok +info
+el: ok +info
+en-AU: ok +info
+en-CA: ok +info
+en-GB: ok +info
+en-US: ok +info
+es-ES: ok +info
+es-MX: ok +info
+fi: ok +info
+fr-CA: ok +info
+fr-FR: ok +info
+gu-IN: ok +info
+he: ok +info
+hi: ok +info
+hr: ok +info
+hu: ok +info
+id: ok +info
+it: ok +info
+ja: ok +info
+kn-IN: ok +info
+ko: ok +info
+ml-IN: ok +info
+mr-IN: ok +info
+ms: ok +info
+nl-NL: ok +info
+no: ok +info
+or-IN: ok +info
+pa-IN: ok +info
+pl: ok +info
+pt-BR: ok +info
+pt-PT: ok +info
+ro: ok +info
+ru: ok +info
+sk: ok +info
+sl-SI: ok +info
+sv: ok +info
+ta-IN: ok +info
+te-IN: ok +info
+th: ok +info
+tr: ok +info
+uk: ok +info
+ur-PK: ok +info
+vi: ok +info
+zh-Hans: ok +info
+zh-Hant: ok +info
+
+Patched 50 locale(s); created 0 new version localization(s).
+Draft: 1.0 · Live: n/a
+Draft appInfo locales: 50 (name/subtitle on PREPARE_FOR_SUBMISSION appInfo)
+==> deliver: appInfo + all locales (fastlane 2.234 Deliverfile languages)
+[20:10:41]: [33mGet started using a Gemfile for fastlane https://docs.fastlane.tools/getting-started/ios/setup/#use-a-gemfile[0m
+[20:10:42]: Could not find fastlane in current directory. Make sure to have your fastlane configuration files inside a folder called "fastlane". Would you like to set fastlane up?
+
+Looking for related GitHub issues on fastlane/fastlane...
+
+➡️  /opt/homebrew/Cellar/fastlane/2.211.0_1/libexec/gems/fastlane-2.211.0/fastlane_core/lib/fastlane_core/ui/interface.rb:129:in `crash!': [!] Could not retrieve response as fastlane runs in non-interactive mode (FastlaneCore::Interface::FastlaneCrash)
+    https://github.com/fastlane/fastlane/issues/20974 [open] 15 💬
+    22 Jul 2025
+
+➡️  Can not Publish to the App Store Production track
+    https://github.com/fastlane/fastlane/issues/19674 [open] 29 💬
+    09 Aug 2024
+
+➡️   Could not retrieve response as fastlane runs in non-interactive mode\e[0m (FastlaneCore::Interface::FastlaneCrash)
+    https://github.com/fastlane/fastlane/issues/20607 [closed] 8 💬
+    28 Dec 2025
+
+and 58 more at: https://github.com/fastlane/fastlane/search?q=Could%20not%20retrieve%20response%20as%20fastlane%20runs%20in%20non-interactive%20mode&type=Issues&utf8=✓
+
+🔗  You can ⌘ + double-click on links to open them directly in your browser.
+/opt/homebrew/Cellar/fastlane/2.234.0/libexec/gems/fastlane-2.234.0/fastlane_core/lib/fastlane_core/ui/interface.rb:129:in 'FastlaneCore::Interface#crash!': [!] Could not retrieve response as fastlane runs in non-interactive mode (FastlaneCore::Interface::FastlaneCrash)
+	from /opt/homebrew/Cellar/fastlane/2.234.0/libexec/gems/fastlane-2.234.0/fastlane_core/lib/fastlane_core/ui/implementations/shell.rb:174:in 'FastlaneCore::Shell#verify_interactive!'
+	from /opt/homebrew/Cellar/fastlane/2.234.0/libexec/gems/fastlane-2.234.0/fastlane_core/lib/fastlane_core/ui/implementations/shell.rb:138:in 'FastlaneCore::Shell#confirm'
+	from /opt/homebrew/Cellar/fastlane/2.234.0/libexec/gems/fastlane-2.234.0/fastlane_core/lib/fastlane_core/ui/ui.rb:17:in 'FastlaneCore::UI.method_missing'
+	from /opt/homebrew/Cellar/fastlane/2.234.0/libexec/gems/fastlane-2.234.0/fastlane/lib/fastlane/commands_generator.rb:373:in 'Fastlane::CommandsGenerator#ensure_fastfile'
+	from /opt/homebrew/Cellar/fastlane/2.234.0/libexec/gems/fastlane-2.234.0/fastlane/lib/fastlane/commands_generator.rb:109:in 'block (2 levels) in Fastlane::CommandsGenerator#run'
+	from /opt/homebrew/Cellar/fastlane/2.234.0/libexec/gems/commander-4.6.0/lib/commander/command.rb:187:in 'Commander::Command#call'
+	from /opt/homebrew/Cellar/fastlane/2.234.0/libexec/gems/commander-4.6.0/lib/commander/command.rb:157:in 'Commander::Command#run'
+	from /opt/homebrew/Cellar/fastlane/2.234.0/libexec/gems/commander-4.6.0/lib/commander/runner.rb:444:in 'Commander::Runner#run_active_command'
+	from /opt/homebrew/Cellar/fastlane/2.234.0/libexec/gems/fastlane-2.234.0/fastlane_core/lib/fastlane_core/ui/fastlane_runner.rb:124:in 'Commander::Runner#run!'
+	from /opt/homebrew/Cellar/fastlane/2.234.0/libexec/gems/commander-4.6.0/lib/commander/delegates.rb:18:in 'Commander::Delegates#run!'
+	from /opt/homebrew/Cellar/fastlane/2.234.0/libexec/gems/fastlane-2.234.0/fastlane/lib/fastlane/commands_generator.rb:363:in 'Fastlane::CommandsGenerator#run'
+	from /opt/homebrew/Cellar/fastlane/2.234.0/libexec/gems/fastlane-2.234.0/fastlane/lib/fastlane/commands_generator.rb:43:in 'Fastlane::CommandsGenerator.start'
+	from /opt/homebrew/Cellar/fastlane/2.234.0/libexec/gems/fastlane-2.234.0/fastlane/lib/fastlane/cli_tools_distributor.rb:132:in 'Fastlane::CLIToolsDistributor.take_off'
+	from /opt/homebrew/Cellar/fastlane/2.234.0/libexec/gems/fastlane-2.234.0/bin/fastlane:23:in '<top (required)>'
+	from /opt/homebrew/Cellar/ruby/4.0.4/lib/ruby/4.0.0/rubygems.rb:305:in 'Kernel#load'
+	from /opt/homebrew/Cellar/ruby/4.0.4/lib/ruby/4.0.0/rubygems.rb:305:in 'Gem.activate_and_load_bin_path'
+	from /opt/homebrew/Cellar/fastlane/2.234.0/libexec/bin/fastlane:25:in '<main>'
+/opt/homebrew/Cellar/fastlane/2.234.0/libexec/gems/fastlane-2.234.0/fastlane_core/lib/fastlane_core/ui/interface.rb:129:in 'FastlaneCore::Interface#crash!': Could not retrieve response as fastlane runs in non-interactive mode (FastlaneCore::Interface::FastlaneCrash)
+	from /opt/homebrew/Cellar/fastlane/2.234.0/libexec/gems/fastlane-2.234.0/fastlane_core/lib/fastlane_core/ui/implementations/shell.rb:174:in 'FastlaneCore::Shell#verify_interactive!'
+	from /opt/homebrew/Cellar/fastlane/2.234.0/libexec/gems/fastlane-2.234.0/fastlane_core/lib/fastlane_core/ui/implementations/shell.rb:138:in 'FastlaneCore::Shell#confirm'
+	from /opt/homebrew/Cellar/fastlane/2.234.0/libexec/gems/fastlane-2.234.0/fastlane_core/lib/fastlane_core/ui/ui.rb:17:in 'FastlaneCore::UI.method_missing'
+	from /opt/homebrew/Cellar/fastlane/2.234.0/libexec/gems/fastlane-2.234.0/fastlane/lib/fastlane/commands_generator.rb:373:in 'Fastlane::CommandsGenerator#ensure_fastfile'
+	from /opt/homebrew/Cellar/fastlane/2.234.0/libexec/gems/fastlane-2.234.0/fastlane/lib/fastlane/commands_generator.rb:109:in 'block (2 levels) in Fastlane::CommandsGenerator#run'
+	from /opt/homebrew/Cellar/fastlane/2.234.0/libexec/gems/commander-4.6.0/lib/commander/command.rb:187:in 'Commander::Command#call'
+	from /opt/homebrew/Cellar/fastlane/2.234.0/libexec/gems/commander-4.6.0/lib/commander/command.rb:157:in 'Commander::Command#run'
+	from /opt/homebrew/Cellar/fastlane/2.234.0/libexec/gems/commander-4.6.0/lib/commander/runner.rb:444:in 'Commander::Runner#run_active_command'
+	from /opt/homebrew/Cellar/fastlane/2.234.0/libexec/gems/fastlane-2.234.0/fastlane_core/lib/fastlane_core/ui/fastlane_runner.rb:124:in 'Commander::Runner#run!'
+	from /opt/homebrew/Cellar/fastlane/2.234.0/libexec/gems/commander-4.6.0/lib/commander/delegates.rb:18:in 'Commander::Delegates#run!'
+	from /opt/homebrew/Cellar/fastlane/2.234.0/libexec/gems/fastlane-2.234.0/fastlane/lib/fastlane/commands_generator.rb:363:in 'Fastlane::CommandsGenerator#run'
+	from /opt/homebrew/Cellar/fastlane/2.234.0/libexec/gems/fastlane-2.234.0/fastlane/lib/fastlane/commands_generator.rb:43:in 'Fastlane::CommandsGenerator.start'
+	from /opt/homebrew/Cellar/fastlane/2.234.0/libexec/gems/fastlane-2.234.0/fastlane/lib/fastlane/cli_tools_distributor.rb:132:in 'Fastlane::CLIToolsDistributor.take_off'
+	from /opt/homebrew/Cellar/fastlane/2.234.0/libexec/gems/fastlane-2.234.0/bin/fastlane:23:in '<top (required)>'
+	from /opt/homebrew/Cellar/ruby/4.0.4/lib/ruby/4.0.0/rubygems.rb:305:in 'Kernel#load'
+	from /opt/homebrew/Cellar/ruby/4.0.4/lib/ruby/4.0.0/rubygems.rb:305:in 'Gem.activate_and_load_bin_path'
+	from /opt/homebrew/Cellar/fastlane/2.234.0/libexec/bin/fastlane:25:in '<main>'

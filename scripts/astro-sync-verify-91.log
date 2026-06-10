@@ -1,0 +1,257 @@
+OK   us: 76 keywords (skip sync)
+OK   ca: 32 keywords (skip sync)
+OK   mx: 16 keywords (skip sync)
+SYNC br: had None keywords
+  retry 1/3 (None keywords)
+  -> br: 45 keywords (attempt 2)
+OK   ar: 22 keywords (skip sync)
+OK   bo: 45 keywords (skip sync)
+SYNC cl: had 0 keywords
+  -> cl: 45 keywords (attempt 1)
+SYNC co: had 8 keywords
+  retry 1/3 (None keywords)
+  -> co: 45 keywords (attempt 2)
+OK   cr: 45 keywords (skip sync)
+OK   do: 16 keywords (skip sync)
+SYNC ec: had 0 keywords
+  -> ec: 23 keywords (attempt 1)
+SYNC sv: had None keywords
+  -> sv: 40 keywords (attempt 1)
+SYNC gt: had None keywords
+  retry 1/3 (5 keywords)
+  retry 2/3 (None keywords)
+  -> gt: 45 keywords (attempt 3)
+OK   hn: 29 keywords (skip sync)
+OK   pa: 27 keywords (skip sync)
+OK   py: 45 keywords (skip sync)
+SYNC pe: had 8 keywords
+  retry 1/3 (12 keywords)
+  -> pe: 45 keywords (attempt 2)
+OK   gb: 16 keywords (skip sync)
+SYNC de: had 0 keywords
+  -> de: 21 keywords (attempt 1)
+SYNC fr: had 0 keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  -> fr: 45 keywords (attempt 3)
+SYNC es: had None keywords
+  -> es: 38 keywords (attempt 1)
+OK   it: 29 keywords (skip sync)
+OK   nl: 40 keywords (skip sync)
+SYNC at: had 0 keywords
+  retry 1/3 (None keywords)
+  -> at: 45 keywords (attempt 2)
+OK   be: 39 keywords (skip sync)
+SYNC ch: had 0 keywords
+  -> ch: 16 keywords (attempt 1)
+SYNC se: had 0 keywords
+  -> se: 33 keywords (attempt 1)
+SYNC no: had 0 keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  -> no: 18 keywords (attempt 3)
+OK   dk: 45 keywords (skip sync)
+SYNC fi: had 8 keywords
+  retry 1/3 (None keywords)
+  -> fi: 45 keywords (attempt 2)
+SYNC pl: had 0 keywords
+  -> pl: 21 keywords (attempt 1)
+SYNC pt: had 0 keywords
+  retry 1/3 (None keywords)
+  -> pt: 45 keywords (attempt 2)
+OK   ie: 24 keywords (skip sync)
+SYNC ru: had 0 keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  -> ru: 45 keywords (attempt 3)
+OK   ua: 32 keywords (skip sync)
+SYNC cz: had 0 keywords
+  -> cz: 37 keywords (attempt 1)
+SYNC sk: had 0 keywords
+  -> sk: 37 keywords (attempt 1)
+OK   hu: 21 keywords (skip sync)
+OK   ro: 24 keywords (skip sync)
+SYNC gr: had 0 keywords
+  -> gr: 34 keywords (attempt 1)
+OK   hr: 32 keywords (skip sync)
+SYNC bg: had 8 keywords
+  retry 1/3 (None keywords)
+  -> bg: 45 keywords (attempt 2)
+SYNC si: had 0 keywords
+  retry 1/3 (8 keywords)
+  -> si: 21 keywords (attempt 2)
+SYNC ee: had 13 keywords
+  retry 1/3 (0 keywords)
+  -> ee: 45 keywords (attempt 2)
+SYNC lv: had 0 keywords
+  -> lv: 24 keywords (attempt 1)
+OK   lu: 45 keywords (skip sync)
+SYNC is: had 8 keywords
+  -> is: 43 keywords (attempt 1)
+OK   cy: 28 keywords (skip sync)
+SYNC tr: had 0 keywords
+  retry 1/3 (None keywords)
+  -> tr: 26 keywords (attempt 2)
+OK   az: 37 keywords (skip sync)
+SYNC kz: had 0 keywords
+  retry 1/3 (8 keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL kz: only None keywords after 3 attempts
+SYNC kg: had None keywords
+  retry 1/3 (0 keywords)
+  -> kg: 45 keywords (attempt 2)
+OK   uz: 19 keywords (skip sync)
+OK   al: 44 keywords (skip sync)
+OK   au: 45 keywords (skip sync)
+SYNC nz: had 0 keywords
+  retry 1/3 (None keywords)
+  -> nz: 45 keywords (attempt 2)
+SYNC jp: had 0 keywords
+  -> jp: 43 keywords (attempt 1)
+OK   kr: 41 keywords (skip sync)
+OK   cn: 39 keywords (skip sync)
+OK   hk: 45 keywords (skip sync)
+OK   tw: 45 keywords (skip sync)
+SYNC mo: had 0 keywords
+  -> mo: 40 keywords (attempt 1)
+OK   sg: 21 keywords (skip sync)
+SYNC my: had 0 keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL my: only None keywords after 3 attempts
+SYNC th: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL th: only None keywords after 3 attempts
+SYNC vn: had None keywords
+  retry 1/3 (0 keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL vn: only None keywords after 3 attempts
+SYNC id: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL id: only None keywords after 3 attempts
+SYNC ph: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL ph: only None keywords after 3 attempts
+SYNC in: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL in: only None keywords after 3 attempts
+SYNC kh: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL kh: only None keywords after 3 attempts
+SYNC mn: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (0 keywords)
+  retry 3/3 (None keywords)
+FAIL mn: only None keywords after 3 attempts
+SYNC np: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL np: only None keywords after 3 attempts
+SYNC lk: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (0 keywords)
+  retry 3/3 (None keywords)
+FAIL lk: only None keywords after 3 attempts
+SYNC sa: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL sa: only None keywords after 3 attempts
+SYNC ae: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL ae: only None keywords after 3 attempts
+SYNC eg: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL eg: only None keywords after 3 attempts
+SYNC il: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL il: only None keywords after 3 attempts
+SYNC jo: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL jo: only None keywords after 3 attempts
+SYNC kw: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL kw: only None keywords after 3 attempts
+SYNC lb: had None keywords
+  retry 1/3 (0 keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (0 keywords)
+FAIL lb: only 0 keywords after 3 attempts
+SYNC om: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL om: only None keywords after 3 attempts
+SYNC qa: had None keywords
+  retry 1/3 (0 keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL qa: only None keywords after 3 attempts
+SYNC bh: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL bh: only None keywords after 3 attempts
+SYNC iq: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL iq: only None keywords after 3 attempts
+SYNC ma: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL ma: only None keywords after 3 attempts
+SYNC dz: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL dz: only None keywords after 3 attempts
+SYNC gh: had 0 keywords
+  -> gh: 24 keywords (attempt 1)
+SYNC ke: had 0 keywords
+  retry 1/3 (None keywords)
+  -> ke: 16 keywords (attempt 2)
+SYNC za: had 0 keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (4 keywords)
+FAIL za: only 4 keywords after 3 attempts
+SYNC pk: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL pk: only None keywords after 3 attempts
+SYNC am: had None keywords
+  retry 1/3 (None keywords)
+  retry 2/3 (None keywords)
+  retry 3/3 (None keywords)
+FAIL am: only None keywords after 3 attempts
+
+Done: 64/91 stores verified (≥15 keywords)
+Failed: kz, my, th, vn, id, ph, in, kh, mn, np, lk, sa, ae, eg, il, jo, kw, lb, om, qa, bh, iq, ma, dz, za, pk, am
+error: Astro MCP not reachable — open Astro and enable MCP

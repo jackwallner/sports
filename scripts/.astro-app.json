@@ -1,0 +1,17 @@
+{
+  "appId": "102",
+  "appStoreId": "6770138156",
+  "appName": "Casual Sports News - The Gist",
+  "astroPlaceholderName": "Sports",
+  "bundleId": "com.jackwallner.sports",
+  "store": "us",
+  "keywordCount": 66,
+  "syncedAt": "2026-05-27T00:57:15Z",
+  "note": "Prelaunch: track as Astro 'Sports'. After App Store release, link appStoreId 6770138156 and rename to ASC name.",
+  "curatedKeywordCount": 61,
+  "trackedInAstro": 228,
+  "strategyVersion": "v2-pop-diff-20260525",
+  "allAstroStores": [
+    "ma"
+  ]
+}
