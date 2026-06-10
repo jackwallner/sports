@@ -18,7 +18,7 @@ on:
 jobs:
   pipeline:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 55
     env:
       URL: ${{ secrets.SUPABASE_FUNCTIONS_URL }}
       CS: ${{ secrets.CRON_SECRET }}
@@ -44,6 +44,7 @@ jobs:
                 -H "x-cron-secret: $CS" \
                 -d "{\"personas\":[\"$P\"]}") || R='{"error":"curl failed"}'
               echo "$R"
+              echo "$R" | jq -r '.results[]?.image_urls[]? // empty' >> /tmp/card-art-urls.txt || true
               if echo "$R" | grep -q '"status":"succeeded"'; then OK=1; break; fi
               sleep 5
             done
@@ -76,9 +77,46 @@ jobs:
                 -H "x-cron-secret: $CS" \
                 -d "$BODY") || R='{"error":"curl failed"}'
               echo "$R"
+              echo "$R" | jq -r '.results[]?.image_urls[]? // empty' >> /tmp/card-art-urls.txt || true
               if echo "$R" | grep -q '"status":"succeeded"'; then OK=1; break; fi
               sleep 5
             done
             if [ "$OK" -ne 1 ]; then FAILED=1; fi
           done
           exit $FAILED
+
+      # Pollinations generates an image the first time its URL is requested and
+      # caches it by URL after that. Fetching every freshly stamped image_url
+      # here (serially: the free tier allows one in-flight request per IP) means
+      # phones get instant CDN hits instead of multi-second generations. The
+      # same story keeps the same URL across personas and windows, so most runs
+      # only warm a handful of genuinely new images. Best-effort by design: a
+      # miss just means that card generates on first view in the app.
+      - name: Warm card art (Pollinations CDN)
+        if: always()
+        run: |
+          if [ ! -s /tmp/card-art-urls.txt ]; then
+            echo "No card art URLs collected; nothing to warm."
+            exit 0
+          fi
+          sort -u /tmp/card-art-urls.txt > /tmp/card-art-unique.txt
+          TOTAL=$(wc -l < /tmp/card-art-unique.txt | tr -d ' ')
+          echo "Warming $TOTAL unique images"
+          DEADLINE=$(( $(date +%s) + 20*60 ))
+          WARMED=0
+          while IFS= read -r U; do
+            if [ "$(date +%s)" -ge "$DEADLINE" ]; then
+              echo "Time cap reached after $WARMED/$TOTAL; remaining images generate on first view."
+              break
+            fi
+            CODE=000
+            for i in 1 2 3; do
+              CODE=$(curl -s -o /dev/null -w '%{http_code}' --max-time 90 "$U" || echo 000)
+              if [ "$CODE" = "200" ]; then WARMED=$((WARMED+1)); break; fi
+              # 402/429 = the IP's single free slot is busy; wait and retry.
+              sleep 15
+            done
+            echo "[$WARMED/$TOTAL] $CODE $U"
+          done < /tmp/card-art-unique.txt
+          echo "Warmed $WARMED of $TOTAL images."
+          exit 0

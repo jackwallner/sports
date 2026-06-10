@@ -84,6 +84,10 @@ public struct BriefingBullet: Identifiable, Codable, Equatable, Sendable {
     public let tagReason: String?
     public let sourceHeadline: String
     public let sourceURL: URL
+    /// Card art pre-stamped by the content pipeline (and pre-warmed onto the
+    /// image CDN by the cron). Older rows lack it; the app derives a URL
+    /// client-side as the fallback.
+    public let imageURL: URL?
 
     public init(
         id: UUID = UUID(),
@@ -93,7 +97,8 @@ public struct BriefingBullet: Identifiable, Codable, Equatable, Sendable {
         tag: BriefingTag? = nil,
         tagReason: String? = nil,
         sourceHeadline: String,
-        sourceURL: URL
+        sourceURL: URL,
+        imageURL: URL? = nil
     ) {
         self.id = id
         self.talkingPoint = talkingPoint
@@ -103,6 +108,7 @@ public struct BriefingBullet: Identifiable, Codable, Equatable, Sendable {
         self.tagReason = tagReason
         self.sourceHeadline = sourceHeadline
         self.sourceURL = sourceURL
+        self.imageURL = imageURL
     }
 
     enum CodingKeys: String, CodingKey {
@@ -114,6 +120,7 @@ public struct BriefingBullet: Identifiable, Codable, Equatable, Sendable {
         case tagReason = "tag_reason"
         case sourceHeadline = "source_headline"
         case sourceURL = "source_url"
+        case imageURL = "image_url"
     }
 }
 

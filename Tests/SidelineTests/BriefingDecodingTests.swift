@@ -19,7 +19,13 @@ final class BriefingDecodingTests: XCTestCase {
             "tag": "drama",
             "tag_reason": "Locker-room sources are frustrated.",
             "source_headline": "Veteran QB benched amid playoff push - The Athletic",
-            "source_url": "https://example.com/story"
+            "source_url": "https://example.com/story",
+            "image_url": "https://image.pollinations.ai/prompt/test?seed=1"
+          }, {
+            "id": "33333333-3333-3333-3333-333333333333",
+            "talking_point": "Older bullet without pipeline-stamped art still decodes.",
+            "source_headline": "From warehouse shifts to starting QB - ESPN",
+            "source_url": "https://example.com/other"
           }],
           "suggested_question": "Do you think they made the right call?",
           "source_count": 1,
@@ -33,6 +39,11 @@ final class BriefingDecodingTests: XCTestCase {
         XCTAssertEqual(briefings.first?.persona, .cocktailParty)
         XCTAssertEqual(briefings.first?.bullets.first?.tag, .drama)
         XCTAssertEqual(briefings.first?.sourceCount, 1)
+        XCTAssertEqual(
+            briefings.first?.bullets.first?.imageURL,
+            URL(string: "https://image.pollinations.ai/prompt/test?seed=1")
+        )
+        XCTAssertNil(briefings.first?.bullets.last?.imageURL)
     }
 
     func testSampleBriefingHasRequiredSourceLinks() throws {

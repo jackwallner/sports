@@ -12,10 +12,10 @@ import UIKit
 /// the discarded card drops to the back, so on a 4-card deck you just keep
 /// swiping and everything comes back around. No dead ends, no buttons.
 ///
-/// Each card is a full-bleed, tag-keyed gradient that leads with the line to
-/// say (white, editorial), a sport chip that actually tells you the sport, and
-/// a clean footer with one beat of backup and the source. No wall of text, no
-/// decorative graphic that does nothing.
+/// Each card leads with generated art and ONE line to say. Everything else —
+/// the gossipy tie-in, why it earned its tag, the source — lives on the back
+/// of the card, a tap-to-flip away. Front = say this; back = in case they
+/// ask. No wall of text on either face.
 struct BriefingDeck: View {
     let briefing: Briefing
     @Binding var index: Int
@@ -25,6 +25,9 @@ struct BriefingDeck: View {
     @State private var isFlinging = false
     @State private var crossedThreshold = false
     @State private var didHint = false
+    /// Which deck position is showing its back. Only the front card can flip,
+    /// and any swipe puts it face-up again.
+    @State private var flippedPosition: Int?
 
     /// Flips true the first time the user actually swipes, ever. Gates the
     /// one-time "here's how this works" nudge.
@@ -34,7 +37,7 @@ struct BriefingDeck: View {
     @ScaledMetric(relativeTo: .footnote) private var activeDotWidth: CGFloat = 22
 
     private var cards: [DeckCard] {
-        [.lead(briefing.tlDR)]
+        [.lead(briefing)]
             + briefing.bullets.map(DeckCard.point)
             + [.question(briefing.suggestedQuestion)]
     }
@@ -55,6 +58,7 @@ struct BriefingDeck: View {
                         DeckCardView(
                             card: cards[position],
                             parallax: slot == 0 ? drag.width / 60 : 0,
+                            isFlipped: flippedPosition == position,
                             onOpenSource: onOpenSource
                         )
                             .scaleEffect(scale(forSlot: slot))
@@ -64,6 +68,14 @@ struct BriefingDeck: View {
                             .zIndex(Double(count - slot))
                             .allowsHitTesting(slot == 0)
                             .gesture(dragGesture(size: size, count: count))
+                            .onTapGesture { flip(position: position, card: cards[position]) }
+                            .accessibilityActions {
+                                if cards[position].hasBack {
+                                    Button(flippedPosition == position ? "Show the talking point" : "Show the backstory") {
+                                        flip(position: position, card: cards[position])
+                                    }
+                                }
+                            }
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -80,11 +92,35 @@ struct BriefingDeck: View {
                     default: break
                     }
                 }
-                .onAppear { maybeHintSwipe() }
+                .onAppear {
+                    maybeHintSwipe()
+                    prefetchArt()
+                }
             }
 
             pageDots(count: count)
         }
+        .onChange(of: index) { _, _ in
+            flippedPosition = nil
+        }
+    }
+
+    // MARK: - Flip
+
+    private func flip(position: Int, card: DeckCard) {
+        guard card.hasBack, !isFlinging else { return }
+        impact(.soft, intensity: 0.5)
+        withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
+            flippedPosition = flippedPosition == position ? nil : position
+        }
+    }
+
+    private func prefetchArt() {
+        #if canImport(UIKit)
+        var urls = [CardArt.leadImageURL(for: briefing)]
+        urls += briefing.bullets.map(CardArt.imageURL(for:))
+        CardArtStore.prefetch(urls.compactMap { $0 })
+        #endif
     }
 
     // MARK: - Stack geometry
@@ -175,6 +211,7 @@ struct BriefingDeck: View {
                 index = (index + 1) % count
                 drag = .zero
                 isFlinging = false
+                flippedPosition = nil
             }
         }
     }
@@ -223,9 +260,16 @@ struct BriefingDeck: View {
 }
 
 enum DeckCard {
-    case lead(String)
+    case lead(Briefing)
     case point(BriefingBullet)
     case question(String)
+
+    /// Story cards carry their detail on the back. Lead and question cards are
+    /// single-faced; tapping them does nothing.
+    var hasBack: Bool {
+        if case .point = self { return true }
+        return false
+    }
 }
 
 /// Thin wrapper so the deck can ask for haptics without leaking UIKit types
@@ -247,12 +291,25 @@ private struct DeckCardView: View {
     /// Tiny horizontal drift of the gradient sheen, tied to the live drag, so
     /// the top card feels like it has depth as you push it.
     let parallax: CGFloat
+    let isFlipped: Bool
     let onOpenSource: (URL) -> Void
 
     var body: some View {
-        VStack(spacing: 0) {
-            hero
-            footer
+        ZStack {
+            front
+                .rotation3DEffect(.degrees(isFlipped ? 180 : 0), axis: (x: 0, y: 1, z: 0))
+                .opacity(isFlipped ? 0 : 1)
+                .allowsHitTesting(!isFlipped)
+                .accessibilityHidden(isFlipped)
+            if case .point(let bullet) = card {
+                back(bullet)
+                    .rotation3DEffect(.degrees(isFlipped ? 0 : -180), axis: (x: 0, y: 1, z: 0))
+                    .opacity(isFlipped ? 1 : 0)
+                    // The hidden face must never steal touches — its source
+                    // button sits right where flip taps land.
+                    .allowsHitTesting(isFlipped)
+                    .accessibilityHidden(!isFlipped)
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.sidelineDeckCard)
@@ -265,13 +322,13 @@ private struct DeckCardView: View {
         .accessibilityElement(children: .contain)
     }
 
-    // MARK: Hero — the full-bleed gradient that carries the line
+    // MARK: Front — full-bleed art carrying the one line to say
 
     @ViewBuilder
-    private var hero: some View {
+    private var front: some View {
         switch card {
-        case .lead(let tlDR):
-            heroBand(colors: SidelineTheme.heroNavy, alignment: .leading) {
+        case .lead(let briefing):
+            artBand(colors: SidelineTheme.heroNavy, imageURL: CardArt.leadImageURL(for: briefing)) {
                 VStack(alignment: .leading, spacing: 14) {
                     HStack(spacing: 6) {
                         Image(systemName: "quote.opening")
@@ -282,19 +339,32 @@ private struct DeckCardView: View {
                     }
                     .foregroundStyle(.white.opacity(0.95))
 
-                    Text(tlDR)
+                    Text(briefing.tlDR)
                         .font(SidelineTheme.display(25))
                         .foregroundStyle(.white)
                         .lineSpacing(2)
                         .lineLimit(7)
                         .minimumScaleFactor(0.7)
                         .fixedSize(horizontal: false, vertical: true)
-                        .shadow(color: .black.opacity(0.22), radius: 8, x: 0, y: 3)
-                        .copyable(tlDR)
+                        .shadow(color: .black.opacity(0.35), radius: 8, x: 0, y: 3)
+                        .copyable(briefing.tlDR)
+
+                    HStack(spacing: 6) {
+                        Image(systemName: "hand.draw.fill")
+                            .font(.caption2)
+                        Text("Say this first. Swipe for the stories behind it.")
+                            .font(.footnote.weight(.medium))
+                    }
+                    .foregroundStyle(.white.opacity(0.85))
+                    .padding(.top, 2)
+                    .accessibilityHidden(true)
                 }
             }
         case .point(let bullet):
-            heroBand(colors: heroColors(for: bullet.tag)) {
+            artBand(
+                colors: heroColors(for: bullet.tag),
+                imageURL: CardArt.imageURL(for: bullet)
+            ) {
                 VStack(alignment: .leading, spacing: 0) {
                     HStack(alignment: .top, spacing: 8) {
                         if let tag = bullet.tag, tag != .neutral {
@@ -310,11 +380,12 @@ private struct DeckCardView: View {
                         Text(subject.uppercased())
                             .font(.caption.weight(.heavy))
                             .tracking(1.2)
-                            .foregroundStyle(.white.opacity(0.78))
+                            .foregroundStyle(.white.opacity(0.82))
                             .lineLimit(1)
+                            .shadow(color: .black.opacity(0.3), radius: 4, x: 0, y: 1)
                     }
 
-                    // The line to say — the hero of the whole card.
+                    // The line to say — the only words the front carries.
                     Text(bullet.talkingPoint)
                         .font(SidelineTheme.display(23))
                         .foregroundStyle(.white)
@@ -322,13 +393,27 @@ private struct DeckCardView: View {
                         .lineLimit(5)
                         .minimumScaleFactor(0.7)
                         .fixedSize(horizontal: false, vertical: true)
-                        .shadow(color: .black.opacity(0.22), radius: 8, x: 0, y: 3)
+                        .shadow(color: .black.opacity(0.35), radius: 8, x: 0, y: 3)
                         .padding(.top, 6)
                         .copyable(bullet.talkingPoint)
+
+                    HStack(spacing: 6) {
+                        Image(systemName: "hand.tap.fill")
+                            .font(.caption2)
+                        Text("Tap for the backstory")
+                            .font(.footnote.weight(.semibold))
+                    }
+                    .foregroundStyle(.white.opacity(0.9))
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 7)
+                    .background(.white.opacity(0.16), in: Capsule())
+                    .overlay(Capsule().stroke(.white.opacity(0.25), lineWidth: 1))
+                    .padding(.top, 14)
+                    .accessibilityHidden(true)
                 }
             }
         case .question(let question):
-            heroBand(colors: SidelineTheme.heroGold, alignment: .leading) {
+            artBand(colors: SidelineTheme.heroGold, imageURL: nil) {
                 VStack(alignment: .leading, spacing: 14) {
                     HStack(spacing: 6) {
                         Image(systemName: "arrow.turn.down.right")
@@ -348,22 +433,116 @@ private struct DeckCardView: View {
                         .fixedSize(horizontal: false, vertical: true)
                         .shadow(color: .black.opacity(0.22), radius: 8, x: 0, y: 3)
                         .copyable(question)
+
+                    HStack(spacing: 6) {
+                        Image(systemName: "person.2.fill")
+                            .font(.caption2)
+                        Text("Ask a fan to keep it going.")
+                            .font(.footnote.weight(.medium))
+                    }
+                    .foregroundStyle(.white.opacity(0.85))
+                    .padding(.top, 2)
+                    .accessibilityHidden(true)
                 }
             }
         }
     }
 
-    private func heroBand<Overlay: View>(
+    // MARK: Back — the backstory, in case they ask
+
+    private func back(_ bullet: BriefingBullet) -> some View {
+        ZStack {
+            LinearGradient(
+                colors: heroColors(for: bullet.tag),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            // Darken the same gradient so the back reads as the card's reverse
+            // side, not a different card.
+            Color.black.opacity(0.30)
+
+            VStack(alignment: .leading, spacing: 16) {
+                HStack(spacing: 6) {
+                    Image(systemName: "text.bubble.fill")
+                        .font(.caption2.weight(.bold))
+                    Text("THE BACKSTORY")
+                        .font(SidelineTheme.eyebrow)
+                        .tracking(1.4)
+                }
+                .foregroundStyle(.white.opacity(0.95))
+
+                if let tieIn = bullet.tieIn, !tieIn.isEmpty {
+                    Text(tieIn)
+                        .font(SidelineTheme.display(20))
+                        .foregroundStyle(.white)
+                        .lineSpacing(2)
+                        .lineLimit(6)
+                        .minimumScaleFactor(0.8)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .copyable(tieIn)
+                }
+
+                if let reason = bullet.tagReason, !reason.isEmpty {
+                    HStack(alignment: .top, spacing: 8) {
+                        Image(systemName: (bullet.tag ?? .neutral).symbolName)
+                            .font(.footnote.weight(.bold))
+                            .padding(.top, 2)
+                        Text(reason)
+                            .font(.callout)
+                            .lineSpacing(2)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .foregroundStyle(.white.opacity(0.88))
+                }
+
+                Spacer(minLength: 12)
+
+                learnMore(bullet)
+
+                HStack(spacing: 6) {
+                    Image(systemName: "hand.tap.fill")
+                        .font(.caption2)
+                    Text("Tap to flip back")
+                        .font(.footnote.weight(.medium))
+                }
+                .frame(maxWidth: .infinity)
+                .foregroundStyle(.white.opacity(0.7))
+                .accessibilityHidden(true)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .padding(22)
+        }
+    }
+
+    /// The card's visual floor: tag-keyed gradient immediately, generated art
+    /// fading in on top once it lands, then a scrim so white type always reads
+    /// no matter what the art came back as.
+    private func artBand<Overlay: View>(
         colors: [Color],
+        imageURL: URL?,
         alignment: Alignment = .bottomLeading,
         @ViewBuilder overlay: () -> Overlay
     ) -> some View {
         ZStack {
             LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing)
 
+            CardArtImage(url: imageURL)
+
+            // Legibility scrim: stronger at the bottom where the line sits.
+            LinearGradient(
+                stops: [
+                    .init(color: .black.opacity(0.30), location: 0),
+                    .init(color: .black.opacity(0.05), location: 0.35),
+                    .init(color: .black.opacity(0.62), location: 1)
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .allowsHitTesting(false)
+
             // Soft sheen for depth — ambient, not a "graphic." Drifts with the swipe.
             RadialGradient(
-                colors: [.white.opacity(0.22), .clear],
+                colors: [.white.opacity(0.18), .clear],
                 center: .init(x: 0.82 + parallax * 0.02, y: 0.12),
                 startRadius: 0,
                 endRadius: 240
@@ -376,62 +555,6 @@ private struct DeckCardView: View {
                 .padding(20)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-
-    // MARK: Footer — one beat of backup + the source
-
-    @ViewBuilder
-    private var footer: some View {
-        switch card {
-        case .lead:
-            HStack(spacing: 8) {
-                Image(systemName: "hand.draw.fill")
-                    .font(.footnote)
-                    .foregroundStyle(SidelineTheme.brandPrimary)
-                Text("Say this first. Swipe for the stories behind it.")
-                    .font(.subheadline)
-                    .foregroundStyle(SidelineTheme.inkSecondary)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(20)
-            .accessibilityHidden(true)
-
-        case .point(let bullet):
-            VStack(alignment: .leading, spacing: 12) {
-                if let backup = backupDetail(for: bullet) {
-                    Text(backup)
-                        .font(.callout)
-                        .foregroundStyle(SidelineTheme.inkSecondary)
-                        .lineSpacing(2)
-                        .lineLimit(3)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                learnMore(bullet)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(20)
-
-        case .question:
-            HStack(spacing: 8) {
-                Image(systemName: "person.2.fill")
-                    .font(.footnote)
-                    .foregroundStyle(SidelineTheme.brandPrimary)
-                Text("Ask a fan to keep it going.")
-                    .font(.subheadline)
-                    .foregroundStyle(SidelineTheme.inkSecondary)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(20)
-            .accessibilityHidden(true)
-        }
-    }
-
-    /// The supporting beat: the gossipy tie-in if we have one, otherwise the
-    /// reason it earned its tag. Nil when the line stands on its own.
-    private func backupDetail(for bullet: BriefingBullet) -> String? {
-        if let tieIn = bullet.tieIn, !tieIn.isEmpty { return tieIn }
-        if let reason = bullet.tagReason, !reason.isEmpty { return reason }
-        return nil
     }
 
     private func learnMore(_ bullet: BriefingBullet) -> some View {
@@ -449,11 +572,12 @@ private struct DeckCardView: View {
                 Image(systemName: "arrow.up.right")
                     .font(.caption2.weight(.bold))
             }
-            .foregroundStyle(SidelineTheme.brandPrimary)
+            .foregroundStyle(.white)
             .padding(.horizontal, 12)
             .padding(.vertical, 9)
             .frame(maxWidth: .infinity)
-            .background(SidelineTheme.brandPrimary.opacity(0.10), in: Capsule())
+            .background(.white.opacity(0.18), in: Capsule())
+            .overlay(Capsule().stroke(.white.opacity(0.28), lineWidth: 1))
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .ignore)
@@ -474,10 +598,10 @@ private struct DeckCardView: View {
         }
     }
 
-    /// A real, legible chip that names the sport — the graphic that earns its
-    /// place. Falls back to a tag-flavored, icon-only chip when we can't tell.
+    /// A real, legible chip that names the sport. Falls back to a tag-flavored,
+    /// icon-only chip when we can't tell.
     private func sportChip(for bullet: BriefingBullet) -> some View {
-        let sport = sport(for: bullet)
+        let sport = CardArt.sport(for: bullet)
         return HStack(spacing: 5) {
             Image(systemName: sport.symbol)
                 .font(.caption2.weight(.bold))
@@ -493,38 +617,6 @@ private struct DeckCardView: View {
         .background(.white.opacity(0.20), in: Capsule())
         .overlay(Capsule().stroke(.white.opacity(0.30), lineWidth: 1))
         .accessibilityHidden(true)
-    }
-
-    private func sport(for bullet: BriefingBullet) -> (symbol: String, name: String) {
-        let hay = ((bullet.subject ?? "") + " " + bullet.sourceHeadline).lowercased()
-        func has(_ words: [String]) -> Bool { words.contains { hay.contains($0) } }
-
-        // League keywords first, then a curated set of league-unique team
-        // nicknames (no cross-league collisions) so the chip names the league
-        // even when the story only mentions the team.
-        if has(["nfl", "football", "quarterback", "touchdown", "super bowl", " qb",
-                "cowboys", "eagles", "chiefs", "packers", "steelers", "49ers", "niners",
-                "patriots", "bills", "ravens", "dolphins", "bengals", "broncos", "raiders",
-                "browns", "seahawks", "vikings", "buccaneers", "commanders"]) { return ("football.fill", "NFL") }
-        if has(["wnba"]) { return ("basketball.fill", "WNBA") }
-        if has(["nba", "basketball", "dunk", "three-pointer",
-                "knicks", "lakers", "celtics", "warriors", "bulls", "mavericks", "nuggets",
-                "bucks", "sixers", "76ers", "timberwolves", "cavaliers", "thunder"]) { return ("basketball.fill", "NBA") }
-        if has(["mlb", "baseball", "pitcher", "home run", "world series",
-                "yankees", "dodgers", "red sox", "mets", "cubs", "astros", "braves",
-                "phillies", "orioles"]) { return ("baseball.fill", "MLB") }
-        if has(["soccer", "fifa", "premier league", "la liga", " mls", "world cup", "messi", "ronaldo"]) { return ("soccerball", "SOCCER") }
-        if has(["tennis", "wimbledon", "grand slam", "djokovic", "serena", "alcaraz"]) { return ("tennis.racket", "TENNIS") }
-        if has(["nhl", "hockey", "stanley cup",
-                "bruins", "oilers", "maple leafs", "canadiens", "blackhawks", "penguins"]) { return ("figure.hockey", "NHL") }
-        if has(["golf", "pga", "masters", "mcilroy"]) { return ("figure.golf", "GOLF") }
-        if has(["olympic", "medal"]) { return ("trophy.fill", "OLYMPICS") }
-
-        switch bullet.tag {
-        case .drama, .jerk:         return ("flame.fill", "")
-        case .niceGuy, .redemption: return ("star.fill", "")
-        default:                    return ("sportscourt.fill", "")
-        }
     }
 
     /// White-on-glass tag pill that reads on the dark gradient.
