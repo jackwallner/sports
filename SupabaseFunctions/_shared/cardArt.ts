@@ -60,15 +60,7 @@ async function storedImageURL(
       return publicUrl;
     }
 
-    const generated = await fetch(
-      `https://gen.pollinations.ai/image/${encodePromptPath(prompt)}` +
-        `?width=768&height=960&seed=${seed}&safe=true`,
-      { headers: { Authorization: `Bearer ${apiKey}` } },
-    );
-    if (!generated.ok) {
-      throw new Error(`gen.pollinations.ai returned ${generated.status}`);
-    }
-    const bytes = new Uint8Array(await generated.arrayBuffer());
+    const bytes = await generateWithRetry(prompt, seed, apiKey);
 
     // Self-provision the public bucket on first ever use.
     await supabase.storage.createBucket(BUCKET, { public: true }).catch(() => {});
@@ -87,6 +79,31 @@ async function storedImageURL(
     logError(trace_id, "card_art_generation_failed", error, { path });
     return imageURLForBullet(bullet);
   }
+}
+
+/// Bursts of generations can trip the gateway's rate limit (402/429); those
+/// are worth a short backoff. Anything else fails fast to the legacy URL.
+async function generateWithRetry(prompt: string, seed: number, apiKey: string): Promise<Uint8Array> {
+  let status = 0;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    if (attempt > 0) {
+      await new Promise((resolve) => setTimeout(resolve, 5000 * attempt));
+    }
+    const response = await fetch(
+      `https://gen.pollinations.ai/image/${encodePromptPath(prompt)}` +
+        `?width=768&height=960&seed=${seed}&safe=true`,
+      { headers: { Authorization: `Bearer ${apiKey}` } },
+    );
+    if (response.ok) {
+      return new Uint8Array(await response.arrayBuffer());
+    }
+    status = response.status;
+    await response.body?.cancel();
+    if (status !== 402 && status !== 429) {
+      break;
+    }
+  }
+  throw new Error(`gen.pollinations.ai returned ${status}`);
 }
 
 const STYLE = "modern editorial sports illustration, bold graphic shapes, " +
@@ -182,12 +199,13 @@ function pollinationsURL(prompt: string, seed: number): string {
     `?width=768&height=960&nologo=true&safe=true&seed=${seed}`;
 }
 
-/// FNV-1a, 32-bit — identical to CardArt.stableSeed in the app.
+/// FNV-1a, masked to 31 bits — identical to CardArt.stableSeed in the app.
+/// gen.pollinations.ai rejects seeds above int32 max, so the top bit goes.
 function fnv1a32(text: string): number {
   let hash = 0x811c9dc5;
   for (const byte of new TextEncoder().encode(text)) {
     hash ^= byte;
     hash = Math.imul(hash, 0x01000193) >>> 0;
   }
-  return hash >>> 0;
+  return hash & 0x7fffffff;
 }
