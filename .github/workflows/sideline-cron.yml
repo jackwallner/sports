@@ -18,7 +18,7 @@ on:
 jobs:
   pipeline:
     runs-on: ubuntu-latest
-    timeout-minutes: 55
+    timeout-minutes: 30
     env:
       URL: ${{ secrets.SUPABASE_FUNCTIONS_URL }}
       CS: ${{ secrets.CRON_SECRET }}
@@ -31,11 +31,19 @@ jobs:
             -H "x-cron-secret: $CS"
           echo
 
+      # Gemini free tier allows 20 requests/day, so the persona set is
+      # window-dependent: the morning run refreshes every room, while midday
+      # and evening only refresh Cocktail Party (the free room everyone sees).
+      # Manual dispatches behave like the morning run.
       - name: Generate national briefings (per persona)
         run: |
           set -uo pipefail
+          case "${{ github.event.schedule }}" in
+            '0 19 * * *'|'0 23 * * *') PERSONAS="cocktail_party" ;;
+            *) PERSONAS="cocktail_party office_watercooler date_night sports_talk_for_moms" ;;
+          esac
           FAILED=0
-          for P in cocktail_party office_watercooler date_night sports_talk_for_moms; do
+          for P in $PERSONAS; do
             echo "=== $P ==="
             OK=0
             for i in 1 2 3; do
@@ -44,7 +52,6 @@ jobs:
                 -H "x-cron-secret: $CS" \
                 -d "{\"personas\":[\"$P\"]}") || R='{"error":"curl failed"}'
               echo "$R"
-              echo "$R" | jq -r '.results[]?.image_urls[]? // empty' >> /tmp/card-art-urls.txt || true
               if echo "$R" | grep -q '"status":"succeeded"'; then OK=1; break; fi
               sleep 5
             done
@@ -52,11 +59,14 @@ jobs:
           done
           exit $FAILED
 
+      # Local teams only refresh on the morning run, 8 rotating teams per day
+      # (full league coverage every 4 days) to stay inside the Gemini quota.
       - name: Generate local team briefings (per team)
+        if: ${{ github.event_name == 'workflow_dispatch' || github.event.schedule == '0 14 * * *' }}
         run: |
           set -uo pipefail
           # Must match the team names in Sideline/Views/SettingsView.swift TeamPickerView.
-          TEAMS=(
+          ALL_TEAMS=(
             "Arizona Cardinals" "Atlanta Falcons" "Baltimore Ravens" "Buffalo Bills"
             "Carolina Panthers" "Chicago Bears" "Cincinnati Bengals" "Cleveland Browns"
             "Dallas Cowboys" "Denver Broncos" "Detroit Lions" "Green Bay Packers"
@@ -66,6 +76,13 @@ jobs:
             "New York Jets" "Philadelphia Eagles" "Pittsburgh Steelers" "San Francisco 49ers"
             "Seattle Seahawks" "Tampa Bay Buccaneers" "Tennessee Titans" "Washington Commanders"
           )
+          N=${#ALL_TEAMS[@]}
+          DAY=$((10#$(date -u +%j)))
+          TEAMS=()
+          for K in 0 1 2 3 4 5 6 7; do
+            TEAMS+=("${ALL_TEAMS[$(( (DAY * 8 + K) % N ))]}")
+          done
+          echo "Today's rotation: ${TEAMS[*]}"
           FAILED=0
           for T in "${TEAMS[@]}"; do
             echo "=== local_team: $T ==="
@@ -77,46 +94,9 @@ jobs:
                 -H "x-cron-secret: $CS" \
                 -d "$BODY") || R='{"error":"curl failed"}'
               echo "$R"
-              echo "$R" | jq -r '.results[]?.image_urls[]? // empty' >> /tmp/card-art-urls.txt || true
               if echo "$R" | grep -q '"status":"succeeded"'; then OK=1; break; fi
               sleep 5
             done
             if [ "$OK" -ne 1 ]; then FAILED=1; fi
           done
           exit $FAILED
-
-      # Pollinations generates an image the first time its URL is requested and
-      # caches it by URL after that. Fetching every freshly stamped image_url
-      # here (serially: the free tier allows one in-flight request per IP) means
-      # phones get instant CDN hits instead of multi-second generations. The
-      # same story keeps the same URL across personas and windows, so most runs
-      # only warm a handful of genuinely new images. Best-effort by design: a
-      # miss just means that card generates on first view in the app.
-      - name: Warm card art (Pollinations CDN)
-        if: always()
-        run: |
-          if [ ! -s /tmp/card-art-urls.txt ]; then
-            echo "No card art URLs collected; nothing to warm."
-            exit 0
-          fi
-          sort -u /tmp/card-art-urls.txt > /tmp/card-art-unique.txt
-          TOTAL=$(wc -l < /tmp/card-art-unique.txt | tr -d ' ')
-          echo "Warming $TOTAL unique images"
-          DEADLINE=$(( $(date +%s) + 20*60 ))
-          WARMED=0
-          while IFS= read -r U; do
-            if [ "$(date +%s)" -ge "$DEADLINE" ]; then
-              echo "Time cap reached after $WARMED/$TOTAL; remaining images generate on first view."
-              break
-            fi
-            CODE=000
-            for i in 1 2 3; do
-              CODE=$(curl -s -o /dev/null -w '%{http_code}' --max-time 90 "$U" || echo 000)
-              if [ "$CODE" = "200" ]; then WARMED=$((WARMED+1)); break; fi
-              # 402/429 = the IP's single free slot is busy; wait and retry.
-              sleep 15
-            done
-            echo "[$WARMED/$TOTAL] $CODE $U"
-          done < /tmp/card-art-unique.txt
-          echo "Warmed $WARMED of $TOTAL images."
-          exit 0

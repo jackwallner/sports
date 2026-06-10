@@ -37,6 +37,9 @@ enum CardArt {
     }
 
     static func leadImageURL(for briefing: Briefing) -> URL? {
+        // The TL;DR summarizes the top story, so it shares that story's
+        // pipeline-stamped (storage-hosted, always-fast) art when available.
+        if let stamped = briefing.bullets.first?.imageURL { return stamped }
         let scene = briefing.bullets.first.map { sport(for: $0).scene } ?? fallbackScene
         let prompt = "\(scene), grand cinematic atmosphere, deep navy and emerald palette, \(style)"
         return pollinationsURL(prompt: prompt, seed: stableSeed(briefing.tlDR))
