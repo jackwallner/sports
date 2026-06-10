@@ -172,7 +172,7 @@ const STYLE = "Flat bold graphic shapes, screen print risograph texture, " +
   "limited palette of deep navy, warm cream, forest green and antique gold, " +
   "dramatic side lighting, grainy shadows, 1960s sports magazine poster aesthetic. " +
   "No real people's likenesses, no readable faces, no text, no words, no letters, " +
-  "no numbers, no logos, no watermark.";
+  "no numbers, no logos, no watermark, no signature, no caption.";
 
 const FALLBACK_SCENE = "packed sports stadium at night under floodlights, " +
   "crowd in silhouette, confetti in the air";
