@@ -1,0 +1,90 @@
+Retrying 27 failed stores
+OK   kz: 21 keywords (skip sync)
+SYNC my: had None keywords
+  retry 1/5 (None keywords)
+  retry 2/5 (None keywords)
+  retry 3/5 (None keywords)
+  retry 4/5 (None keywords)
+  retry 5/5 (None keywords)
+FAIL my: only None keywords after 5 attempts
+SYNC th: had 8 keywords
+  retry 1/5 (None keywords)
+  retry 2/5 (8 keywords)
+  retry 3/5 (8 keywords)
+  retry 4/5 (None keywords)
+  retry 5/5 (8 keywords)
+FAIL th: only 8 keywords after 5 attempts
+SYNC vn: had 0 keywords
+  retry 1/5 (8 keywords)
+  retry 2/5 (None keywords)
+  retry 3/5 (None keywords)
+  retry 4/5 (None keywords)
+  retry 5/5 (None keywords)
+FAIL vn: only None keywords after 5 attempts
+SYNC id: had 8 keywords
+  -> id: 24 keywords (attempt 1)
+SYNC ph: had 8 keywords
+  -> ph: 16 keywords (attempt 1)
+SYNC in: had 0 keywords
+  -> in: 21 keywords (attempt 1)
+SYNC kh: had 7 keywords
+  -> kh: 15 keywords (attempt 1)
+SYNC mn: had 0 keywords
+  retry 1/5 (None keywords)
+  retry 2/5 (8 keywords)
+  retry 3/5 (8 keywords)
+  retry 4/5 (None keywords)
+  retry 5/5 (None keywords)
+FAIL mn: only None keywords after 5 attempts
+SYNC np: had 0 keywords
+  -> np: 16 keywords (attempt 1)
+SYNC lk: had 0 keywords
+  retry 1/5 (8 keywords)
+  retry 2/5 (8 keywords)
+  retry 3/5 (None keywords)
+  retry 4/5 (8 keywords)
+  retry 5/5 (8 keywords)
+FAIL lk: only 8 keywords after 5 attempts
+OK   sa: 16 keywords (skip sync)
+OK   ae: 45 keywords (skip sync)
+SYNC eg: had None keywords
+  -> eg: 16 keywords (attempt 1)
+SYNC il: had 0 keywords
+  -> il: 16 keywords (attempt 1)
+SYNC jo: had 0 keywords
+  retry 1/5 (None keywords)
+  -> jo: 29 keywords (attempt 2)
+SYNC kw: had 8 keywords
+  -> kw: 24 keywords (attempt 1)
+OK   lb: 16 keywords (skip sync)
+SYNC om: had 8 keywords
+  retry 1/5 (None keywords)
+  -> om: 32 keywords (attempt 2)
+SYNC qa: had 0 keywords
+  retry 1/5 (None keywords)
+  retry 2/5 (11 keywords)
+  retry 3/5 (None keywords)
+  -> qa: 35 keywords (attempt 4)
+OK   bh: 45 keywords (skip sync)
+OK   iq: 31 keywords (skip sync)
+SYNC ma: had None keywords
+  retry 1/5 (0 keywords)
+  retry 2/5 (0 keywords)
+  retry 3/5 (0 keywords)
+  retry 4/5 (None keywords)
+  retry 5/5 (0 keywords)
+FAIL ma: only 0 keywords after 5 attempts
+SYNC dz: had None keywords
+  retry 1/5 (None keywords)
+  retry 2/5 (None keywords)
+  retry 3/5 (None keywords)
+  -> dz: 40 keywords (attempt 4)
+SYNC za: had 12 keywords
+  -> za: 28 keywords (attempt 1)
+SYNC pk: had 0 keywords
+  retry 1/5 (None keywords)
+  -> pk: 24 keywords (attempt 2)
+OK   am: 29 keywords (skip sync)
+
+Done: 21/91 stores verified (≥15 keywords)
+Failed: lk, ma, mn, my, th, vn

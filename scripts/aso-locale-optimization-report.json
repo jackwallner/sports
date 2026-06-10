@@ -1,0 +1,952 @@
+{
+  "ar-SA": {
+    "keywords": {
+      "old": "محادثة,كسر الجليد,ملخص,موجز,موسم,مناقشة,عناوين,نقاش,يومي,استعراض,داخلي,نميمة",
+      "new": "محادثة,كسر الجليد,ملخص,موجز,موسم,مناقشة,عناوين,نقاش,يومي,استعراض,داخلي,نميمة",
+      "len": 76
+    },
+    "subtitle": {
+      "old": "نقاط حديث لغير المعجبين",
+      "new": "نقاط حديث لغير المعجبين"
+    },
+    "description": {
+      "localized": true,
+      "chars": 609
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 92
+    }
+  },
+  "bn-BD": {
+    "keywords": {
+      "old": "কথোপকথন,বরফ ভাঙ্গা,সারসংক্ষেপ,সংক্ষিপ্ত,মৌসুম,বিতর্ক,শিরোনাম,দৈনিক,ওভারভিউ,ইনসাইডার,গসিপ",
+      "new": "কথোপকথন,বরফ ভাঙ্গা,সারসংক্ষেপ,সংক্ষিপ্ত,মৌসুম,বিতর্ক,শিরোনাম,দৈনিক,ওভারভিউ,ইনসাইডার,গসিপ",
+      "len": 88
+    },
+    "subtitle": {
+      "old": "অ-ভক্তদের জন্য আলোচনা",
+      "new": "অ-ভক্তদের জন্য আলোচনা"
+    },
+    "description": {
+      "localized": true,
+      "chars": 631
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 101
+    }
+  },
+  "ca": {
+    "keywords": {
+      "old": "conversació,trencaglaç,resum,breu,temporada,debat,titulars,discussió,diari,repàs,informat,xafarderia",
+      "new": "conversació,trencaglaç,resum,breu,temporada,debat,titulars,discussió,diari,repàs,informat,xafarderia",
+      "len": 100
+    },
+    "subtitle": {
+      "old": "Temes per a no aficionats",
+      "new": "Temes per a no aficionats"
+    },
+    "description": {
+      "localized": true,
+      "chars": 750
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 117
+    }
+  },
+  "cs": {
+    "keywords": {
+      "old": "konverzace,ledoborec,souhrn,stručný,sezóna,debata,titulky,diskuze,denní,přehled,insider,drby",
+      "new": "konverzace,ledoborec,souhrn,stručný,sezóna,debata,titulky,diskuze,denní,přehled,insider,drby",
+      "len": 92
+    },
+    "subtitle": {
+      "old": "Témata pro nefanoušky",
+      "new": "Témata pro nefanoušky"
+    },
+    "description": {
+      "localized": true,
+      "chars": 704
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 96
+    }
+  },
+  "da": {
+    "keywords": {
+      "old": "isbryder,resumé,kort,sæson,debat,overskrifter,dikussion,daglig,rundtur,insider,sladder",
+      "new": "isbryder,resumé,kort,sæson,debat,overskrifter,dikussion,daglig,rundtur,insider,sladder",
+      "len": 86
+    },
+    "subtitle": {
+      "old": "Samtaleemner for ikke-fans",
+      "new": "Samtaleemner for ikke-fans"
+    },
+    "description": {
+      "localized": true,
+      "chars": 727
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 109
+    }
+  },
+  "de-DE": {
+    "keywords": {
+      "old": "aufhänger,zusammenfassung,kurz,debste,saison,schlagzeilen,diskussion,täglich,zusammenstellung",
+      "new": "aufhänger,zusammenfassung,kurz,debste,saison,schlagzeilen,diskussion,täglich,zusammenstellung",
+      "len": 93
+    },
+    "subtitle": {
+      "old": "Gesprächstipps für Non-Fans",
+      "new": "Gesprächstipps für Non-Fans"
+    },
+    "description": {
+      "localized": true,
+      "chars": 814
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 124
+    }
+  },
+  "el": {
+    "keywords": {
+      "old": "συζήτηση,παγοθραύστης,περίληψη,σύντομο,σεζόν,συζήτηση,τίτλοι,συζήτηση,καθημερινό,ανασκόπηση,μυημένος",
+      "new": "συζήτηση,παγοθραύστης,περίληψη,σύντομο,σεζόν,συζήτηση,τίτλοι,συζήτηση,καθημερινό,ανασκόπηση,μυημένος",
+      "len": 100
+    },
+    "subtitle": {
+      "old": "Θέματα για μη φίλους",
+      "new": "Θέματα για μη φίλους"
+    },
+    "description": {
+      "localized": true,
+      "chars": 767
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 113
+    }
+  },
+  "en-AU": {
+    "keywords": {
+      "old": "conversation,icebreaker,recap,season,debate,headlines,discussion,roundup,insider,barstool,highlights",
+      "new": "conversation,icebreaker,recap,season,debate,headlines,discussion,roundup,insider,barstool,highlights",
+      "len": 100
+    },
+    "subtitle": {
+      "old": "Talking points for non-fans",
+      "new": "Talking points for non-fans"
+    },
+    "description": {
+      "localized": true,
+      "chars": 881
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 127
+    }
+  },
+  "en-CA": {
+    "keywords": {
+      "old": "conversation,icebreaker,recap,season,debate,headlines,discussion,roundup,insider,barstool,highlights",
+      "new": "conversation,icebreaker,recap,season,debate,headlines,discussion,roundup,insider,barstool,highlights",
+      "len": 100
+    },
+    "subtitle": {
+      "old": "Talking points for non-fans",
+      "new": "Talking points for non-fans"
+    },
+    "description": {
+      "localized": true,
+      "chars": 898
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 128
+    }
+  },
+  "en-GB": {
+    "keywords": {
+      "old": "conversation,icebreaker,recap,season,debate,headlines,discussion,roundup,insider,barstool,highlights",
+      "new": "conversation,icebreaker,recap,season,debate,headlines,discussion,roundup,insider,barstool,highlights",
+      "len": 100
+    },
+    "subtitle": {
+      "old": "Talking points for non-fans",
+      "new": "Talking points for non-fans"
+    },
+    "description": {
+      "localized": true,
+      "chars": 894
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 127
+    }
+  },
+  "en-US": {
+    "keywords": {
+      "old": "conversation,icebreaker,recap,season,debate,headlines,discussion,roundup,insider,barstool,highlights",
+      "new": "conversation,icebreaker,recap,season,debate,headlines,discussion,roundup,insider,barstool,highlights",
+      "len": 100
+    },
+    "subtitle": {
+      "old": "Talking points for non-fans",
+      "new": "Talking points for non-fans"
+    },
+    "description": {
+      "localized": true,
+      "chars": 1089
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 128
+    }
+  },
+  "es-ES": {
+    "keywords": {
+      "old": "conversación,rompehielos,resumen,breve,temporada,debate,titulares,discusión,diario,repaso",
+      "new": "conversación,rompehielos,resumen,breve,temporada,debate,titulares,discusión,diario,repaso",
+      "len": 89
+    },
+    "subtitle": {
+      "old": "Temas para no aficionados",
+      "new": "Temas para no aficionados"
+    },
+    "description": {
+      "localized": true,
+      "chars": 814
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 122
+    }
+  },
+  "es-MX": {
+    "keywords": {
+      "old": "conversación,rompehielos,resumen,breve,temporada,debate,titulares,plática,diario,repaso,información",
+      "new": "conversación,rompehielos,resumen,breve,temporada,debate,titulares,plática,diario,repaso,información",
+      "len": 99
+    },
+    "subtitle": {
+      "old": "Temas para no aficionados",
+      "new": "Temas para no aficionados"
+    },
+    "description": {
+      "localized": true,
+      "chars": 778
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 122
+    }
+  },
+  "fi": {
+    "keywords": {
+      "old": "keskustelu,jäänmurtaja,yhteenveto,lyhyt,kausi,keskustelu,otsikot,diskusio,päivittäinen,katsaus",
+      "new": "keskustelu,jäänmurtaja,yhteenveto,lyhyt,kausi,keskustelu,otsikot,diskusio,päivittäinen,katsaus",
+      "len": 94
+    },
+    "subtitle": {
+      "old": "Puheenaiheet ei-faneille",
+      "new": "Puheenaiheet ei-faneille"
+    },
+    "description": {
+      "localized": true,
+      "chars": 761
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 111
+    }
+  },
+  "fr-CA": {
+    "keywords": {
+      "old": "brise-glace,récap,brief,saison,débat,gros titres,discussion,quotidien,initié,potins,résumé",
+      "new": "brise-glace,récap,brief,saison,débat,gros titres,discussion,quotidien,initié,potins,résumé",
+      "len": 90
+    },
+    "subtitle": {
+      "old": "Points de conv. non-fans",
+      "new": "Points de conv. non-fans"
+    },
+    "description": {
+      "localized": true,
+      "chars": 818
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 114
+    }
+  },
+  "fr-FR": {
+    "keywords": {
+      "old": "brise-glace,récap,brief,saison,débat,gros titres,discussion,quotidien,initié,potins,résumé",
+      "new": "brise-glace,récap,brief,saison,débat,gros titres,discussion,quotidien,initié,potins,résumé",
+      "len": 90
+    },
+    "subtitle": {
+      "old": "Points de conv. non-fans",
+      "new": "Points de conv. non-fans"
+    },
+    "description": {
+      "localized": true,
+      "chars": 806
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 111
+    }
+  },
+  "gu-IN": {
+    "keywords": {
+      "old": "બરફ તોડનાર,સારાંશ,સંક્ષિપ્ત,સીઝન,ચર્ચા,હેડલાઇન્સ,ચર્ચા,દૈનિક,ઝાંખી,ઇનસાઇડર,ગપસપ",
+      "new": "બરફ તોડનાર,સારાંશ,સંક્ષિપ્ત,સીઝન,ચર્ચા,હેડલાઇન્સ,ચર્ચા,દૈનિક,ઝાંખી,ઇનસાઇડર,ગપસપ",
+      "len": 79
+    },
+    "subtitle": {
+      "old": "બિન-ચાહકો માટે વાતચીત",
+      "new": "બિન-ચાહકો માટે વાતચીત"
+    },
+    "description": {
+      "localized": true,
+      "chars": 639
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 104
+    }
+  },
+  "he": {
+    "keywords": {
+      "old": "שובר קרח,סיכום,קצר,עונה,דיון,כותרות,דיון,יומי,סקירה,חדשות,רכילות",
+      "new": "שובר קרח,סיכום,קצר,עונה,דיון,כותרות,דיון,יומי,סקירה,חדשות,רכילות",
+      "len": 64
+    },
+    "subtitle": {
+      "old": "נקודות שיחה ללא אוהדים",
+      "new": "נקודות שיחה ללא אוהדים"
+    },
+    "description": {
+      "localized": true,
+      "chars": 588
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 71
+    }
+  },
+  "hi": {
+    "keywords": {
+      "old": "बातचीत,बर्फ तोड़ने वाला,सारांश,संक्षिप्त,सीज़न,बहस,सुर्खियाँ,चर्चा,दैनिक,समीक्षा,इनसाइडर,गपशप",
+      "new": "बातचीत,बर्फ तोड़ने वाला,सारांश,संक्षिप्त,सीज़न,बहस,सुर्खियाँ,चर्चा,दैनिक,समीक्षा,इनसाइडर,गपशप",
+      "len": 93
+    },
+    "subtitle": {
+      "old": "गैर-प्रशंसकों के लिए",
+      "new": "गैर-प्रशंसकों के लिए"
+    },
+    "description": {
+      "localized": true,
+      "chars": 683
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 111
+    }
+  },
+  "hr": {
+    "keywords": {
+      "old": "razgovor,ledolomica,sažetak,kratko,sezona,debata,naslovi,rasprava,dnevno,pregled,insider,trač",
+      "new": "razgovor,ledolomica,sažetak,kratko,sezona,debata,naslovi,rasprava,dnevno,pregled,insider,trač",
+      "len": 93
+    },
+    "subtitle": {
+      "old": "Teme za ne-navijače",
+      "new": "Teme za ne-navijače"
+    },
+    "description": {
+      "localized": true,
+      "chars": 730
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 91
+    }
+  },
+  "hu": {
+    "keywords": {
+      "old": "beszélgetés,jégtörő,összefoglaló,rövid,évad,vita,fejlécek,diszkusszió,napi,áttekintés,bennfentes",
+      "new": "beszélgetés,jégtörő,összefoglaló,rövid,évad,vita,fejlécek,diszkusszió,napi,áttekintés,bennfentes",
+      "len": 96
+    },
+    "subtitle": {
+      "old": "Témák nem szurkolóknak",
+      "new": "Témák nem szurkolóknak"
+    },
+    "description": {
+      "localized": true,
+      "chars": 775
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 113
+    }
+  },
+  "id": {
+    "keywords": {
+      "old": "percakapan,pemecah kebekuan,ringkasan,singkat,musim,perdebatan,berita utama,diskusi bankan,harian",
+      "new": "percakapan,pemecah kebekuan,ringkasan,singkat,musim,perdebatan,berita utama,diskusi bankan,harian",
+      "len": 97
+    },
+    "subtitle": {
+      "old": "Topik untuk bukan penggemar",
+      "new": "Topik untuk bukan penggemar"
+    },
+    "description": {
+      "localized": true,
+      "chars": 739
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 116
+    }
+  },
+  "it": {
+    "keywords": {
+      "old": "conversazione,rompighiaccio,riepilogo,breve,stagione,dibattito,titoli,discussione,quotidiano",
+      "new": "conversazione,rompighiaccio,riepilogo,breve,stagione,dibattito,titoli,discussione,quotidiano",
+      "len": 92
+    },
+    "subtitle": {
+      "old": "Punti per non tifosi",
+      "new": "Punti per non tifosi"
+    },
+    "description": {
+      "localized": true,
+      "chars": 776
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 120
+    }
+  },
+  "ja": {
+    "keywords": {
+      "old": "会話,アイスブレイク,まとめ,簡潔,シーズン,議論,見出し,討論,毎日,総集編,インサイダー,ゴシップ",
+      "new": "会話,アイスブレイク,まとめ,簡潔,シーズン,議論,見出し,討論,毎日,総集編,インサイダー,ゴシップ",
+      "len": 51
+    },
+    "subtitle": {
+      "old": "非ファン向け話題",
+      "new": "非ファン向け話題"
+    },
+    "description": {
+      "localized": true,
+      "chars": 395
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 51
+    }
+  },
+  "kn-IN": {
+    "keywords": {
+      "old": "ಸಂಭಾಷಣೆ,ಐಸ್‌ಬ್ರೇಕರ್,ಸಾರಾಂಶ,ಸಂಕ್ಷಿಪ್ತ,ಸೀಸನ್,ಚರ್ಚೆ,ಶೀರ್ಷಿಕೆಗಳು,ಚರ್ಚೆ,ದೈನಂದಿನ,ಅವಲೋಕನ,ಇನ್‌ಸೈಡರ್,ಗಾಸಿಪ್",
+      "new": "ಸಂಭಾಷಣೆ,ಐಸ್‌ಬ್ರೇಕರ್,ಸಾರಾಂಶ,ಸಂಕ್ಷಿಪ್ತ,ಸೀಸನ್,ಚರ್ಚೆ,ಶೀರ್ಷಿಕೆಗಳು,ಚರ್ಚೆ,ದೈನಂದಿನ,ಅವಲೋಕನ,ಇನ್‌ಸೈಡರ್,ಗಾಸಿಪ್",
+      "len": 98
+    },
+    "subtitle": {
+      "old": "ಅಭಿಮಾನಿಗಳಲ್ಲದವರಿಗೆ",
+      "new": "ಅಭಿಮಾನಿಗಳಲ್ಲದವರಿಗೆ"
+    },
+    "description": {
+      "localized": true,
+      "chars": 691
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 104
+    }
+  },
+  "ko": {
+    "keywords": {
+      "old": "대화,아이스브레이크,요약,간략,시즌,토론,헤드라인,논의,매일,개괄,인사이더,가십",
+      "new": "대화,아이스브레이크,요약,간략,시즌,토론,헤드라인,논의,매일,개괄,인사이더,가십",
+      "len": 44
+    },
+    "subtitle": {
+      "old": "비팬을 위한 화제",
+      "new": "비팬을 위한 화제"
+    },
+    "description": {
+      "localized": true,
+      "chars": 405
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 56
+    }
+  },
+  "ml-IN": {
+    "keywords": {
+      "old": "സംഭാഷണം,ഐസ്‌ബ്രേക്കർ,ചുരുക്കം,ഹ്രസ്വം,സീസൺ,ചർച്ച,തലക്കെട്ടുകൾ,ചർച്ച,ദൈനംദിന,അവലോകനം,ഇൻസൈഡർ,ഗോസിപ്പ്",
+      "new": "സംഭാഷണം,ഐസ്‌ബ്രേക്കർ,ചുരുക്കം,ഹ്രസ്വം,സീസൺ,ചർച്ച,തലക്കെട്ടുകൾ,ചർച്ച,ദൈനംദിന,അവലോകനം,ഇൻസൈഡർ,ഗോസിപ്പ്",
+      "len": 99
+    },
+    "subtitle": {
+      "old": "അഭിമാനികളല്ലാത്തവർക്ക്",
+      "new": "അഭിമാനികളല്ലാത്തവർക്ക്"
+    },
+    "description": {
+      "localized": true,
+      "chars": 680
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 107
+    }
+  },
+  "mr-IN": {
+    "keywords": {
+      "old": "संभाषण,बर्फ तोडणारा,सारांश,संक्षिप्त,हंगाम,वाद,ठळक बातम्या,चर्चा,दैनंदिन,आढावा,इनसाइडर,गप्पा",
+      "new": "संभाषण,बर्फ तोडणारा,सारांश,संक्षिप्त,हंगाम,वाद,ठळक बातम्या,चर्चा,दैनंदिन,आढावा,इनसाइडर,गप्पा",
+      "len": 92
+    },
+    "subtitle": {
+      "old": "चाहत्यांसाठी नाही",
+      "new": "चाहत्यांसाठी नाही"
+    },
+    "description": {
+      "localized": true,
+      "chars": 615
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 111
+    }
+  },
+  "ms": {
+    "keywords": {
+      "old": "perbualan,pemecah ais,ringkasan,ringkas,musim,perdebatan,berita utama,perbincangan,harian,ikhtisar",
+      "new": "perbualan,pemecah ais,ringkasan,ringkas,musim,perdebatan,berita utama,perbincangan,harian,ikhtisar",
+      "len": 98
+    },
+    "subtitle": {
+      "old": "Topik untuk bukan peminat",
+      "new": "Topik untuk bukan peminat"
+    },
+    "description": {
+      "localized": true,
+      "chars": 742
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 107
+    }
+  },
+  "nl-NL": {
+    "keywords": {
+      "old": "ijsbreker,samenvatting,kort,seizoen,debat,krantenkoppen,discussie,dagelijks,overzicht,ingewijde",
+      "new": "ijsbreker,samenvatting,kort,seizoen,debat,krantenkoppen,discussie,dagelijks,overzicht,ingewijde",
+      "len": 95
+    },
+    "subtitle": {
+      "old": "Gesprekstips voor non-fans",
+      "new": "Gesprekstips voor non-fans"
+    },
+    "description": {
+      "localized": true,
+      "chars": 790
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 112
+    }
+  },
+  "no": {
+    "keywords": {
+      "old": "isbryter,sammendrag,kort,sesong,debatt,overskrifter,diskusjon,daglig,oversikt,insider,sladder",
+      "new": "isbryter,sammendrag,kort,sesong,debatt,overskrifter,diskusjon,daglig,oversikt,insider,sladder",
+      "len": 93
+    },
+    "subtitle": {
+      "old": "Samtaleemner for ikke-fans",
+      "new": "Samtaleemner for ikke-fans"
+    },
+    "description": {
+      "localized": true,
+      "chars": 715
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 108
+    }
+  },
+  "or-IN": {
+    "keywords": {
+      "old": "କଥାବାର୍ତ୍ତା,ବରଫ ଭଙ୍ଗକାରୀ,ସାରାଂଶ,ସଂକ୍ଷିପ୍ତ,ଋତୁ,ବିତର୍କ,ସୁର୍ଖି,ଆଲୋଚନା,ଦୈନିକ,ସମୀକ୍ଷା,ଇନସାଇଡର,ଗପ",
+      "new": "କଥାବାର୍ତ୍ତା,ବରଫ ଭଙ୍ଗକାରୀ,ସାରାଂଶ,ସଂକ୍ଷିପ୍ତ,ଋତୁ,ବିତର୍କ,ସୁର୍ଖି,ଆଲୋଚନା,ଦୈନିକ,ସମୀକ୍ଷା,ଇନସାଇଡର,ଗପ",
+      "len": 91
+    },
+    "subtitle": {
+      "old": "ଅଭିମାନୀ ନୁହେଁଙ୍କ ପାଇଁ",
+      "new": "ଅଭିମାନୀ ନୁହେଁଙ୍କ ପାଇଁ"
+    },
+    "description": {
+      "localized": true,
+      "chars": 600
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 114
+    }
+  },
+  "pa-IN": {
+    "keywords": {
+      "old": "ਗੱਲਬਾਤ,ਬਰਫ ਤੋੜਨ ਵਾਲਾ,ਸਾਰ,ਸੰਖੇਪ,ਸੀਜ਼ਨ,ਬਹਿਸ,ਸੁਰਖੀਆਂ,ਚਰਚਾ,ਰੋਜ਼ਾਨਾ,ਸੰਖੇਪ ਜਾਣਕਾਰੀ,ਇਨਸਾਈਡਰ,ਗੱਪ",
+      "new": "ਗੱਲਬਾਤ,ਬਰਫ ਤੋੜਨ ਵਾਲਾ,ਸਾਰ,ਸੰਖੇਪ,ਸੀਜ਼ਨ,ਬਹਿਸ,ਸੁਰਖੀਆਂ,ਚਰਚਾ,ਰੋਜ਼ਾਨਾ,ਸੰਖੇਪ ਜਾਣਕਾਰੀ,ਇਨਸਾਈਡਰ,ਗੱਪ",
+      "len": 88
+    },
+    "subtitle": {
+      "old": "ਗੈਰ-ਪ੍ਰਸ਼ੰਸਕਾਂ ਲਈ",
+      "new": "ਗੈਰ-ਪ੍ਰਸ਼ੰਸਕਾਂ ਲਈ"
+    },
+    "description": {
+      "localized": true,
+      "chars": 580
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 106
+    }
+  },
+  "pl": {
+    "keywords": {
+      "old": "rozmowa,lodołamacz,podsumowanie,krótki,sezon,debata,nagłówki,dyskusja,codzienny,przegląd,informator",
+      "new": "rozmowa,lodołamacz,podsumowanie,krótki,sezon,debata,nagłówki,dyskusja,codzienny,przegląd,informator",
+      "len": 99
+    },
+    "subtitle": {
+      "old": "Tematy dla nietifów",
+      "new": "Tematy dla nietifów"
+    },
+    "description": {
+      "localized": true,
+      "chars": 766
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 105
+    }
+  },
+  "pt-BR": {
+    "keywords": {
+      "old": "conversa,quebra-gelo,resumo,breve,temporada,debate,manchetes,discussão,diário,resenha,informação",
+      "new": "conversa,quebra-gelo,resumo,breve,temporada,debate,manchetes,discussão,diário,resenha,informação",
+      "len": 96
+    },
+    "subtitle": {
+      "old": "Papos para não torcedores",
+      "new": "Papos para não torcedores"
+    },
+    "description": {
+      "localized": true,
+      "chars": 756
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 110
+    }
+  },
+  "pt-PT": {
+    "keywords": {
+      "old": "conversa,quebra-gelo,resumo,breve,temporada,debate,títulos,discussão,diário,resenha,informação",
+      "new": "conversa,quebra-gelo,resumo,breve,temporada,debate,títulos,discussão,diário,resenha,informação",
+      "len": 94
+    },
+    "subtitle": {
+      "old": "Papos para não adeptos",
+      "new": "Papos para não adeptos"
+    },
+    "description": {
+      "localized": true,
+      "chars": 761
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 114
+    }
+  },
+  "ro": {
+    "keywords": {
+      "old": "conversație,spărgător de gheață,rezumat,scurt,sezon,dezbatere,titluri,discuție,zilnic,sumar,insider",
+      "new": "conversație,spărgător de gheață,rezumat,scurt,sezon,dezbatere,titluri,discuție,zilnic,sumar,insider",
+      "len": 99
+    },
+    "subtitle": {
+      "old": "Subiecte pentru ne-fani",
+      "new": "Subiecte pentru ne-fani"
+    },
+    "description": {
+      "localized": true,
+      "chars": 783
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 115
+    }
+  },
+  "ru": {
+    "keywords": {
+      "old": "разговор,ледокол,резюме,кратко,сезон,дискуссия,заголовки,обсуждение,ежедневно,обзор,инсайдер,сплетни",
+      "new": "разговор,ледокол,резюме,кратко,сезон,дискуссия,заголовки,обсуждение,ежедневно,обзор,инсайдер,сплетни",
+      "len": 100
+    },
+    "subtitle": {
+      "old": "Темы для не болельщиков",
+      "new": "Темы для не болельщиков"
+    },
+    "description": {
+      "localized": true,
+      "chars": 747
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 103
+    }
+  },
+  "sk": {
+    "keywords": {
+      "old": "konverzácia,ľadoborec,súhrn,stručný,sezóna,debata,titulky,diskusia,denný,prehľad,insider,drby",
+      "new": "konverzácia,ľadoborec,súhrn,stručný,sezóna,debata,titulky,diskusia,denný,prehľad,insider,drby",
+      "len": 93
+    },
+    "subtitle": {
+      "old": "Témy pre nefanúšikov",
+      "new": "Témy pre nefanúšikov"
+    },
+    "description": {
+      "localized": true,
+      "chars": 726
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 92
+    }
+  },
+  "sl-SI": {
+    "keywords": {
+      "old": "pogovor,ledolomilec,povzetek,kratko,sezona,debata,glavne novice,razprava,dnevno,pregled,insider",
+      "new": "pogovor,ledolomilec,povzetek,kratko,sezona,debata,glavne novice,razprava,dnevno,pregled,insider",
+      "len": 95
+    },
+    "subtitle": {
+      "old": "Teme za ne-navijače",
+      "new": "Teme za ne-navijače"
+    },
+    "description": {
+      "localized": true,
+      "chars": 717
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 99
+    }
+  },
+  "sv": {
+    "keywords": {
+      "old": "konversation,isbrytare,sammanfattning,kort,säsong,debatt,rubriker,dikussion,daglig,översikt,insider",
+      "new": "konversation,isbrytare,sammanfattning,kort,säsong,debatt,rubriker,dikussion,daglig,översikt,insider",
+      "len": 99
+    },
+    "subtitle": {
+      "old": "Samtalsämnen för icke-fans",
+      "new": "Samtalsämnen för icke-fans"
+    },
+    "description": {
+      "localized": true,
+      "chars": 747
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 104
+    }
+  },
+  "ta-IN": {
+    "keywords": {
+      "old": "உரையாடல்,ஐஸ் பிரேக்கர்,சுருக்கம்,சுருக்கமான,சீசன்,விவாதம்,தலைப்புச் செய்திகள்,விவாதம்,தினசரி",
+      "new": "உரையாடல்,ஐஸ் பிரேக்கர்,சுருக்கம்,சுருக்கமான,சீசன்,விவாதம்,தலைப்புச் செய்திகள்,விவாதம்,தினசரி",
+      "len": 92
+    },
+    "subtitle": {
+      "old": "பக்தர்கள் அல்லாதவர்களுக்கு",
+      "new": "பக்தர்கள் அல்லாதவர்களுக்கு"
+    },
+    "description": {
+      "localized": true,
+      "chars": 662
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 123
+    }
+  },
+  "te-IN": {
+    "keywords": {
+      "old": "సంభాషణ,ఐస్‌బ్రేకర్,సారాంశం,సంక్షిప్తం,సీజన్,చర్చ,హెడ్‌లైన్స్,చర్చ,రోజువారీ,అవలోకనం,ఇన్‌సైడర్,గాసిప్",
+      "new": "సంభాషణ,ఐస్‌బ్రేకర్,సారాంశం,సంక్షిప్తం,సీజన్,చర్చ,హెడ్‌లైన్స్,చర్చ,రోజువారీ,అవలోకనం,ఇన్‌సైడర్,గాసిప్",
+      "len": 99
+    },
+    "subtitle": {
+      "old": "అభిమానులు కాదు వారికి",
+      "new": "అభిమానులు కాదు వారికి"
+    },
+    "description": {
+      "localized": true,
+      "chars": 594
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 100
+    }
+  },
+  "th": {
+    "keywords": {
+      "old": "บทสนทนา,น้ำแข็งแตก,สรุป,สั้น,ซีซั่น,ถกเถียง,พาดหัว,อภิปราย,รายวัน,สรุปวงใน,ซุบซิบ",
+      "new": "บทสนทนา,น้ำแข็งแตก,สรุป,สั้น,ซีซั่น,ถกเถียง,พาดหัว,อภิปราย,รายวัน,สรุปวงใน,ซุบซิบ",
+      "len": 81
+    },
+    "subtitle": {
+      "old": "หัวข้อสำหรับคนไม่แฟน",
+      "new": "หัวข้อสำหรับคนไม่แฟน"
+    },
+    "description": {
+      "localized": true,
+      "chars": 568
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 82
+    }
+  },
+  "tr": {
+    "keywords": {
+      "old": "sohbet,buzkıran,özet,kısa,sezon,tartışma,manşetler,tartışma,günlük,özet,insider,dedikodu",
+      "new": "sohbet,buzkıran,özet,kısa,sezon,tartışma,manşetler,tartışma,günlük,özet,insider,dedikodu",
+      "len": 88
+    },
+    "subtitle": {
+      "old": "Taraftar olmayanlara",
+      "new": "Taraftar olmayanlara"
+    },
+    "description": {
+      "localized": true,
+      "chars": 722
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 96
+    }
+  },
+  "uk": {
+    "keywords": {
+      "old": "розмова,криголам,резюме,коротко,сезон,дискусія,заголовки,обговорення,щоденно,огляд,інсайдер,плітки",
+      "new": "розмова,криголам,резюме,коротко,сезон,дискусія,заголовки,обговорення,щоденно,огляд,інсайдер,плітки",
+      "len": 98
+    },
+    "subtitle": {
+      "old": "Теми для не вболівальників",
+      "new": "Теми для не вболівальників"
+    },
+    "description": {
+      "localized": true,
+      "chars": 747
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 100
+    }
+  },
+  "ur-PK": {
+    "keywords": {
+      "old": "بات چیت,برف توڑنے والا,خلاصہ,مختصر,سیزن,بحث,سرخیاں,بحث,روزانہ,جائزہ,اندرونی,گپ شپ",
+      "new": "بات چیت,برف توڑنے والا,خلاصہ,مختصر,سیزن,بحث,سرخیاں,بحث,روزانہ,جائزہ,اندرونی,گپ شپ",
+      "len": 81
+    },
+    "subtitle": {
+      "old": "غیر پرستاروں کے لیے",
+      "new": "غیر پرستاروں کے لیے"
+    },
+    "description": {
+      "localized": true,
+      "chars": 593
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 107
+    }
+  },
+  "vi": {
+    "keywords": {
+      "old": "trò chuyện,phá băng,tóm tắt,ngắn,mùa giải,tranh luận,tiêu đề,thảo luận,hàng ngày,tổng quan,nội gián",
+      "new": "trò chuyện,phá băng,tóm tắt,ngắn,mùa giải,tranh luận,tiêu đề,thảo luận,hàng ngày,tổng quan,nội gián",
+      "len": 99
+    },
+    "subtitle": {
+      "old": "Chủ đề cho người không hâm mộ",
+      "new": "Chủ đề cho người không hâm mộ"
+    },
+    "description": {
+      "localized": true,
+      "chars": 704
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 112
+    }
+  },
+  "zh-Hans": {
+    "keywords": {
+      "old": "对话,破冰,摘要,简报,赛季,讨论,头条,讨论,每日,回顾,内幕,八卦",
+      "new": "对话,破冰,摘要,简报,赛季,讨论,头条,讨论,每日,回顾,内幕,八卦",
+      "len": 35
+    },
+    "subtitle": {
+      "old": "非球迷聊天话题",
+      "new": "非球迷聊天话题"
+    },
+    "description": {
+      "localized": true,
+      "chars": 293
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 34
+    }
+  },
+  "zh-Hant": {
+    "keywords": {
+      "old": "對話,破冰,摘要,簡報,賽季,討論,頭條,討論,每日,回顧,內幕,八卦",
+      "new": "對話,破冰,摘要,簡報,賽季,討論,頭條,討論,每日,回顧,內幕,八卦",
+      "len": 35
+    },
+    "subtitle": {
+      "old": "非球迷聊天話題",
+      "new": "非球迷聊天話題"
+    },
+    "description": {
+      "localized": true,
+      "chars": 295
+    },
+    "promotional_text": {
+      "localized": true,
+      "chars": 34
+    }
+  }
+}
