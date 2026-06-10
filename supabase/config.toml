@@ -1,0 +1,15 @@
+project_id = "ucoveqbyfuxqvpysmixu"
+
+# Cron-invoked functions authenticate with x-cron-secret, not a Supabase JWT.
+# Pinned here because `supabase functions deploy` defaults verify_jwt to true,
+# which makes the gateway 401 the GitHub Actions pipeline before the function
+# ever sees the request (this bit us on 2026-06-10).
+[functions.generate-briefings]
+verify_jwt = false
+
+[functions.ingest-rss]
+verify_jwt = false
+
+# briefings-api is called by the app with the anon key; keep JWT verification.
+[functions.briefings-api]
+verify_jwt = true
