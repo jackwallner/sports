@@ -7,18 +7,20 @@ struct FreshnessFooter: View {
     var isPro: Bool = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        // Centered under the page dots so the deck column reads as one unit.
+        VStack(alignment: .center, spacing: 4) {
             Label(text, systemImage: isOffline ? "wifi.slash" : iconName)
-                .font(.footnote)
-                .foregroundStyle(isStale ? SidelineTheme.amberText : SidelineTheme.inkSecondary)
+                .font(.caption)
+                .foregroundStyle(isStale ? SidelineTheme.amberText : SidelineTheme.inkTertiary)
 
             if !isOffline, isPro {
                 Text(briefing.refreshWindow.nextUpdateHint)
-                    .font(.caption)
+                    .font(.caption2)
                     .foregroundStyle(SidelineTheme.inkTertiary)
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .multilineTextAlignment(.center)
+        .frame(maxWidth: .infinity, alignment: .center)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityText)
     }
