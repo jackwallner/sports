@@ -57,7 +57,6 @@ struct BriefingDeck: View {
                         let slot = (position - index + count) % count
                         DeckCardView(
                             card: cards[position],
-                            parallax: slot == 0 ? drag.width / 60 : 0,
                             isFlipped: flippedPosition == position,
                             onOpenSource: onOpenSource
                         )
@@ -288,9 +287,6 @@ private enum ImpactStyle {
 
 private struct DeckCardView: View {
     let card: DeckCard
-    /// Tiny horizontal drift of the gradient sheen, tied to the live drag, so
-    /// the top card feels like it has depth as you push it.
-    let parallax: CGFloat
     let isFlipped: Bool
     let onOpenSource: (URL) -> Void
 
@@ -313,163 +309,172 @@ private struct DeckCardView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.sidelineDeckCard)
-        .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: 28, style: .continuous)
-                .stroke(SidelineTheme.rule, lineWidth: 1)
-        )
+        .clipShape(RoundedRectangle(cornerRadius: SidelineTheme.deckCornerRadius, style: .continuous))
         .shadow(color: SidelineTheme.inkPrimary.opacity(0.16), radius: 22, x: 0, y: 12)
         .accessibilityElement(children: .contain)
     }
 
-    // MARK: Front — full-bleed art carrying the one line to say
+    // MARK: Front — art on top, words on one solid panel below
+    //
+    // Two zones give the eye one place to read: the art stays clean (pills
+    // only), and every word sits on the same deep green panel at the bottom.
+    // No text-over-art, no per-card scrim tuning, no competing gradients.
 
     @ViewBuilder
     private var front: some View {
         switch card {
         case .lead(let briefing):
-            artBand(colors: SidelineTheme.heroNavy, imageURL: CardArt.leadImageURL(for: briefing)) {
-                VStack(alignment: .leading, spacing: 14) {
-                    HStack(spacing: 6) {
-                        Image(systemName: "quote.opening")
-                            .font(.caption2.weight(.bold))
-                        Text("LEAD WITH THIS")
-                            .font(SidelineTheme.eyebrow)
-                            .tracking(1.4)
-                    }
-                    .foregroundStyle(.white.opacity(0.95))
-
-                    Text(briefing.tlDR)
-                        .font(SidelineTheme.display(25))
-                        .foregroundStyle(.white)
-                        .lineSpacing(2)
-                        .lineLimit(7)
-                        .minimumScaleFactor(0.7)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .shadow(color: .black.opacity(0.35), radius: 8, x: 0, y: 3)
+            VStack(spacing: 0) {
+                artZone(imageURL: CardArt.leadImageURL(for: briefing)) { EmptyView() }
+                panel {
+                    eyebrow(icon: "quote.opening", text: "Lead with this")
+                    line(briefing.tlDR, size: 25, limit: 7)
                         .copyable(briefing.tlDR)
-
-                    HStack(spacing: 6) {
-                        Image(systemName: "hand.draw.fill")
-                            .font(.caption2)
-                        Text("Say this first. Swipe for the stories behind it.")
-                            .font(.footnote.weight(.medium))
-                    }
-                    .foregroundStyle(.white.opacity(0.85))
-                    .padding(.top, 2)
-                    .accessibilityHidden(true)
+                    hint(icon: "hand.draw.fill", text: "Say this first. Swipe for the stories behind it.")
                 }
             }
         case .point(let bullet):
-            artBand(
-                colors: heroColors(for: bullet.tag),
-                imageURL: CardArt.imageURL(for: bullet)
-            ) {
-                VStack(alignment: .leading, spacing: 0) {
+            VStack(spacing: 0) {
+                artZone(imageURL: CardArt.imageURL(for: bullet)) {
                     HStack(alignment: .top, spacing: 8) {
                         if let tag = bullet.tag, tag != .neutral {
-                            lightTagPill(tag)
+                            tagPill(tag)
                         }
                         Spacer(minLength: 0)
                         sportChip(for: bullet)
                     }
-
-                    Spacer(minLength: 16)
-
-                    if let subject = bullet.subject, !subject.isEmpty {
-                        Text(subject.uppercased())
-                            .font(.caption.weight(.heavy))
-                            .tracking(1.2)
-                            .foregroundStyle(.white.opacity(0.82))
-                            .lineLimit(1)
-                            .shadow(color: .black.opacity(0.3), radius: 4, x: 0, y: 1)
-                    }
-
-                    // The line to say — the only words the front carries.
-                    Text(bullet.talkingPoint)
-                        .font(SidelineTheme.display(23))
-                        .foregroundStyle(.white)
-                        .lineSpacing(2)
-                        .lineLimit(5)
-                        .minimumScaleFactor(0.7)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .shadow(color: .black.opacity(0.35), radius: 8, x: 0, y: 3)
-                        .padding(.top, 6)
+                }
+                panel {
+                    eyebrow(icon: nil, text: kicker(for: bullet))
+                    line(bullet.talkingPoint, size: 23, limit: 5)
                         .copyable(bullet.talkingPoint)
-
-                    HStack(spacing: 6) {
-                        Image(systemName: "hand.tap.fill")
-                            .font(.caption2)
-                        Text("Tap for the backstory")
-                            .font(.footnote.weight(.semibold))
-                    }
-                    .foregroundStyle(.white.opacity(0.9))
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 7)
-                    .background(.white.opacity(0.16), in: Capsule())
-                    .overlay(Capsule().stroke(.white.opacity(0.25), lineWidth: 1))
-                    .padding(.top, 14)
-                    .accessibilityHidden(true)
+                    hint(icon: "hand.tap.fill", text: "Tap for the backstory")
                 }
             }
         case .question(let question):
-            artBand(colors: SidelineTheme.heroGold, imageURL: nil) {
-                VStack(alignment: .leading, spacing: 14) {
-                    HStack(spacing: 6) {
-                        Image(systemName: "arrow.turn.down.right")
-                            .font(.caption2.weight(.bold))
-                        Text("YOUR MOVE")
-                            .font(SidelineTheme.eyebrow)
-                            .tracking(1.4)
-                    }
-                    .foregroundStyle(.white.opacity(0.95))
-
-                    Text(question)
-                        .font(SidelineTheme.display(25))
-                        .foregroundStyle(.white)
-                        .lineSpacing(2)
-                        .lineLimit(6)
-                        .minimumScaleFactor(0.7)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .shadow(color: .black.opacity(0.22), radius: 8, x: 0, y: 3)
+            // No art: the gold full-stop card. Same anatomy, one accent.
+            ZStack {
+                LinearGradient(
+                    colors: SidelineTheme.cardPanelGold,
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                VStack(alignment: .leading, spacing: 12) {
+                    eyebrow(icon: "arrow.turn.down.right", text: "Your move", color: .white.opacity(0.92))
+                    line(question, size: 25, limit: 6)
                         .copyable(question)
-
-                    HStack(spacing: 6) {
-                        Image(systemName: "person.2.fill")
-                            .font(.caption2)
-                        Text("Ask a fan to keep it going.")
-                            .font(.footnote.weight(.medium))
-                    }
-                    .foregroundStyle(.white.opacity(0.85))
-                    .padding(.top, 2)
-                    .accessibilityHidden(true)
+                    hint(icon: "person.2.fill", text: "Ask a fan to keep it going.")
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
+                .padding(22)
             }
         }
+    }
+
+    // MARK: Card anatomy
+
+    /// The art zone: placeholder gradient floor, generated art on top, a light
+    /// scrim up top for the pills, and a fade into the panel color below so
+    /// the art settles into the words instead of butting against them.
+    private func artZone<Chips: View>(imageURL: URL?, @ViewBuilder chips: () -> Chips) -> some View {
+        ZStack(alignment: .top) {
+            LinearGradient(
+                colors: SidelineTheme.artPlaceholder,
+                startPoint: .top,
+                endPoint: .bottom
+            )
+
+            CardArtImage(url: imageURL)
+
+            LinearGradient(
+                stops: [
+                    .init(color: .black.opacity(0.28), location: 0),
+                    .init(color: .clear, location: 0.30),
+                    .init(color: SidelineTheme.cardPanel[0].opacity(0), location: 0.62),
+                    .init(color: SidelineTheme.cardPanel[0], location: 1)
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .allowsHitTesting(false)
+
+            chips()
+                .frame(maxWidth: .infinity)
+                .padding(16)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .clipped()
+    }
+
+    /// The solid panel every card's words sit on.
+    private func panel<Content: View>(@ViewBuilder content: () -> Content) -> some View {
+        VStack(alignment: .leading, spacing: 12, content: content)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(22)
+            .background(
+                LinearGradient(colors: SidelineTheme.cardPanel, startPoint: .top, endPoint: .bottom)
+            )
+    }
+
+    private func eyebrow(icon: String?, text: String, color: Color = SidelineTheme.goldOnDark) -> some View {
+        HStack(spacing: 6) {
+            if let icon {
+                Image(systemName: icon)
+                    .font(.caption2.weight(.bold))
+            }
+            Text(text.uppercased())
+                .font(SidelineTheme.eyebrow)
+                .tracking(1.4)
+                .lineLimit(1)
+        }
+        .foregroundStyle(color)
+    }
+
+    /// The one line to say — white serif on the solid panel, no shadows needed.
+    private func line(_ text: String, size: CGFloat, limit: Int) -> some View {
+        Text(text)
+            .font(SidelineTheme.display(size))
+            .foregroundStyle(.white)
+            .lineSpacing(2)
+            .lineLimit(limit)
+            .minimumScaleFactor(0.7)
+            .fixedSize(horizontal: false, vertical: true)
+    }
+
+    /// Quiet, uniform affordance row at the foot of every card.
+    private func hint(icon: String, text: String) -> some View {
+        HStack(spacing: 6) {
+            Image(systemName: icon)
+                .font(.caption2.weight(.semibold))
+            Text(text)
+                .font(.footnote.weight(.medium))
+        }
+        .foregroundStyle(.white.opacity(0.65))
+        .padding(.top, 2)
+        .accessibilityHidden(true)
+    }
+
+    /// Story kicker: the subject when we have one, the sport otherwise.
+    private func kicker(for bullet: BriefingBullet) -> String {
+        if let subject = bullet.subject, !subject.isEmpty { return subject }
+        let name = CardArt.sport(for: bullet).name
+        return name.isEmpty ? "Worth mentioning" : name
     }
 
     // MARK: Back — the backstory, in case they ask
 
     private func back(_ bullet: BriefingBullet) -> some View {
         ZStack {
+            // The same panel green as every front, so the back reads as the
+            // card's reverse side, not a different card.
             LinearGradient(
-                colors: heroColors(for: bullet.tag),
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
+                colors: SidelineTheme.cardPanel,
+                startPoint: .top,
+                endPoint: .bottom
             )
-            // Darken the same gradient so the back reads as the card's reverse
-            // side, not a different card.
-            Color.black.opacity(0.30)
 
             VStack(alignment: .leading, spacing: 16) {
-                HStack(spacing: 6) {
-                    Image(systemName: "text.bubble.fill")
-                        .font(.caption2.weight(.bold))
-                    Text("THE BACKSTORY")
-                        .font(SidelineTheme.eyebrow)
-                        .tracking(1.4)
-                }
-                .foregroundStyle(.white.opacity(0.95))
+                eyebrow(icon: "text.bubble.fill", text: "The backstory")
 
                 if let tieIn = bullet.tieIn, !tieIn.isEmpty {
                     Text(tieIn)
@@ -514,49 +519,6 @@ private struct DeckCardView: View {
         }
     }
 
-    /// The card's visual floor: tag-keyed gradient immediately, generated art
-    /// fading in on top once it lands, then a scrim so white type always reads
-    /// no matter what the art came back as.
-    private func artBand<Overlay: View>(
-        colors: [Color],
-        imageURL: URL?,
-        alignment: Alignment = .bottomLeading,
-        @ViewBuilder overlay: () -> Overlay
-    ) -> some View {
-        ZStack {
-            LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing)
-
-            CardArtImage(url: imageURL)
-
-            // Legibility scrim: stronger at the bottom where the line sits.
-            LinearGradient(
-                stops: [
-                    .init(color: .black.opacity(0.30), location: 0),
-                    .init(color: .black.opacity(0.05), location: 0.35),
-                    .init(color: .black.opacity(0.62), location: 1)
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .allowsHitTesting(false)
-
-            // Soft sheen for depth — ambient, not a "graphic." Drifts with the swipe.
-            RadialGradient(
-                colors: [.white.opacity(0.18), .clear],
-                center: .init(x: 0.82 + parallax * 0.02, y: 0.12),
-                startRadius: 0,
-                endRadius: 240
-            )
-            .blendMode(.softLight)
-            .allowsHitTesting(false)
-
-            overlay()
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: alignment)
-                .padding(20)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-
     private func learnMore(_ bullet: BriefingBullet) -> some View {
         Button {
             onOpenSource(bullet.sourceURL)
@@ -586,17 +548,7 @@ private struct DeckCardView: View {
         .accessibilityAddTraits(.isButton)
     }
 
-    // MARK: Art helpers
-
-    /// Tag-keyed gradient. Drama runs hot, good news runs green, the rest stays
-    /// on brand navy.
-    private func heroColors(for tag: BriefingTag?) -> [Color] {
-        switch tag {
-        case .niceGuy, .redemption: return SidelineTheme.heroGreen
-        case .jerk, .drama:         return SidelineTheme.heroRed
-        default:                    return SidelineTheme.heroNavy
-        }
-    }
+    // MARK: Art-zone pills
 
     /// A real, legible chip that names the sport. Falls back to a tag-flavored,
     /// icon-only chip when we can't tell.
@@ -619,8 +571,9 @@ private struct DeckCardView: View {
         .accessibilityHidden(true)
     }
 
-    /// White-on-glass tag pill that reads on the dark gradient.
-    private func lightTagPill(_ tag: BriefingTag) -> some View {
+    /// Solid color-coded tag pill — the tag color now lives here, in one small
+    /// dose, instead of repainting the whole card.
+    private func tagPill(_ tag: BriefingTag) -> some View {
         HStack(spacing: 4) {
             Image(systemName: tag.symbolName)
                 .font(.caption2.weight(.bold))
@@ -631,8 +584,16 @@ private struct DeckCardView: View {
         .padding(.horizontal, 9)
         .padding(.vertical, 5)
         .foregroundStyle(.white)
-        .background(.white.opacity(0.22), in: Capsule())
-        .overlay(Capsule().stroke(.white.opacity(0.35), lineWidth: 1))
+        .background(tagPillColor(tag).opacity(0.92), in: Capsule())
+        .overlay(Capsule().stroke(.white.opacity(0.25), lineWidth: 1))
+    }
+
+    private func tagPillColor(_ tag: BriefingTag) -> Color {
+        switch tag {
+        case .niceGuy, .redemption: return SidelineTheme.tagPillNice
+        case .jerk, .drama:         return SidelineTheme.tagPillDrama
+        default:                    return SidelineTheme.cardPanel[1]
+        }
     }
 }
 

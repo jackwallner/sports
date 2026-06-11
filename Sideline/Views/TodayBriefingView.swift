@@ -74,6 +74,13 @@ struct TodayBriefingView: View {
                 .navigationBarTitleDisplayMode(.inline)
                 #endif
                 .toolbar {
+                    // Serif wordmark ties the chrome to the editorial cards.
+                    ToolbarItem(placement: .principal) {
+                        Text("The Sideline")
+                            .font(.system(.headline, design: .serif).weight(.semibold))
+                            .foregroundStyle(SidelineTheme.inkPrimary)
+                            .accessibilityAddTraits(.isHeader)
+                    }
                     ToolbarItem(placement: .primaryAction) {
                         NavigationLink {
                             SettingsView(
@@ -369,25 +376,28 @@ struct TodayBriefingView: View {
         .padding(.horizontal, 24)
     }
 
+    /// Mirrors the deck card's two-zone anatomy (art above, panel below) so
+    /// loading resolves into the real card without a visual jump.
     private var skeletonCard: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Capsule().fill(SidelineTheme.rule).frame(width: 110, height: 12)
-            Capsule().fill(SidelineTheme.rule).frame(height: 26)
-            Capsule().fill(SidelineTheme.rule).frame(height: 26)
-            Capsule().fill(SidelineTheme.rule).frame(width: 220, height: 26)
-            Spacer()
-            Capsule().fill(SidelineTheme.rule).frame(width: 160, height: 12)
+        VStack(spacing: 0) {
+            LinearGradient(
+                colors: SidelineTheme.artPlaceholder,
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            VStack(alignment: .leading, spacing: 14) {
+                Capsule().fill(.white.opacity(0.22)).frame(width: 110, height: 12)
+                Capsule().fill(.white.opacity(0.22)).frame(height: 22)
+                Capsule().fill(.white.opacity(0.22)).frame(width: 220, height: 22)
+            }
+            .padding(22)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(
+                LinearGradient(colors: SidelineTheme.cardPanel, startPoint: .top, endPoint: .bottom)
+            )
         }
-        .padding(26)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(
-            RoundedRectangle(cornerRadius: 26, style: .continuous)
-                .fill(Color.sidelineDeckCard)
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 26, style: .continuous)
-                .stroke(SidelineTheme.rule, lineWidth: 1)
-        )
+        .clipShape(RoundedRectangle(cornerRadius: SidelineTheme.deckCornerRadius, style: .continuous))
+        .shadow(color: SidelineTheme.inkPrimary.opacity(0.16), radius: 22, x: 0, y: 12)
         .padding(.horizontal, 18)
         .padding(.top, 8)
         .padding(.bottom, 30)

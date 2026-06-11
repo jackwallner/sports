@@ -138,6 +138,29 @@ enum SidelineTheme {
     static let heroGold: [Color]  = [Color(red: 0.46, green: 0.31, blue: 0.06),
                                      Color(red: 0.77, green: 0.56, blue: 0.10)]
 
+    // MARK: - Deck card anatomy
+    //
+    // Every card is two zones: art on top, words on one solid panel below.
+    // The panel is the SAME deep brand green on every story card — one
+    // surface for the whole deck is what makes it read as a set instead of
+    // a stack of unrelated posters. Fixed (not Dynamic): white type on top.
+    /// The panel the card's words sit on. Top color is also the fade target
+    /// at the bottom of the art zone, so art settles into the panel seamlessly.
+    static let cardPanel: [Color] = [Color(red: 0.082, green: 0.216, blue: 0.165),  // #15372A
+                                     Color(red: 0.122, green: 0.361, blue: 0.271)]  // #1F5C45
+    /// The finale "Your move" card goes gold — the single accent at the end.
+    static let cardPanelGold: [Color] = heroGold
+    /// Eyebrows / kickers on the dark panel.
+    static let goldOnDark = Color(red: 0.937, green: 0.788, blue: 0.439)  // #EFC970
+    /// Art-zone floor while generated art loads; darkens toward the panel.
+    static let artPlaceholder: [Color] = [Color(red: 0.165, green: 0.420, blue: 0.318),
+                                          Color(red: 0.106, green: 0.282, blue: 0.212)]
+    /// Fixed-depth tag pill fills (white text on top) for pills sitting on art.
+    static let tagPillNice  = Color(red: 0.149, green: 0.420, blue: 0.275)
+    static let tagPillDrama = Color(red: 0.620, green: 0.230, blue: 0.160)
+    /// Swipe-deck card corner radius (cards + loading skeleton).
+    static let deckCornerRadius: CGFloat = 28
+
     // MARK: - Shape
     /// Newsroom suppresses most card chrome; reserved for surfaces that
     /// MUST visually float (SuggestedQuestionCard, refreshLimitCard).
