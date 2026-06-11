@@ -284,12 +284,18 @@ struct CardArtImage: View {
             }
         }
         .task(id: url) {
-            guard let url else { return }
+            guard let url else {
+                image = nil
+                return
+            }
             if let hit = CardArtStore.cached(url) {
                 image = hit
                 return
             }
-            guard let fetched = await CardArtStore.fetch(url) else { return }
+            // Clear any previous URL's art so a failed fetch can't leave the
+            // wrong story's image on this card.
+            image = nil
+            guard let fetched = await CardArtStore.fetch(url), !Task.isCancelled else { return }
             withAnimation(.easeIn(duration: 0.35)) { image = fetched }
         }
         .allowsHitTesting(false)

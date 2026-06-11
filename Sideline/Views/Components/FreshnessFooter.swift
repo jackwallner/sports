@@ -35,7 +35,7 @@ struct FreshnessFooter: View {
 
     private var text: String {
         if isOffline {
-            return "Offline. Showing yesterday's update."
+            return "Offline. Showing your last saved briefing."
         }
         if isStale {
             return "Updated \(relativeDate). Double-check before quoting."
@@ -45,7 +45,7 @@ struct FreshnessFooter: View {
 
     private var accessibilityText: String {
         if isOffline {
-            return "Offline, showing yesterday's update."
+            return "Offline, showing your last saved briefing."
         }
         if isStale {
             return "Updated \(relativeDate). May be out of date, double-check before quoting."
