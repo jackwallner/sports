@@ -160,7 +160,7 @@ struct PaywallView: View {
 
     private var benefits: some View {
         VStack(alignment: .leading, spacing: 10) {
-            benefit("All 5 rooms", "Cocktail, office, family, date night, your city.")
+            benefit("5 rooms, 5 briefings a day", "Each room gets its own stories, picked and told for that crowd.")
             benefit("Refreshed 3× a day", "Morning, midday, and evening, so you're never quoting last week.")
             benefit("Built for non-fans", "No box scores, no jargon, no expectation that you care.")
         }
@@ -347,7 +347,7 @@ struct PaywallView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 12) {
-                    benefit("All 5 rooms", "Cocktail, office, family, date night, your city.")
+                    benefit("5 rooms, 5 briefings a day", "Each room gets its own stories, picked and told for that crowd.")
                     benefit("Refreshed 3× a day", "Morning, midday, and evening, so you're never quoting last week.")
                     benefit("Built for non-fans", "No box scores, no jargon, no expectation that you care.")
                 }

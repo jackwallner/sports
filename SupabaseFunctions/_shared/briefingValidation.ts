@@ -42,6 +42,7 @@ export function normalizeBriefing(value: GeneratedBriefing): GeneratedBriefing {
       talking_point: bullet.talking_point.trim(),
       subject: bullet.subject?.trim() || null,
       tie_in: bullet.tie_in?.trim() || null,
+      backstory: bullet.backstory?.trim() || null,
       tag: bullet.tag ?? null,
       tag_reason: bullet.tag_reason?.trim() || null,
       source_headline: bullet.source_headline.trim(),
@@ -54,6 +55,9 @@ export function normalizeBriefing(value: GeneratedBriefing): GeneratedBriefing {
     })),
     suggested_question: value.suggested_question.trim(),
     source_count: value.source_count,
+    lead_image_prompt: typeof value.lead_image_prompt === "string" && value.lead_image_prompt.trim()
+      ? value.lead_image_prompt.trim().slice(0, 400)
+      : null,
   };
 }
 
@@ -66,6 +70,9 @@ function validateBullet(value: unknown, index: number, errors: string[]) {
   requireString(value, "talking_point", 30, 260, errors, `bullet ${index}`);
   optionalString(value, "subject", 0, 40, errors, `bullet ${index}`);
   optionalString(value, "tie_in", 0, 180, errors, `bullet ${index}`);
+  // Optional so one missing field never burns a whole briefing's Gemini call;
+  // the prompt demands it and the app falls back to tie_in when absent.
+  optionalString(value, "backstory", 0, 700, errors, `bullet ${index}`);
   optionalString(value, "tag_reason", 0, 160, errors, `bullet ${index}`);
   requireString(value, "source_headline", 8, 180, errors, `bullet ${index}`);
   requireURL(value, "source_url", errors, `bullet ${index}`);

@@ -63,6 +63,8 @@ export interface GeneratedBullet {
   talking_point: string;
   subject?: string | null;
   tie_in?: string | null;
+  /** 2-3 plain sentences of context for when someone asks a follow-up. */
+  backstory?: string | null;
   tag?: BriefingTag | null;
   tag_reason?: string | null;
   source_headline: string;
@@ -79,6 +81,8 @@ export interface GeneratedBriefing {
   bullets: GeneratedBullet[];
   suggested_question: string;
   source_count: number;
+  /** Gemini's scene for the deck's cover card (distinct from every bullet's). */
+  lead_image_prompt?: string | null;
 }
 
 export interface GenerationTarget {
@@ -89,4 +93,4 @@ export interface GenerationTarget {
 }
 
 export const ALLOWED_TAGS: BriefingTag[] = ["nice_guy", "jerk", "redemption", "drama", "neutral"];
-export const PROMPT_VERSION = "sideline-v1-rss-gemini";
+export const PROMPT_VERSION = "sideline-v2-backstory-leadart";

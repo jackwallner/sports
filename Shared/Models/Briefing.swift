@@ -28,6 +28,9 @@ public struct Briefing: Identifiable, Codable, Equatable, Sendable {
     public let refreshWindow: RefreshWindow
     public let headline: String
     public let tlDR: String
+    /// Cover-card art stamped by the pipeline, distinct from every story's
+    /// art. Older rows lack it; the app falls back to derived art.
+    public let leadImageURL: URL?
     public let bullets: [BriefingBullet]
     public let suggestedQuestion: String
     public let sourceCount: Int
@@ -41,6 +44,7 @@ public struct Briefing: Identifiable, Codable, Equatable, Sendable {
         refreshWindow: RefreshWindow,
         headline: String,
         tlDR: String,
+        leadImageURL: URL? = nil,
         bullets: [BriefingBullet],
         suggestedQuestion: String,
         sourceCount: Int,
@@ -53,6 +57,7 @@ public struct Briefing: Identifiable, Codable, Equatable, Sendable {
         self.refreshWindow = refreshWindow
         self.headline = headline
         self.tlDR = tlDR
+        self.leadImageURL = leadImageURL
         self.bullets = bullets
         self.suggestedQuestion = suggestedQuestion
         self.sourceCount = sourceCount
@@ -67,6 +72,7 @@ public struct Briefing: Identifiable, Codable, Equatable, Sendable {
         case refreshWindow = "refresh_window"
         case headline
         case tlDR = "tl_dr"
+        case leadImageURL = "lead_image_url"
         case bullets
         case suggestedQuestion = "suggested_question"
         case sourceCount = "source_count"
@@ -80,6 +86,10 @@ public struct BriefingBullet: Identifiable, Codable, Equatable, Sendable {
     public let talkingPoint: String
     public let subject: String?
     public let tieIn: String?
+    /// 2-3 sentences of context for when someone asks a follow-up: what
+    /// actually happened and why people care. Older rows lack it; the card
+    /// back falls back to the tie-in.
+    public let backstory: String?
     public let tag: BriefingTag?
     public let tagReason: String?
     public let sourceHeadline: String
@@ -94,6 +104,7 @@ public struct BriefingBullet: Identifiable, Codable, Equatable, Sendable {
         talkingPoint: String,
         subject: String? = nil,
         tieIn: String? = nil,
+        backstory: String? = nil,
         tag: BriefingTag? = nil,
         tagReason: String? = nil,
         sourceHeadline: String,
@@ -104,6 +115,7 @@ public struct BriefingBullet: Identifiable, Codable, Equatable, Sendable {
         self.talkingPoint = talkingPoint
         self.subject = subject
         self.tieIn = tieIn
+        self.backstory = backstory
         self.tag = tag
         self.tagReason = tagReason
         self.sourceHeadline = sourceHeadline
@@ -116,6 +128,7 @@ public struct BriefingBullet: Identifiable, Codable, Equatable, Sendable {
         case talkingPoint = "talking_point"
         case subject
         case tieIn = "tie_in"
+        case backstory
         case tag
         case tagReason = "tag_reason"
         case sourceHeadline = "source_headline"
@@ -136,6 +149,7 @@ public extension Briefing {
                 talkingPoint: "The team benched their longtime starter. Fans are split between 'about time' and 'how dare they.'",
                 subject: "Cowboys",
                 tieIn: "His wife posted a cryptic quote about loyalty, which did not help.",
+                backstory: "He has started every game for 9 years, but the team has lost 5 in a row and the front office is feeling the heat. Coaches say the move is about a playoff push, not his legacy. Fans see a franchise icon getting shoved out the door.",
                 tag: .drama,
                 tagReason: "Locker-room sources are frustrated, per reporters.",
                 sourceHeadline: "Veteran QB benched amid playoff push - The Athletic",
@@ -144,6 +158,7 @@ public extension Briefing {
             BriefingBullet(
                 talkingPoint: "The 23-year-old replacement is the feel-good story: undrafted, was working a normal job 2 years ago.",
                 subject: "NFL",
+                backstory: "No college program wanted him, so he stocked warehouse shelves while playing semi-pro on weekends. A scout spotted him at an open tryout 2 years ago. Now he is starting in front of 80,000 people.",
                 tag: .niceGuy,
                 tagReason: "Donated his first big check to his old high school.",
                 sourceHeadline: "From warehouse shifts to starting QB - ESPN",
@@ -152,6 +167,7 @@ public extension Briefing {
             BriefingBullet(
                 talkingPoint: "A star player from another team called the benching disrespectful, and now those 2 teams play Sunday.",
                 subject: "Eagles",
+                backstory: "The two quarterbacks came up together and are close friends, which is why the rival star took it personally. The league fined him for the comments, and he said it was worth every dollar. Sunday is the first meeting since.",
                 tag: .drama,
                 tagReason: "He has a history of saying the quiet part loud.",
                 sourceHeadline: "Rival star sounds off - Yahoo Sports",

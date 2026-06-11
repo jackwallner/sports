@@ -1,5 +1,5 @@
 import { logError, logInfo } from "./logger.ts";
-import type { BriefingTag, GeneratedBullet } from "./types.ts";
+import type { BriefingTag, GeneratedBriefing, GeneratedBullet } from "./types.ts";
 
 // Card art for the briefing deck.
 //
@@ -28,29 +28,57 @@ export async function stampCardArt(
   trace_id: string,
   bullets: GeneratedBullet[],
 ): Promise<GeneratedBullet[]> {
-  const hasProvider = Boolean(
-    (Deno.env.get("CF_ACCOUNT_ID") && Deno.env.get("CF_API_TOKEN")) ||
-      Deno.env.get("POLLINATIONS_API_KEY"),
-  );
   const stamped: GeneratedBullet[] = [];
   for (const bullet of bullets) {
     stamped.push({
       ...bullet,
-      image_url: hasProvider
-        ? await storedImageURL(supabase, trace_id, bullet)
+      image_url: hasProvider()
+        ? await storedImageURL(supabase, trace_id, promptFor(bullet), fnv1a32(bullet.source_url), imageURLForBullet(bullet))
         : imageURLForBullet(bullet),
     });
   }
   return stamped;
 }
 
+/// The deck's cover card gets its OWN image. It used to borrow the first
+/// bullet's art on-device, which put the identical picture on two adjacent
+/// cards in every deck. Seeded on tl_dr — byte-identical with the app's
+/// legacy fallback in `CardArt.leadImageURL`, so old builds and new rows
+/// agree on which image a briefing's cover wants.
+export async function stampLeadArt(
+  supabase: any,
+  trace_id: string,
+  briefing: GeneratedBriefing,
+): Promise<string | null> {
+  const scene = briefing.lead_image_prompt?.trim() ||
+    `${sceneFor(briefing.bullets[0] ?? fallbackBullet())}, grand cinematic atmosphere`;
+  const prompt = `${STYLE_PREFIX} ${scene}. ${STYLE}`;
+  const seed = fnv1a32(briefing.tl_dr);
+  const fallback = pollinationsURL(prompt, seed);
+  if (!hasProvider()) {
+    return fallback;
+  }
+  return await storedImageURL(supabase, trace_id, prompt, seed, fallback);
+}
+
+function fallbackBullet(): GeneratedBullet {
+  return { talking_point: "", source_headline: "", source_url: "" };
+}
+
+function hasProvider(): boolean {
+  return Boolean(
+    (Deno.env.get("CF_ACCOUNT_ID") && Deno.env.get("CF_API_TOKEN")) ||
+      Deno.env.get("POLLINATIONS_API_KEY"),
+  );
+}
+
 async function storedImageURL(
   supabase: any,
   trace_id: string,
-  bullet: GeneratedBullet,
+  prompt: string,
+  seed: number,
+  fallback: string,
 ): Promise<string> {
-  const prompt = promptFor(bullet);
-  const seed = fnv1a32(bullet.source_url);
   const path = `${seed}-${fnv1a32(prompt)}.jpg`;
   const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
   const publicUrl: string = data.publicUrl;
@@ -79,7 +107,7 @@ async function storedImageURL(
     // Art is decoration, never a reason to fail a briefing. Fall back to the
     // legacy on-demand URL the app can fetch itself.
     logError(trace_id, "card_art_generation_failed", error, { path });
-    return imageURLForBullet(bullet);
+    return fallback;
   }
 }
 

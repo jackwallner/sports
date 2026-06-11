@@ -12,10 +12,12 @@ final class BriefingDecodingTests: XCTestCase {
           "refresh_window": "daily",
           "headline": "What everyone's arguing about this week",
           "tl_dr": "A beloved veteran quarterback got benched, the internet is melting down, and his replacement is a 23-year-old nobody had heard of last month.",
+          "lead_image_url": "https://example.supabase.co/storage/v1/object/public/card-art/lead.jpg",
           "bullets": [{
             "id": "22222222-2222-2222-2222-222222222222",
             "talking_point": "The team benched their longtime starter, and fans are split.",
             "tie_in": "His wife posted a cryptic quote about loyalty.",
+            "backstory": "He has started every game for 9 years, but the team lost 5 straight and the front office blinked first.",
             "tag": "drama",
             "tag_reason": "Locker-room sources are frustrated.",
             "source_headline": "Veteran QB benched amid playoff push - The Athletic",
@@ -43,7 +45,17 @@ final class BriefingDecodingTests: XCTestCase {
             briefings.first?.bullets.first?.imageURL,
             URL(string: "https://image.pollinations.ai/prompt/test?seed=1")
         )
+        XCTAssertEqual(
+            briefings.first?.leadImageURL,
+            URL(string: "https://example.supabase.co/storage/v1/object/public/card-art/lead.jpg")
+        )
+        XCTAssertEqual(
+            briefings.first?.bullets.first?.backstory,
+            "He has started every game for 9 years, but the team lost 5 straight and the front office blinked first."
+        )
         XCTAssertNil(briefings.first?.bullets.last?.imageURL)
+        // Pre-v2 rows decode without the new fields.
+        XCTAssertNil(briefings.first?.bullets.last?.backstory)
     }
 
     func testSampleBriefingHasRequiredSourceLinks() throws {
