@@ -15,3 +15,9 @@ Nem eredmény-, fogadás-, fantasy- vagy sűrű sport-hír app. Csak annyi konte
 Ingyenes: Cocktail Party kontextus napi briefinggel.
 
 A The Sideline Pro feloldja az összes kontextust, napi 3 briefingig és a Local Teamet.
+
+The Sideline Pro is an auto-renewing subscription (monthly or annual). Your
+subscription renews automatically unless cancelled at least 24 hours before the
+end of the period. Manage or cancel anytime in your Apple ID settings.
+Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+Privacy: https://jackwallner.github.io/sports/privacy-policy.html

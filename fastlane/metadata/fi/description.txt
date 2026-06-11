@@ -15,3 +15,9 @@ Ei tulos-, vedonlyönti-, fantasy- tai tiheä urheiluuutissovellus. Vain tarpeek
 Ilmainen: Cocktail Party -konteksti päivittäisellä briefingillä.
 
 The Sideline Pro avaa kaikki kontekstit, jopa 3 briefingiä päivässä ja Local Teamin.
+
+The Sideline Pro is an auto-renewing subscription (monthly or annual). Your
+subscription renews automatically unless cancelled at least 24 hours before the
+end of the period. Manage or cancel anytime in your Apple ID settings.
+Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+Privacy: https://jackwallner.github.io/sports/privacy-policy.html

@@ -15,3 +15,9 @@ No és app de resultats, apostes, fantasy ni fil dens de notícies. Només conte
 Gratuït: context Cocktail Party amb briefing nacional diari.
 
 The Sideline Pro desbloqueja tots els contextos, fins a 3 briefings al dia i Local Team.
+
+The Sideline Pro is an auto-renewing subscription (monthly or annual). Your
+subscription renews automatically unless cancelled at least 24 hours before the
+end of the period. Manage or cancel anytime in your Apple ID settings.
+Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+Privacy: https://jackwallner.github.io/sports/privacy-policy.html
