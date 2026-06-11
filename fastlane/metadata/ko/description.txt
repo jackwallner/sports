@@ -15,3 +15,9 @@ The Sideline은 방에 들어가기 전 스포츠와 팝컬처 대화 주제를 
 무료: Cocktail Party 컨텍스트와 매일 전국 브리핑.
 
 The Sideline Pro로 모든 컨텍스트, 하루 최대 3회 브리핑, Local Team 이용.
+
+The Sideline Pro is an auto-renewing subscription (monthly or annual). Your
+subscription renews automatically unless cancelled at least 24 hours before the
+end of the period. Manage or cancel anytime in your Apple ID settings.
+Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+Privacy: https://jackwallner.github.io/sports/privacy-policy.html
