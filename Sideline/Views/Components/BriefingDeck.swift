@@ -19,7 +19,9 @@ import UIKit
 struct BriefingDeck: View {
     let briefing: Briefing
     @Binding var index: Int
+    let isPro: Bool
     let onOpenSource: (URL) -> Void
+    let onExploreRooms: () -> Void
 
     @State private var drag: CGSize = .zero
     @State private var isFlinging = false
@@ -37,9 +39,16 @@ struct BriefingDeck: View {
     @ScaledMetric(relativeTo: .footnote) private var activeDotWidth: CGFloat = 22
 
     private var cards: [DeckCard] {
-        [.lead(briefing)]
+        var cards: [DeckCard] = [.lead(briefing)]
             + briefing.bullets.map(DeckCard.point)
             + [.question(briefing.suggestedQuestion)]
+        // Free users end the deck on the rooms card: the other rooms are more
+        // STORIES (each room is its own briefing), not just other tones. The
+        // moment they finish the free deck is the moment that lands.
+        if !isPro {
+            cards.append(.rooms)
+        }
+        return cards
     }
 
     /// How many cards are mounted in the peek stack at once (front + up to two
@@ -58,7 +67,8 @@ struct BriefingDeck: View {
                         DeckCardView(
                             card: cards[position],
                             isFlipped: flippedPosition == position,
-                            onOpenSource: onOpenSource
+                            onOpenSource: onOpenSource,
+                            onExploreRooms: onExploreRooms
                         )
                             .scaleEffect(scale(forSlot: slot))
                             .offset(y: yOffset(forSlot: slot))
@@ -262,9 +272,11 @@ enum DeckCard {
     case lead(Briefing)
     case point(BriefingBullet)
     case question(String)
+    /// Free-deck finale: the other rooms, framed as more stories, not tones.
+    case rooms
 
-    /// Story cards carry their detail on the back. Lead and question cards are
-    /// single-faced; tapping them does nothing.
+    /// Story cards carry their detail on the back. Lead, question, and rooms
+    /// cards are single-faced; tapping them does nothing.
     var hasBack: Bool {
         if case .point = self { return true }
         return false
@@ -289,6 +301,7 @@ private struct DeckCardView: View {
     let card: DeckCard
     let isFlipped: Bool
     let onOpenSource: (URL) -> Void
+    let onExploreRooms: () -> Void
 
     var body: some View {
         ZStack {
@@ -368,6 +381,73 @@ private struct DeckCardView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
                 .padding(22)
             }
+        case .rooms:
+            roomsCard
+        }
+    }
+
+    // MARK: Rooms — the free deck's last card
+    //
+    // Sells the rooms on the one fact the rail can't show: each room is its
+    // own briefing with its own stories, written for that crowd. Shown only
+    // to free users, right when they've finished everything free.
+
+    private var roomsCard: some View {
+        let proRooms = Persona.allCases.filter { !$0.isFree }
+        return ZStack {
+            LinearGradient(
+                colors: SidelineTheme.cardPanel,
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            VStack(alignment: .leading, spacing: 14) {
+                eyebrow(icon: "rectangle.stack.fill", text: "That was one room")
+                line("\(proRooms.count) more rooms got their own stories today.", size: 24, limit: 3)
+
+                VStack(alignment: .leading, spacing: 10) {
+                    ForEach(proRooms) { room in
+                        HStack(spacing: 10) {
+                            Image(systemName: room.symbolName)
+                                .font(.subheadline.weight(.semibold))
+                                .frame(width: 24)
+                            Text(room.displayName)
+                                .font(.subheadline.weight(.semibold))
+                            Spacer(minLength: 4)
+                            Image(systemName: "lock.fill")
+                                .font(.caption2)
+                                .opacity(0.55)
+                        }
+                        .foregroundStyle(.white.opacity(0.92))
+                    }
+                }
+                .padding(.top, 2)
+
+                Spacer(minLength: 8)
+
+                Button(action: onExploreRooms) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "lock.open.fill")
+                            .font(.caption.weight(.bold))
+                        Text("Unlock every room")
+                            .font(.subheadline.weight(.semibold))
+                        Spacer(minLength: 4)
+                        Image(systemName: "arrow.up.right")
+                            .font(.caption.weight(.bold))
+                    }
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 12)
+                    .frame(maxWidth: .infinity)
+                    .background(.white.opacity(0.18), in: Capsule())
+                    .overlay(Capsule().stroke(.white.opacity(0.28), lineWidth: 1))
+                }
+                .buttonStyle(.plain)
+                .accessibilityHint("Shows The Sideline Pro plans")
+
+                hint(icon: "sparkles", text: "Different stories, written for that crowd.")
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .padding(22)
         }
     }
 
@@ -462,9 +542,16 @@ private struct DeckCardView: View {
     }
 
     // MARK: Back — the backstory, in case they ask
+    //
+    // The back is the reader's cover for the follow-up question: what
+    // actually happened and why people care (backstory), then a line to keep
+    // the conversation moving (tie-in), then the receipt (source). Old rows
+    // without a backstory lead with the tie-in like they always did.
 
     private func back(_ bullet: BriefingBullet) -> some View {
-        ZStack {
+        let backstory = nonEmpty(bullet.backstory)
+        let tieIn = nonEmpty(bullet.tieIn)
+        return ZStack {
             // The same panel green as every front, so the back reads as the
             // card's reverse side, not a different card.
             LinearGradient(
@@ -473,21 +560,35 @@ private struct DeckCardView: View {
                 endPoint: .bottom
             )
 
-            VStack(alignment: .leading, spacing: 16) {
-                eyebrow(icon: "text.bubble.fill", text: "The backstory")
+            VStack(alignment: .leading, spacing: 14) {
+                eyebrow(icon: "text.bubble.fill", text: "If they ask")
 
-                if let tieIn = bullet.tieIn, !tieIn.isEmpty {
-                    Text(tieIn)
-                        .font(SidelineTheme.display(20))
+                if let body = backstory ?? tieIn {
+                    Text(body)
+                        .font(SidelineTheme.display(19))
                         .foregroundStyle(.white)
                         .lineSpacing(2)
-                        .lineLimit(6)
-                        .minimumScaleFactor(0.8)
+                        .lineLimit(8)
+                        .minimumScaleFactor(0.75)
                         .fixedSize(horizontal: false, vertical: true)
-                        .copyable(tieIn)
+                        .copyable(body)
                 }
 
-                if let reason = bullet.tagReason, !reason.isEmpty {
+                // The conversational next beat, only when it isn't already
+                // serving as the body above.
+                if backstory != nil, let tieIn {
+                    HStack(alignment: .top, spacing: 8) {
+                        Image(systemName: "arrow.turn.down.right")
+                            .font(.footnote.weight(.bold))
+                            .padding(.top, 2)
+                        Text(tieIn)
+                            .font(.callout)
+                            .lineSpacing(2)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .foregroundStyle(SidelineTheme.goldOnDark)
+                    .copyable(tieIn)
+                } else if let reason = nonEmpty(bullet.tagReason) {
                     HStack(alignment: .top, spacing: 8) {
                         Image(systemName: (bullet.tag ?? .neutral).symbolName)
                             .font(.footnote.weight(.bold))
@@ -517,6 +618,11 @@ private struct DeckCardView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .padding(22)
         }
+    }
+
+    private func nonEmpty(_ text: String?) -> String? {
+        guard let text, !text.isEmpty else { return nil }
+        return text
     }
 
     private func learnMore(_ bullet: BriefingBullet) -> some View {

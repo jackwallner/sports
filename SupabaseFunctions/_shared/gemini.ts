@@ -108,17 +108,22 @@ function buildPrompt(target: GenerationTarget, sourceItems: SourceItemRow[]): st
     "Do not reproduce article bodies. Use the provided headlines/summaries only and link to the original source URL.",
     "Every bullet must cite exactly one provided source URL.",
     "Each bullet's subject is a 1-3 word label for the team, league, or athlete it is about (for example: 'Cowboys', 'NBA', 'Serena Williams'). Use the most specific one that fits.",
+    "Each bullet's backstory is the reader's safety net for the moment someone replies 'wait, what happened?'. Write 2-3 short sentences that cover, in order: what actually happened (who, what, when in plain words), and why people care or what is at stake. Stick to facts in the source. It must add real information beyond the talking_point, never restate it.",
+    "Each bullet's tie_in is one full sentence connecting the story to pop culture or everyday life, something the reader could say to keep the conversation going. Never a bare label like 'Taylor Swift' or 'Internet culture'. Use null if there is no genuine angle.",
     "Each bullet's image_prompt is the literal visual scene for that story's card art. Describe only WHAT is in the picture: concrete objects, setting, action, mascots, and pop-culture imagery (a cartoon great dane in a quarterback jersey, a torn jersey on a locker room floor, a phone glowing with angry posts). Lean into the story's hook, including silly comparisons. Never name or depict a real person, never describe an art style, and never include words, numbers, or signs to render.",
+    "The briefing's lead_image_prompt is the visual scene for the deck's cover card: one image that captures the day's biggest story or overall mood. Same rules as image_prompt, and it must be a clearly different scene from every bullet's image_prompt.",
     "Return strict JSON only. No markdown. No code fences.",
     "Schema:",
     JSON.stringify({
       headline: "string, <= 120 chars",
       tl_dr: "string, one sentence the reader can say out loud",
+      lead_image_prompt: "1-2 sentence literal visual scene for the deck's cover card, distinct from every bullet's",
       bullets: [
         {
           talking_point: "plain-language point, 1-2 sentences",
           subject: "1-3 word sport/team/athlete label, e.g. 'Cowboys' or 'NBA'",
-          tie_in: "optional pop-culture/social angle or null",
+          backstory: "2-3 sentences: what actually happened and why people care, beyond the talking_point",
+          tie_in: "one full sentence pop-culture/social angle to keep talking, or null",
           tag: "nice_guy | jerk | redemption | drama | neutral | null",
           tag_reason: "optional short reason or null",
           image_prompt: "1-2 sentence literal visual scene for this story's card art",

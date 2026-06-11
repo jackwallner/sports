@@ -37,8 +37,11 @@ enum CardArt {
     }
 
     static func leadImageURL(for briefing: Briefing) -> URL? {
-        // The TL;DR summarizes the top story, so it shares that story's
-        // pipeline-stamped (storage-hosted, always-fast) art when available.
+        // The pipeline stamps the cover card its own image so the deck never
+        // opens on a duplicate of the first story's art.
+        if let stamped = briefing.leadImageURL { return stamped }
+        // Older rows: share the top story's hosted art. A repeated picture
+        // beats a blank one while pre-lead-art rows age out.
         if let stamped = briefing.bullets.first?.imageURL { return stamped }
         let scene = briefing.bullets.first.map { sport(for: $0).scene } ?? fallbackScene
         let prompt = "\(stylePrefix) \(scene), grand cinematic atmosphere. \(style)"

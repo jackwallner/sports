@@ -1,5 +1,5 @@
 import { normalizeBriefing, validateBriefing } from "../_shared/briefingValidation.ts";
-import { stampCardArt } from "../_shared/cardArt.ts";
+import { stampCardArt, stampLeadArt } from "../_shared/cardArt.ts";
 import { generateBriefingWithGemini, paceGeminiCalls } from "../_shared/gemini.ts";
 import { logError, logInfo, normalizeError, requireCronSecret, traceId } from "../_shared/logger.ts";
 import { serviceClient } from "../_shared/supabase.ts";
@@ -80,6 +80,9 @@ async function generateOne(
     // in our public storage bucket, reused for the same story everywhere.
     // Gemini never sees or produces this.
     normalized.bullets = await stampCardArt(supabase, trace_id, normalized.bullets);
+    // The cover card's own image, so the deck never opens on a duplicate of
+    // the first story's art.
+    const leadImageUrl = await stampLeadArt(supabase, trace_id, normalized);
     const { error: insertError } = await supabase.from("briefings").insert({
       persona: target.persona,
       scope: target.scope,
@@ -87,6 +90,7 @@ async function generateOne(
       refresh_window: target.refreshWindow,
       headline: normalized.headline,
       tl_dr: normalized.tl_dr,
+      lead_image_url: leadImageUrl,
       bullets: normalized.bullets,
       suggested_question: normalized.suggested_question,
       source_count: normalized.source_count,
@@ -120,7 +124,7 @@ async function generateOne(
       target,
       status: "succeeded",
       // Surfaced so the cron can warm these onto the image CDN right away.
-      image_urls: normalized.bullets.map((bullet) => bullet.image_url).filter(Boolean),
+      image_urls: [leadImageUrl, ...normalized.bullets.map((bullet) => bullet.image_url)].filter(Boolean),
     };
   } catch (error) {
     logError(trace_id, "target_generation_failed", error, {

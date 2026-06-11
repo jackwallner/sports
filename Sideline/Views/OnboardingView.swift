@@ -81,7 +81,7 @@ struct OnboardingView: View {
                 .font(SidelineTheme.title)
                 .foregroundStyle(SidelineTheme.inkPrimary)
                 .fixedSize(horizontal: false, vertical: true)
-            Text("You can switch anytime. Cocktail Party is free; the rest unlock with Pro.")
+            Text("Each room is its own daily briefing, with stories picked for that crowd. Cocktail Party is free; the rest unlock with Pro.")
                 .font(.callout)
                 .foregroundStyle(SidelineTheme.inkSecondary)
                 .fixedSize(horizontal: false, vertical: true)

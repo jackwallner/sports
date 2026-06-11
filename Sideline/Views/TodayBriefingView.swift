@@ -222,9 +222,13 @@ struct TodayBriefingView: View {
                 offlineBanner.padding(.horizontal, 18)
             }
 
-            BriefingDeck(briefing: briefing, index: $deckIndex) { url in
-                activeSheet = .source(url)
-            }
+            BriefingDeck(
+                briefing: briefing,
+                index: $deckIndex,
+                isPro: isPro,
+                onOpenSource: { url in activeSheet = .source(url) },
+                onExploreRooms: { activeSheet = .paywall(viewModel.selectedPersona) }
+            )
 
             FreshnessFooter(briefing: briefing, isOffline: isOffline, isPro: isPro)
                 .padding(.horizontal, 26)

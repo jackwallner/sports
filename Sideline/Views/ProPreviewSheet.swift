@@ -49,7 +49,7 @@ struct ProPreviewSheet: View {
                             .stroke(SidelineTheme.brandPrimary.opacity(0.18), lineWidth: 1)
                     )
 
-                Label("Pro unlocks the full daily briefing for this room, refreshed up to 3× a day.", systemImage: "lock.open.fill")
+                Label("This room gets its own stories every day, separate from the free briefing. Pro opens it, refreshed up to 3× a day.", systemImage: "lock.open.fill")
                     .font(.footnote)
                     .foregroundStyle(SidelineTheme.inkSecondary)
                     .fixedSize(horizontal: false, vertical: true)
