@@ -11,6 +11,8 @@ import RevenueCat
 struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var showingPaywall = false
+    @State private var isRestoring = false
+    @State private var restoreResultMessage: String?
     @AppStorage("favoriteTeam") private var favoriteTeam = ""
     @AppStorage("sideline.appearanceMode") private var appearanceModeRaw = AppearanceMode.system.rawValue
 
@@ -120,19 +122,10 @@ struct SettingsView: View {
             }
 
             Section {
-                Button("Restore Purchases") {
-                    Task {
-                        #if canImport(RevenueCat)
-                        if Purchases.isConfigured, entitlement is StoreService {
-                            await store.restorePurchases()
-                        } else {
-                            await entitlement.refresh()
-                        }
-                        #else
-                        await entitlement.refresh()
-                        #endif
-                    }
+                Button(isRestoring ? "Restoring…" : "Restore Purchases") {
+                    Task { await runRestore() }
                 }
+                .disabled(isRestoring)
             } footer: {
                 Text("Already subscribed? Restore to unlock Pro on this device.")
             }
@@ -152,12 +145,41 @@ struct SettingsView: View {
             }
         }
         .navigationTitle("Settings")
+        .alert(
+            "Restore Purchases",
+            isPresented: Binding(
+                get: { restoreResultMessage != nil },
+                set: { if !$0 { restoreResultMessage = nil } }
+            )
+        ) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(restoreResultMessage ?? "")
+        }
         .sheet(isPresented: $showingPaywall) {
             PaywallView(
                 entitlement: entitlement,
                 impressionId: "sideline_settings_paywall_sheet"
             )
         }
+    }
+
+    private func runRestore() async {
+        isRestoring = true
+        defer { isRestoring = false }
+        #if canImport(RevenueCat)
+        if Purchases.isConfigured, entitlement is StoreService {
+            await store.restorePurchases()
+            restoreResultMessage = store.isPro
+                ? "The Sideline Pro is active on this device."
+                : store.lastError ?? "No active The Sideline Pro purchase was found for this Apple ID."
+            return
+        }
+        #endif
+        await entitlement.refresh()
+        restoreResultMessage = entitlement.isPro
+            ? "The Sideline Pro is active on this device."
+            : "No active The Sideline Pro purchase was found for this Apple ID."
     }
 
     private var versionString: String {

@@ -38,6 +38,10 @@ public final class TodayBriefingViewModel {
     private let entitlement: any EntitlementProviding
     private var hasShownLimitThisSession = false
     private var shouldRecordPositiveMomentOnNextSuccess = false
+    /// Bumped on every load. A response only lands if its generation is still
+    /// current, so a slow fetch for a previously selected persona can't
+    /// overwrite the briefing the user is actually looking at.
+    private var loadGeneration = 0
     #if canImport(SwiftData)
     private let cache: BriefingCache?
     #endif
@@ -54,22 +58,27 @@ public final class TodayBriefingViewModel {
     }
 
     public func load() async {
+        loadGeneration += 1
+        let generation = loadGeneration
         state = .loading
 
+        let persona = selectedPersona
         let scope = currentScope
-        let team = currentTeam
+        let team = scope == .local ? currentTeam : nil
 
         do {
-            let briefing = try await service.latestBriefing(persona: selectedPersona, scope: scope, team: team)
+            let briefing = try await service.latestBriefing(persona: persona, scope: scope, team: team)
+            guard generation == loadGeneration else { return }
             #if canImport(SwiftData)
-            try? cache?.save(briefing)
+            try? cache?.save(briefing, team: team)
             #endif
             lastBriefing = briefing
             state = .populated(briefing, isOffline: false)
             notifyPositiveMomentIfRequested()
         } catch {
+            guard generation == loadGeneration else { return }
             #if canImport(SwiftData)
-            if let cached = try? cache?.load(persona: selectedPersona, scope: scope) {
+            if let cached = try? cache?.load(persona: persona, scope: scope, team: team) {
                 lastBriefing = cached
                 state = .populated(cached, isOffline: true)
                 return

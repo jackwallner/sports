@@ -205,6 +205,46 @@ final class TodayBriefingViewModelTests: XCTestCase {
         }
     }
 
+    // MARK: - Stale responses
+
+    /// Slow responder for the persona the user is leaving; instant for the rest.
+    private final class DelayedMockService: BriefingServing, @unchecked Sendable {
+        func latestBriefing(persona: Persona, scope: BriefingScope, team: String?) async throws -> Briefing {
+            if persona == .cocktailParty {
+                try? await Task.sleep(nanoseconds: 200_000_000)
+            }
+            return Briefing(
+                persona: persona,
+                scope: scope,
+                refreshWindow: .daily,
+                headline: "h",
+                tlDR: persona.rawValue,
+                bullets: [],
+                suggestedQuestion: "q",
+                sourceCount: 1,
+                generatedAt: Date()
+            )
+        }
+    }
+
+    func testSlowStaleLoadDoesNotOverwriteNewerSelection() async {
+        let vm = TodayBriefingViewModel(
+            service: DelayedMockService(),
+            entitlement: LocalEntitlementStore(isPro: true)
+        )
+
+        let slowLoad = Task { await vm.load() } // cocktailParty, slow
+        try? await Task.sleep(nanoseconds: 50_000_000)
+        _ = await vm.select(.dateNight) // resolves before the slow response lands
+        await slowLoad.value
+
+        guard case .populated(let briefing, _) = vm.state else {
+            XCTFail("Expected .populated, got \(vm.state)")
+            return
+        }
+        XCTAssertEqual(briefing.persona, .dateNight, "Stale cocktailParty response overwrote the newer selection")
+    }
+
     // MARK: - Last Briefing
 
     func testLastBriefingIsSetAfterSuccessfulLoad() async {

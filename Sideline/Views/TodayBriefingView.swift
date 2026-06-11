@@ -162,6 +162,19 @@ struct TodayBriefingView: View {
                     Task { await viewModel.load() }
                     presentOnboardingPaywallIfNeeded()
                 }
+                // Entitlements load async: on a cold launch a Pro user's stored
+                // room fails canUse before customerInfo arrives and selection
+                // self-corrects to Cocktail Party. When Pro confirms, put them
+                // back in the room they actually left off in.
+                .onChange(of: isPro) { wasPro, nowPro in
+                    guard !wasPro, nowPro else { return }
+                    guard let stored = Persona(rawValue: lastPersonaRaw),
+                          stored != viewModel.selectedPersona,
+                          entitlement.canUse(persona: stored)
+                    else { return }
+                    viewModel.selectedPersona = stored
+                    Task { await viewModel.load() }
+                }
                 .onReceive(NotificationCenter.default.publisher(for: .sidelinePositiveMomentForReview)) { _ in
                     scheduleReviewPromptAfterPositiveMoment()
                 }
@@ -410,7 +423,7 @@ struct TodayBriefingView: View {
     }
 
     private var offlineBanner: some View {
-        Label("Offline. Showing yesterday's update.", systemImage: "wifi.slash")
+        Label("Offline. Showing your last saved briefing.", systemImage: "wifi.slash")
             .font(.footnote)
             .foregroundStyle(SidelineTheme.inkSecondary)
             .padding(10)
