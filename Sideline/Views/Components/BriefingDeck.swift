@@ -5,7 +5,7 @@ import UIKit
 #endif
 
 /// The briefing as a Tinder-style deck: one self-contained story per card, then
-/// a single "Your move" question to keep the conversation going.
+/// a single "Ask this" question to keep the conversation going.
 ///
 /// You fling the top card off in either direction and the next card — already
 /// peeking and rising live behind it — takes its place. The deck is a loop:
@@ -349,13 +349,13 @@ private struct DeckCardView: View {
             VStack(spacing: 0) {
                 artZone(imageURLs: CardArt.leadImageURLs(for: briefing)) { EmptyView() }
                 panel {
-                    eyebrow(icon: "quote.opening", text: "Lead with this")
-                    line(briefing.tlDR, size: 25, limit: 7)
+                    eyebrow(icon: "newspaper.fill", text: "The gist")
+                    line(briefing.tlDR, size: 25, limit: 9)
                         .copyable(briefing.tlDR)
                     if card.hasBack {
-                        hint(icon: "hand.tap.fill", text: "Say this first. Tap for the setup.")
+                        hint(icon: "hand.tap.fill", text: "Know this and you can hang. Tap for the setup.")
                     } else {
-                        hint(icon: "hand.draw.fill", text: "Say this first. Swipe for the stories behind it.")
+                        hint(icon: "hand.draw.fill", text: "Know this and you can hang. Swipe for the stories.")
                     }
                 }
             }
@@ -372,7 +372,7 @@ private struct DeckCardView: View {
                 }
                 panel {
                     eyebrow(icon: nil, text: kicker(for: bullet))
-                    line(bullet.talkingPoint, size: 23, limit: 5)
+                    line(bullet.talkingPoint, size: 23, limit: 8)
                         .copyable(bullet.talkingPoint)
                     hint(icon: "hand.tap.fill", text: "Tap for the backstory")
                 }
@@ -386,10 +386,10 @@ private struct DeckCardView: View {
                     endPoint: .bottomTrailing
                 )
                 VStack(alignment: .leading, spacing: 12) {
-                    eyebrow(icon: "arrow.turn.down.right", text: "Your move", color: .white.opacity(0.92))
-                    line(question, size: 25, limit: 6)
+                    eyebrow(icon: "questionmark.bubble.fill", text: "Ask this", color: .white.opacity(0.92))
+                    line(question, size: 25, limit: 8)
                         .copyable(question)
-                    hint(icon: "person.2.fill", text: "Ask a fan to keep it going.")
+                    hint(icon: "person.2.fill", text: "Toss it out and let them do the talking.")
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
                 .padding(22)
@@ -530,7 +530,7 @@ private struct DeckCardView: View {
             .foregroundStyle(.white)
             .lineSpacing(2)
             .lineLimit(limit)
-            .minimumScaleFactor(0.7)
+            .minimumScaleFactor(0.6)
             .fixedSize(horizontal: false, vertical: true)
     }
 
@@ -583,16 +583,16 @@ private struct DeckCardView: View {
                 endPoint: .bottom
             )
 
-            VStack(alignment: .leading, spacing: 14) {
+            VStack(alignment: .leading, spacing: 16) {
                 eyebrow(icon: "text.bubble.fill", text: "The setup")
 
                 if let setup = nonEmpty(briefing.leadBackstory) {
                     Text(setup)
-                        .font(SidelineTheme.display(19))
+                        .font(SidelineTheme.display(22))
                         .foregroundStyle(.white)
-                        .lineSpacing(2)
-                        .lineLimit(10)
-                        .minimumScaleFactor(0.75)
+                        .lineSpacing(5)
+                        .lineLimit(12)
+                        .minimumScaleFactor(0.7)
                         .fixedSize(horizontal: false, vertical: true)
                         .copyable(setup)
                 }
@@ -628,15 +628,15 @@ private struct DeckCardView: View {
                 endPoint: .bottom
             )
 
-            VStack(alignment: .leading, spacing: 14) {
-                eyebrow(icon: "text.bubble.fill", text: "If they ask")
+            VStack(alignment: .leading, spacing: 16) {
+                eyebrow(icon: "text.bubble.fill", text: "The backstory")
 
                 if let body = backstory ?? tieIn {
                     Text(body)
-                        .font(SidelineTheme.display(18))
+                        .font(SidelineTheme.display(21))
                         .foregroundStyle(.white)
-                        .lineSpacing(2)
-                        .lineLimit(10)
+                        .lineSpacing(5)
+                        .lineLimit(12)
                         .minimumScaleFactor(0.7)
                         .fixedSize(horizontal: false, vertical: true)
                         .copyable(body)
@@ -647,12 +647,12 @@ private struct DeckCardView: View {
                 if backstory != nil, let tieIn {
                     HStack(alignment: .top, spacing: 8) {
                         Image(systemName: "arrow.turn.down.right")
-                            .font(.footnote.weight(.bold))
+                            .font(.callout.weight(.bold))
                             .padding(.top, 2)
                         Text(tieIn)
-                            .font(.callout)
-                            .lineSpacing(2)
-                            .lineLimit(4)
+                            .font(.body)
+                            .lineSpacing(3)
+                            .lineLimit(5)
                             .minimumScaleFactor(0.85)
                             .fixedSize(horizontal: false, vertical: true)
                     }
@@ -661,11 +661,11 @@ private struct DeckCardView: View {
                 } else if let reason = nonEmpty(bullet.tagReason) {
                     HStack(alignment: .top, spacing: 8) {
                         Image(systemName: (bullet.tag ?? .neutral).symbolName)
-                            .font(.footnote.weight(.bold))
+                            .font(.callout.weight(.bold))
                             .padding(.top, 2)
                         Text(reason)
-                            .font(.callout)
-                            .lineSpacing(2)
+                            .font(.body)
+                            .lineSpacing(3)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                     .foregroundStyle(.white.opacity(0.88))
