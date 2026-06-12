@@ -81,6 +81,8 @@ export interface GeneratedBriefing {
   bullets: GeneratedBullet[];
   suggested_question: string;
   source_count: number;
+  /** 2-3 sentences of setup behind the tl_dr, for the cover card's flip side. */
+  lead_backstory?: string | null;
   /** Gemini's scene for the deck's cover card (distinct from every bullet's). */
   lead_image_prompt?: string | null;
 }
@@ -93,4 +95,4 @@ export interface GenerationTarget {
 }
 
 export const ALLOWED_TAGS: BriefingTag[] = ["nice_guy", "jerk", "redemption", "drama", "neutral"];
-export const PROMPT_VERSION = "sideline-v2-backstory-leadart";
+export const PROMPT_VERSION = "sideline-v3-outsider-voice";

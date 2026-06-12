@@ -13,6 +13,7 @@ final class BriefingDecodingTests: XCTestCase {
           "headline": "What everyone's arguing about this week",
           "tl_dr": "A beloved veteran quarterback got benched, the internet is melting down, and his replacement is a 23-year-old nobody had heard of last month.",
           "lead_image_url": "https://example.supabase.co/storage/v1/object/public/card-art/lead.jpg",
+          "lead_backstory": "The Cowboys, the most-watched team in football, benched their starter of 9 years mid-playoff race.",
           "bullets": [{
             "id": "22222222-2222-2222-2222-222222222222",
             "talking_point": "The team benched their longtime starter, and fans are split.",
@@ -48,6 +49,10 @@ final class BriefingDecodingTests: XCTestCase {
         XCTAssertEqual(
             briefings.first?.leadImageURL,
             URL(string: "https://example.supabase.co/storage/v1/object/public/card-art/lead.jpg")
+        )
+        XCTAssertEqual(
+            briefings.first?.leadBackstory,
+            "The Cowboys, the most-watched team in football, benched their starter of 9 years mid-playoff race."
         )
         XCTAssertEqual(
             briefings.first?.bullets.first?.backstory,
