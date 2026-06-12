@@ -60,7 +60,7 @@ public enum Persona: String, Codable, CaseIterable, Identifiable, Sendable {
 
     public var contextHeader: String {
         switch self {
-        case .cocktailParty: return "LEAD WITH THIS"
+        case .cocktailParty: return "WHEN TALK TURNS TO SPORTS"
         case .sportsTalkForMoms: return "WHEN YOUR KID BRINGS IT UP"
         case .officeWatercooler: return "AT THE OFFICE TODAY"
         case .dateNight: return "FOR THE DINNER TABLE"

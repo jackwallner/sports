@@ -8,14 +8,14 @@ struct PersonaRail: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // The chips alone read as ambiguous filters. Name the concept and
-            // the payoff in one quiet line: these are separate briefings.
+            // The chips alone read as ambiguous filters. Frame the choice the
+            // way the user actually makes it: who am I about to talk to?
             HStack(spacing: 6) {
                 Text("ROOMS")
                     .font(SidelineTheme.eyebrow)
                     .tracking(1.4)
                     .foregroundStyle(SidelineTheme.brandPrimary)
-                Text("Each one is its own briefing")
+                Text("Pick who you'll be talking to")
                     .font(.caption)
                     .foregroundStyle(SidelineTheme.inkTertiary)
             }
@@ -25,6 +25,17 @@ struct PersonaRail: View {
             .accessibilityAddTraits(.isHeader)
 
             chips
+
+            // The selected room's pitch, so switching rooms visibly changes
+            // what the briefing below is for.
+            Text(selected.shortPitch)
+                .font(.caption)
+                .foregroundStyle(SidelineTheme.inkTertiary)
+                .lineLimit(1)
+                .padding(.horizontal)
+                .padding(.bottom, 6)
+                .animation(nil, value: selected)
+                .accessibilityLabel("\(selected.displayName): \(selected.shortPitch)")
         }
     }
 
