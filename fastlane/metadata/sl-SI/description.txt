@@ -14,7 +14,7 @@ Ni app za rezultate, stave, fantasy ali gost feed novic. Samo dovolj konteksta, 
 
 Brezplačno: Cocktail Party kontekst z dnevnim briefingom.
 
-The Sideline Pro odklene vse kontekste, do 3 briefingov na dan in Local Team.
+The Sideline Pro odklene vse kontekste, do 3 briefingov na dan.
 
 The Sideline Pro is an auto-renewing subscription (monthly or annual). Your
 subscription renews automatically unless cancelled at least 24 hours before the

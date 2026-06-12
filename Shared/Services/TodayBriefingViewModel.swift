@@ -17,7 +17,6 @@ public final class TodayBriefingViewModel {
     public private(set) var lastBriefing: Briefing?
 
     private static let lastPersonaKey = "sideline.lastPersona"
-    private static let favoriteTeamKey = "favoriteTeam"
     private static let lastFreeRefreshKey = "sideline.lastFreeRefreshDay"
 
     private static func initialPersona() -> Persona {
@@ -63,14 +62,12 @@ public final class TodayBriefingViewModel {
         state = .loading
 
         let persona = selectedPersona
-        let scope = currentScope
-        let team = scope == .local ? currentTeam : nil
 
         do {
-            let briefing = try await service.latestBriefing(persona: persona, scope: scope, team: team)
+            let briefing = try await service.latestBriefing(persona: persona, scope: .national)
             guard generation == loadGeneration else { return }
             #if canImport(SwiftData)
-            try? cache?.save(briefing, team: team)
+            try? cache?.save(briefing)
             #endif
             lastBriefing = briefing
             state = .populated(briefing, isOffline: false)
@@ -78,7 +75,7 @@ public final class TodayBriefingViewModel {
         } catch {
             guard generation == loadGeneration else { return }
             #if canImport(SwiftData)
-            if let cached = try? cache?.load(persona: persona, scope: scope, team: team) {
+            if let cached = try? cache?.load(persona: persona, scope: .national) {
                 lastBriefing = cached
                 state = .populated(cached, isOffline: true)
                 return
@@ -120,21 +117,7 @@ public final class TodayBriefingViewModel {
         await load()
     }
 
-    public func reloadAfterPreferenceChange() async {
-        shouldRecordPositiveMomentOnNextSuccess = true
-        await load()
-    }
-
     // MARK: - Helpers
-
-    private var currentScope: BriefingScope {
-        selectedPersona == .localTeam ? .local : .national
-    }
-
-    private var currentTeam: String? {
-        let team = UserDefaults.standard.string(forKey: Self.favoriteTeamKey) ?? ""
-        return team.isEmpty ? nil : team
-    }
 
     private var isFreeRefreshExhaustedToday: Bool {
         guard let stamp = UserDefaults.standard.string(forKey: Self.lastFreeRefreshKey) else {

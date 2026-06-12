@@ -5,7 +5,6 @@ public enum Persona: String, Codable, CaseIterable, Identifiable, Sendable {
     case sportsTalkForMoms = "sports_talk_for_moms"
     case officeWatercooler = "office_watercooler"
     case dateNight = "date_night"
-    case localTeam = "local_team"
 
     public var id: String { rawValue }
 
@@ -19,8 +18,6 @@ public enum Persona: String, Codable, CaseIterable, Identifiable, Sendable {
             return "Office Watercooler"
         case .dateNight:
             return "Date Night"
-        case .localTeam:
-            return "Local Team"
         }
     }
 
@@ -34,8 +31,6 @@ public enum Persona: String, Codable, CaseIterable, Identifiable, Sendable {
             return "Safe, current takes for coworkers."
         case .dateNight:
             return "A charming story and a follow-up question."
-        case .localTeam:
-            return "Stories biased toward your city."
         }
     }
 
@@ -49,8 +44,6 @@ public enum Persona: String, Codable, CaseIterable, Identifiable, Sendable {
             return "cup.and.saucer"
         case .dateNight:
             return "heart.text.square"
-        case .localTeam:
-            return "mappin.and.ellipse"
         }
     }
 
@@ -64,7 +57,6 @@ public enum Persona: String, Codable, CaseIterable, Identifiable, Sendable {
         case .sportsTalkForMoms: return "WHEN YOUR KID BRINGS IT UP"
         case .officeWatercooler: return "AT THE OFFICE TODAY"
         case .dateNight: return "FOR THE DINNER TABLE"
-        case .localTeam: return "FOR YOUR LOCAL CROWD"
         }
     }
 
@@ -80,8 +72,6 @@ public enum Persona: String, Codable, CaseIterable, Identifiable, Sendable {
             return "Someone will bring up last night's blown call. Safe line: \"The refs are having a rough season, huh?\" Agreeable, current, done."
         case .dateNight:
             return "Lead with the comeback: a player benched all year won it in the final seconds. Then ask, \"Do you root for the underdog or the favorite?\""
-        case .localTeam:
-            return "Your city's team is one win from the playoffs and the group chat is unhinged. You: \"If they blow this, I'm done.\" Pure local."
         }
     }
 
@@ -91,7 +81,6 @@ public enum Persona: String, Codable, CaseIterable, Identifiable, Sendable {
         case .sportsTalkForMoms: return "Sound tuned-in to your kid"
         case .officeWatercooler: return "Sound prepared at the office"
         case .dateNight: return "Sound prepared at dinner"
-        case .localTeam: return "Sound like a local fan"
         }
     }
 }

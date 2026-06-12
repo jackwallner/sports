@@ -16,13 +16,13 @@ Other headline candidates:
 - `More rooms, less homework`
 - `Sound in the loop`
 
-Subhead: `One room is free. Pro gives you all 5 contexts, fresher briefings, and your local team.`
+Subhead: `One room is free. Pro gives you all 4 contexts and fresher briefings.`
 
 ## Benefits
 
-- `person.3` - `All 5 contexts`
+- `person.3` - `All 4 contexts`
 - `clock.arrow.circlepath` - `Fresh 3× a day`
-- `mappin.and.ellipse` - `Local Team`
+- `quote.bubble` - `Built for non-fans`
 
 ## Trial And Pricing
 

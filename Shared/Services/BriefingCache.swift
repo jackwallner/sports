@@ -34,9 +34,9 @@ public final class BriefingCache {
         try self.init(container: ModelContainer(for: schema, configurations: configuration))
     }
 
-    public func save(_ briefing: Briefing, team: String? = nil) throws {
+    public func save(_ briefing: Briefing) throws {
         let context = ModelContext(container)
-        let key = Self.cacheKey(persona: briefing.persona, scope: briefing.scope, team: team)
+        let key = Self.cacheKey(persona: briefing.persona, scope: briefing.scope)
         let payload = try JSONEncoder.sideline.encode(briefing)
 
         let descriptor = FetchDescriptor<CachedBriefingRecord>(
@@ -60,9 +60,9 @@ public final class BriefingCache {
         try context.save()
     }
 
-    public func load(persona: Persona, scope: BriefingScope, team: String? = nil) throws -> Briefing? {
+    public func load(persona: Persona, scope: BriefingScope) throws -> Briefing? {
         let context = ModelContext(container)
-        let key = Self.cacheKey(persona: persona, scope: scope, team: team)
+        let key = Self.cacheKey(persona: persona, scope: scope)
         let descriptor = FetchDescriptor<CachedBriefingRecord>(
             predicate: #Predicate { $0.cacheKey == key }
         )
@@ -74,12 +74,8 @@ public final class BriefingCache {
         return try JSONDecoder.sideline.decode(Briefing.self, from: record.payload)
     }
 
-    /// Team is part of the key for local briefings so switching favorite teams
-    /// can't serve another team's cached briefing as the offline fallback.
-    public static func cacheKey(persona: Persona, scope: BriefingScope, team: String? = nil) -> String {
-        let base = "\(persona.rawValue):\(scope.rawValue)"
-        guard let team, !team.isEmpty else { return base }
-        return "\(base):\(team)"
+    public static func cacheKey(persona: Persona, scope: BriefingScope) -> String {
+        "\(persona.rawValue):\(scope.rawValue)"
     }
 }
 #endif

@@ -13,7 +13,6 @@ struct SettingsView: View {
     @State private var showingPaywall = false
     @State private var isRestoring = false
     @State private var restoreResultMessage: String?
-    @AppStorage("favoriteTeam") private var favoriteTeam = ""
     @AppStorage("sideline.appearanceMode") private var appearanceModeRaw = AppearanceMode.system.rawValue
 
     private var appearanceBinding: Binding<AppearanceMode> {
@@ -26,7 +25,6 @@ struct SettingsView: View {
     let entitlement: any EntitlementProviding
     let store: StoreService
     var onManualRefresh: () -> Void = {}
-    var onTeamChanged: () -> Void = {}
 
     private var isPro: Bool {
         #if canImport(RevenueCat)
@@ -45,41 +43,6 @@ struct SettingsView: View {
                 } label: {
                     SettingsProRow(isPro: isPro)
                 }
-            }
-
-            Section("Personalization") {
-                if isPro {
-                    NavigationLink {
-                        TeamPickerView(selectedTeam: $favoriteTeam)
-                    } label: {
-                        HStack {
-                            Label("Local team", systemImage: "mappin.and.ellipse")
-                            Spacer()
-                            Text(favoriteTeam.isEmpty ? "Pick your team" : favoriteTeam)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                } else {
-                    Button {
-                        showingPaywall = true
-                    } label: {
-                        VStack(alignment: .leading, spacing: 4) {
-                            HStack {
-                                Label("Local team", systemImage: "mappin.and.ellipse")
-                                Spacer()
-                                Image(systemName: "lock.fill")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                            Text("Pro biases briefings toward your market.")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                }
-            }
-            .onChange(of: favoriteTeam) { _, _ in
-                onTeamChanged()
             }
 
             Section("Appearance") {
@@ -201,69 +164,6 @@ struct SettingsView: View {
     }
 }
 
-private struct TeamPickerView: View {
-    @Binding var selectedTeam: String
-    @Environment(\.dismiss) private var dismiss
-    @State private var query = ""
-
-    private let teams = [
-        "Arizona Cardinals", "Atlanta Falcons", "Baltimore Ravens", "Buffalo Bills",
-        "Carolina Panthers", "Chicago Bears", "Cincinnati Bengals", "Cleveland Browns",
-        "Dallas Cowboys", "Denver Broncos", "Detroit Lions", "Green Bay Packers",
-        "Houston Texans", "Indianapolis Colts", "Jacksonville Jaguars", "Kansas City Chiefs",
-        "Las Vegas Raiders", "Los Angeles Chargers", "Los Angeles Rams", "Miami Dolphins",
-        "Minnesota Vikings", "New England Patriots", "New Orleans Saints", "New York Giants",
-        "New York Jets", "Philadelphia Eagles", "Pittsburgh Steelers", "San Francisco 49ers",
-        "Seattle Seahawks", "Tampa Bay Buccaneers", "Tennessee Titans", "Washington Commanders"
-    ]
-
-    private var filteredTeams: [String] {
-        let trimmed = query.trimmingCharacters(in: .whitespaces)
-        guard !trimmed.isEmpty else { return teams }
-        return teams.filter { $0.localizedCaseInsensitiveContains(trimmed) }
-    }
-
-    var body: some View {
-        List {
-            if query.isEmpty {
-                Button {
-                    selectedTeam = ""
-                    dismiss()
-                } label: {
-                    HStack {
-                        Text("None")
-                            .foregroundStyle(.primary)
-                        Spacer()
-                        if selectedTeam.isEmpty {
-                            Image(systemName: "checkmark")
-                                .foregroundStyle(SidelineTheme.brandPrimary)
-                        }
-                    }
-                }
-            }
-
-            ForEach(filteredTeams, id: \.self) { team in
-                Button {
-                    selectedTeam = team
-                    dismiss()
-                } label: {
-                    HStack {
-                        Text(team)
-                            .foregroundStyle(.primary)
-                        Spacer()
-                        if selectedTeam == team {
-                            Image(systemName: "checkmark")
-                                .foregroundStyle(SidelineTheme.brandPrimary)
-                        }
-                    }
-                }
-            }
-        }
-        .searchable(text: $query, prompt: "Search teams")
-        .navigationTitle("Local Team")
-    }
-}
-
 private struct SettingsProRow: View {
     let isPro: Bool
 
@@ -278,7 +178,7 @@ private struct SettingsProRow: View {
                     .foregroundStyle(isPro ? .secondary : SidelineTheme.brandPrimary)
             }
 
-            Text(isPro ? "All contexts, fresher briefings, and local team are on." : "All contexts, fresh 3\u{00D7}/day, and Local Team.")
+            Text(isPro ? "All contexts and fresher briefings are on." : "All contexts, fresh 3\u{00D7}/day.")
                 .font(.callout)
                 .foregroundStyle(.secondary)
         }

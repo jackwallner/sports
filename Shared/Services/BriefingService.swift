@@ -1,13 +1,7 @@
 import Foundation
 
 public protocol BriefingServing: Sendable {
-    func latestBriefing(persona: Persona, scope: BriefingScope, team: String?) async throws -> Briefing
-}
-
-public extension BriefingServing {
-    func latestBriefing(persona: Persona, scope: BriefingScope) async throws -> Briefing {
-        try await latestBriefing(persona: persona, scope: scope, team: nil)
-    }
+    func latestBriefing(persona: Persona, scope: BriefingScope) async throws -> Briefing
 }
 
 public enum BriefingServiceError: Error, LocalizedError, Sendable {
@@ -41,22 +35,18 @@ public struct SupabaseBriefingService: BriefingServing {
         self.decoder = JSONDecoder.sideline
     }
 
-    public func latestBriefing(persona: Persona, scope: BriefingScope = .national, team: String? = nil) async throws -> Briefing {
+    public func latestBriefing(persona: Persona, scope: BriefingScope = .national) async throws -> Briefing {
         var components = URLComponents(
             url: config.supabaseURL.appendingPathComponent("rest/v1/briefings"),
             resolvingAgainstBaseURL: false
         )
-        var query: [URLQueryItem] = [
+        components?.queryItems = [
             URLQueryItem(name: "select", value: "*"),
             URLQueryItem(name: "persona", value: "eq.\(persona.rawValue)"),
             URLQueryItem(name: "scope", value: "eq.\(scope.rawValue)"),
             URLQueryItem(name: "order", value: "generated_at.desc"),
             URLQueryItem(name: "limit", value: "1")
         ]
-        if scope == .local, let team, !team.isEmpty {
-            query.append(URLQueryItem(name: "team", value: "eq.\(team)"))
-        }
-        components?.queryItems = query
 
         guard let url = components?.url else {
             throw BriefingServiceError.missingConfiguration
@@ -97,15 +87,10 @@ public struct SupabaseBriefingService: BriefingServing {
 public struct SampleBriefingService: BriefingServing {
     public init() {}
 
-    public func latestBriefing(persona: Persona, scope: BriefingScope = .national, team: String? = nil) async throws -> Briefing {
+    public func latestBriefing(persona: Persona, scope: BriefingScope = .national) async throws -> Briefing {
         var briefing = Briefing.sample
         if persona != .cocktailParty {
-            let tlPrefix: String
-            if persona == .localTeam, let team, !team.isEmpty {
-                tlPrefix = "\(team): "
-            } else {
-                tlPrefix = "\(persona.displayName): "
-            }
+            let tlPrefix = "\(persona.displayName): "
             briefing = Briefing(
                 persona: persona,
                 scope: scope,
