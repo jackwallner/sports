@@ -86,8 +86,7 @@ struct TodayBriefingView: View {
                             SettingsView(
                                 entitlement: entitlement,
                                 store: store,
-                                onManualRefresh: { Task { await viewModel.refresh() } },
-                                onTeamChanged: { Task { await viewModel.reloadAfterPreferenceChange() } }
+                                onManualRefresh: { Task { await viewModel.refresh() } }
                             )
                         } label: {
                             Image(systemName: "gearshape")

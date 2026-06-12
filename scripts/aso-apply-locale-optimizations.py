@@ -15,6 +15,13 @@ CONTENT_JSON = Path(__file__).resolve().parent / "aso-locale-content.json"
 
 BRAND_NAME = "The Gist - Sports Talk"
 
+# Required subscription terms (App Review 3.1.2); appended to every description.
+DESCRIPTION_FOOTER = """The Sideline Pro is an auto-renewing subscription (monthly or annual). Your
+subscription renews automatically unless cancelled at least 24 hours before the
+end of the period. Manage or cancel anytime in your Apple ID settings.
+Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+Privacy: https://jackwallner.github.io/sports/privacy-policy.html"""
+
 # Native keyword fields (≤100 chars). Omit terms duplicated in name/subtitle (dedupe at write).
 KEYWORDS: dict[str, str] = {
     # Strategy: "talking points" (56/23) in subtitle is the indie crown jewel.
@@ -212,7 +219,10 @@ def main() -> None:
         new_desc = content.get("description", old_desc)
         new_promo = content.get("promotional_text", "")
         if new_desc:
-            desc_path.write_text(new_desc.strip() + "\n", encoding="utf-8")
+            new_desc = new_desc.strip()
+            if "auto-renewing subscription" not in new_desc:
+                new_desc = new_desc + "\n\n" + DESCRIPTION_FOOTER
+            desc_path.write_text(new_desc + "\n", encoding="utf-8")
         if new_promo:
             promo_path.write_text(new_promo.strip() + "\n", encoding="utf-8")
         report[loc] = {

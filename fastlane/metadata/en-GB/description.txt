@@ -14,7 +14,7 @@ Not a scores app, betting app, fantasy app, or dense sports news feed. Just enou
 
 Free: Cocktail Party context with a daily national briefing.
 
-The Sideline Pro unlocks all contexts, fresher briefings up to 3 times a day, and Local Team personalisation.
+The Sideline Pro unlocks all contexts and fresher briefings up to 3 times a day.
 
 The Sideline Pro is an auto-renewing subscription (monthly or annual). Your
 subscription renews automatically unless cancelled at least 24 hours before the

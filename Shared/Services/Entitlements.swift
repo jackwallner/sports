@@ -3,7 +3,6 @@ import Foundation
 public enum ProFeature: String, CaseIterable, Sendable {
     case allPersonas
     case threeDailyRefreshes
-    case localTeam
 }
 
 @MainActor

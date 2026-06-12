@@ -8,7 +8,6 @@ final class TodayBriefingViewModelTests: XCTestCase {
         super.setUp()
         UserDefaults.standard.removeObject(forKey: "sideline.lastFreeRefreshDay")
         UserDefaults.standard.removeObject(forKey: "sideline.lastPersona")
-        UserDefaults.standard.removeObject(forKey: "favoriteTeam")
     }
 
     private func makeBriefing(tlDR: String = "Test TLDR") -> Briefing {
@@ -36,7 +35,7 @@ final class TodayBriefingViewModelTests: XCTestCase {
     private final class MockService: BriefingServing, @unchecked Sendable {
         var result: Result<Briefing, Error>?
 
-        func latestBriefing(persona: Persona, scope: BriefingScope, team: String?) async throws -> Briefing {
+        func latestBriefing(persona: Persona, scope: BriefingScope) async throws -> Briefing {
             guard let result else {
                 throw BriefingServiceError.emptyResult
             }
@@ -80,7 +79,7 @@ final class TodayBriefingViewModelTests: XCTestCase {
         let vm = TodayBriefingViewModel(service: service, entitlement: LocalEntitlementStore())
 
         // Use a persona that hasn't been cached by any preceding test
-        vm.selectedPersona = .localTeam
+        vm.selectedPersona = .sportsTalkForMoms
 
         await vm.load()
 
@@ -209,7 +208,7 @@ final class TodayBriefingViewModelTests: XCTestCase {
 
     /// Slow responder for the persona the user is leaving; instant for the rest.
     private final class DelayedMockService: BriefingServing, @unchecked Sendable {
-        func latestBriefing(persona: Persona, scope: BriefingScope, team: String?) async throws -> Briefing {
+        func latestBriefing(persona: Persona, scope: BriefingScope) async throws -> Briefing {
             if persona == .cocktailParty {
                 try? await Task.sleep(nanoseconds: 200_000_000)
             }

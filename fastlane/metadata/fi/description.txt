@@ -14,7 +14,7 @@ Ei tulos-, vedonlyönti-, fantasy- tai tiheä urheiluuutissovellus. Vain tarpeek
 
 Ilmainen: Cocktail Party -konteksti päivittäisellä briefingillä.
 
-The Sideline Pro avaa kaikki kontekstit, jopa 3 briefingiä päivässä ja Local Teamin.
+The Sideline Pro avaa kaikki kontekstit, jopa 3 briefingiä päivässä.
 
 The Sideline Pro is an auto-renewing subscription (monthly or annual). Your
 subscription renews automatically unless cancelled at least 24 hours before the

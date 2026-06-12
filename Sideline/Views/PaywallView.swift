@@ -151,7 +151,7 @@ struct PaywallView: View {
                 .foregroundStyle(SidelineTheme.inkPrimary)
                 .fixedSize(horizontal: false, vertical: true)
 
-            Text("Five 30-second briefings so you never get caught flat-footed when sports come up.")
+            Text("Four 30-second briefings so you never get caught flat-footed when sports come up.")
                 .font(.subheadline)
                 .foregroundStyle(SidelineTheme.inkSecondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -160,7 +160,7 @@ struct PaywallView: View {
 
     private var benefits: some View {
         VStack(alignment: .leading, spacing: 10) {
-            benefit("5 rooms, 5 briefings a day", "Each room gets its own stories, picked and told for that crowd.")
+            benefit("4 rooms, 4 briefings a day", "Each room gets its own stories, picked and told for that crowd.")
             benefit("Refreshed 3× a day", "Morning, midday, and evening, so you're never quoting last week.")
             benefit("Built for non-fans", "No box scores, no jargon, no expectation that you care.")
         }
@@ -340,14 +340,14 @@ struct PaywallView: View {
                         .foregroundStyle(SidelineTheme.inkPrimary)
                         .fixedSize(horizontal: false, vertical: true)
 
-                    Text("Five 30-second briefings so you never get caught flat-footed when sports come up.")
+                    Text("Four 30-second briefings so you never get caught flat-footed when sports come up.")
                         .font(.body)
                         .foregroundStyle(SidelineTheme.inkSecondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
 
                 VStack(alignment: .leading, spacing: 12) {
-                    benefit("5 rooms, 5 briefings a day", "Each room gets its own stories, picked and told for that crowd.")
+                    benefit("4 rooms, 4 briefings a day", "Each room gets its own stories, picked and told for that crowd.")
                     benefit("Refreshed 3× a day", "Morning, midday, and evening, so you're never quoting last week.")
                     benefit("Built for non-fans", "No box scores, no jargon, no expectation that you care.")
                 }
@@ -405,7 +405,6 @@ struct PaywallView: View {
         case .officeWatercooler:  return "Walk into Monday knowing what to say"
         case .sportsTalkForMoms:  return "Keep up with your kid's favorite topic"
         case .dateNight:          return "Sound like you actually follow it"
-        case .localTeam:          return "Sound like a local"
         }
     }
 

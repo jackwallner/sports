@@ -11,7 +11,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 609
+      "chars": 597
     },
     "promotional_text": {
       "localized": true,
@@ -30,7 +30,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 631
+      "chars": 618
     },
     "promotional_text": {
       "localized": true,
@@ -49,7 +49,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 750
+      "chars": 737
     },
     "promotional_text": {
       "localized": true,
@@ -68,7 +68,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 704
+      "chars": 691
     },
     "promotional_text": {
       "localized": true,
@@ -77,7 +77,7 @@
   },
   "da": {
     "keywords": {
-      "old": "isbryder,resumé,kort,sæson,debat,overskrifter,dikussion,daglig,rundtur,insider,sladder",
+      "old": "isbryder,resumé,kort,sæson,debat,overskrifter,diskussion,daglig,rundtur,insider,sladder",
       "new": "isbryder,resumé,kort,sæson,debat,overskrifter,dikussion,daglig,rundtur,insider,sladder",
       "len": 86
     },
@@ -87,7 +87,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 727
+      "chars": 713
     },
     "promotional_text": {
       "localized": true,
@@ -106,7 +106,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 814
+      "chars": 799
     },
     "promotional_text": {
       "localized": true,
@@ -125,7 +125,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 767
+      "chars": 752
     },
     "promotional_text": {
       "localized": true,
@@ -134,7 +134,7 @@
   },
   "en-AU": {
     "keywords": {
-      "old": "conversation,icebreaker,recap,season,debate,headlines,discussion,roundup,insider,barstool,highlights",
+      "old": "conversation,icebreaker,recap,season,debate,headlines,discussion,smalltalk,starters,weekend,briefing",
       "new": "conversation,icebreaker,recap,season,debate,headlines,discussion,roundup,insider,barstool,highlights",
       "len": 100
     },
@@ -144,7 +144,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 881
+      "chars": 852
     },
     "promotional_text": {
       "localized": true,
@@ -153,7 +153,7 @@
   },
   "en-CA": {
     "keywords": {
-      "old": "conversation,icebreaker,recap,season,debate,headlines,discussion,roundup,insider,barstool,highlights",
+      "old": "conversation,icebreaker,recap,season,debate,headlines,discussion,smalltalk,starters,weekend,briefing",
       "new": "conversation,icebreaker,recap,season,debate,headlines,discussion,roundup,insider,barstool,highlights",
       "len": 100
     },
@@ -163,7 +163,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 898
+      "chars": 869
     },
     "promotional_text": {
       "localized": true,
@@ -172,7 +172,7 @@
   },
   "en-GB": {
     "keywords": {
-      "old": "conversation,icebreaker,recap,season,debate,headlines,discussion,roundup,insider,barstool,highlights",
+      "old": "conversation,icebreaker,recap,season,debate,headlines,discussion,smalltalk,starters,weekend,briefing",
       "new": "conversation,icebreaker,recap,season,debate,headlines,discussion,roundup,insider,barstool,highlights",
       "len": 100
     },
@@ -182,7 +182,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 894
+      "chars": 865
     },
     "promotional_text": {
       "localized": true,
@@ -191,7 +191,7 @@
   },
   "en-US": {
     "keywords": {
-      "old": "conversation,icebreaker,recap,season,debate,headlines,discussion,roundup,insider,barstool,highlights",
+      "old": "conversation,icebreaker,recap,season,debate,headlines,discussion,smalltalk,starters,weekend,briefing",
       "new": "conversation,icebreaker,recap,season,debate,headlines,discussion,roundup,insider,barstool,highlights",
       "len": 100
     },
@@ -201,7 +201,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 1089
+      "chars": 1060
     },
     "promotional_text": {
       "localized": true,
@@ -220,7 +220,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 814
+      "chars": 801
     },
     "promotional_text": {
       "localized": true,
@@ -239,7 +239,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 778
+      "chars": 765
     },
     "promotional_text": {
       "localized": true,
@@ -258,7 +258,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 761
+      "chars": 745
     },
     "promotional_text": {
       "localized": true,
@@ -277,7 +277,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 818
+      "chars": 804
     },
     "promotional_text": {
       "localized": true,
@@ -296,7 +296,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 806
+      "chars": 792
     },
     "promotional_text": {
       "localized": true,
@@ -315,7 +315,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 639
+      "chars": 624
     },
     "promotional_text": {
       "localized": true,
@@ -334,7 +334,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 588
+      "chars": 575
     },
     "promotional_text": {
       "localized": true,
@@ -353,7 +353,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 683
+      "chars": 669
     },
     "promotional_text": {
       "localized": true,
@@ -372,7 +372,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 730
+      "chars": 717
     },
     "promotional_text": {
       "localized": true,
@@ -391,7 +391,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 775
+      "chars": 757
     },
     "promotional_text": {
       "localized": true,
@@ -410,7 +410,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 739
+      "chars": 724
     },
     "promotional_text": {
       "localized": true,
@@ -429,7 +429,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 776
+      "chars": 763
     },
     "promotional_text": {
       "localized": true,
@@ -448,7 +448,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 395
+      "chars": 384
     },
     "promotional_text": {
       "localized": true,
@@ -467,7 +467,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 691
+      "chars": 674
     },
     "promotional_text": {
       "localized": true,
@@ -486,7 +486,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 405
+      "chars": 393
     },
     "promotional_text": {
       "localized": true,
@@ -505,7 +505,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 680
+      "chars": 668
     },
     "promotional_text": {
       "localized": true,
@@ -524,7 +524,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 615
+      "chars": 603
     },
     "promotional_text": {
       "localized": true,
@@ -543,7 +543,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 742
+      "chars": 727
     },
     "promotional_text": {
       "localized": true,
@@ -562,7 +562,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 790
+      "chars": 776
     },
     "promotional_text": {
       "localized": true,
@@ -581,7 +581,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 715
+      "chars": 701
     },
     "promotional_text": {
       "localized": true,
@@ -600,7 +600,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 600
+      "chars": 588
     },
     "promotional_text": {
       "localized": true,
@@ -619,7 +619,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 580
+      "chars": 568
     },
     "promotional_text": {
       "localized": true,
@@ -638,7 +638,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 766
+      "chars": 753
     },
     "promotional_text": {
       "localized": true,
@@ -657,7 +657,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 756
+      "chars": 743
     },
     "promotional_text": {
       "localized": true,
@@ -676,7 +676,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 761
+      "chars": 748
     },
     "promotional_text": {
       "localized": true,
@@ -695,7 +695,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 783
+      "chars": 769
     },
     "promotional_text": {
       "localized": true,
@@ -714,7 +714,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 747
+      "chars": 734
     },
     "promotional_text": {
       "localized": true,
@@ -733,7 +733,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 726
+      "chars": 713
     },
     "promotional_text": {
       "localized": true,
@@ -752,7 +752,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 717
+      "chars": 703
     },
     "promotional_text": {
       "localized": true,
@@ -761,7 +761,7 @@
   },
   "sv": {
     "keywords": {
-      "old": "konversation,isbrytare,sammanfattning,kort,säsong,debatt,rubriker,dikussion,daglig,översikt,insider",
+      "old": "konversation,isbrytare,sammanfattning,kort,säsong,debatt,rubriker,diskussion,daglig,översikt,insider",
       "new": "konversation,isbrytare,sammanfattning,kort,säsong,debatt,rubriker,dikussion,daglig,översikt,insider",
       "len": 99
     },
@@ -771,7 +771,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 747
+      "chars": 732
     },
     "promotional_text": {
       "localized": true,
@@ -790,7 +790,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 662
+      "chars": 650
     },
     "promotional_text": {
       "localized": true,
@@ -809,7 +809,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 594
+      "chars": 582
     },
     "promotional_text": {
       "localized": true,
@@ -828,7 +828,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 568
+      "chars": 553
     },
     "promotional_text": {
       "localized": true,
@@ -837,7 +837,7 @@
   },
   "tr": {
     "keywords": {
-      "old": "sohbet,buzkıran,özet,kısa,sezon,tartışma,manşetler,tartışma,günlük,özet,insider,dedikodu",
+      "old": "sohbet,buzkıran,özet,kısa,sezon,tartışma,manşetler,günlük,insider,dedikodu,gündem,muhabbet",
       "new": "sohbet,buzkıran,özet,kısa,sezon,tartışma,manşetler,tartışma,günlük,özet,insider,dedikodu",
       "len": 88
     },
@@ -847,7 +847,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 722
+      "chars": 706
     },
     "promotional_text": {
       "localized": true,
@@ -866,7 +866,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 747
+      "chars": 734
     },
     "promotional_text": {
       "localized": true,
@@ -885,7 +885,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 593
+      "chars": 581
     },
     "promotional_text": {
       "localized": true,
@@ -904,7 +904,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 704
+      "chars": 690
     },
     "promotional_text": {
       "localized": true,
@@ -923,7 +923,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 293
+      "chars": 281
     },
     "promotional_text": {
       "localized": true,
@@ -942,7 +942,7 @@
     },
     "description": {
       "localized": true,
-      "chars": 295
+      "chars": 283
     },
     "promotional_text": {
       "localized": true,

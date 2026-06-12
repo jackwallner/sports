@@ -31,17 +31,13 @@ jobs:
             -H "x-cron-secret: $CS"
           echo
 
-      # Gemini free tier allows 20 requests/day, so the persona set is
-      # window-dependent: the morning run refreshes every room, while midday
-      # and evening only refresh Cocktail Party (the free room everyone sees).
-      # Manual dispatches behave like the morning run.
+      # Gemini free tier allows 20 requests/day. With 4 personas and 3 daily
+      # windows the baseline is 12 requests, leaving headroom for retries, so
+      # every room refreshes in every window.
       - name: Generate national briefings (per persona)
         run: |
           set -uo pipefail
-          case "${{ github.event.schedule }}" in
-            '0 19 * * *'|'0 23 * * *') PERSONAS="cocktail_party" ;;
-            *) PERSONAS="cocktail_party office_watercooler date_night sports_talk_for_moms" ;;
-          esac
+          PERSONAS="cocktail_party office_watercooler date_night sports_talk_for_moms"
           FAILED=0
           for P in $PERSONAS; do
             echo "=== $P ==="
@@ -51,48 +47,6 @@ jobs:
                 -H "content-type: application/json" \
                 -H "x-cron-secret: $CS" \
                 -d "{\"personas\":[\"$P\"]}") || R='{"error":"curl failed"}'
-              echo "$R"
-              if echo "$R" | grep -q '"status":"succeeded"'; then OK=1; break; fi
-              sleep 5
-            done
-            if [ "$OK" -ne 1 ]; then FAILED=1; fi
-          done
-          exit $FAILED
-
-      # Local teams only refresh on the morning run, 8 rotating teams per day
-      # (full league coverage every 4 days) to stay inside the Gemini quota.
-      - name: Generate local team briefings (per team)
-        if: ${{ github.event_name == 'workflow_dispatch' || github.event.schedule == '0 14 * * *' }}
-        run: |
-          set -uo pipefail
-          # Must match the team names in Sideline/Views/SettingsView.swift TeamPickerView.
-          ALL_TEAMS=(
-            "Arizona Cardinals" "Atlanta Falcons" "Baltimore Ravens" "Buffalo Bills"
-            "Carolina Panthers" "Chicago Bears" "Cincinnati Bengals" "Cleveland Browns"
-            "Dallas Cowboys" "Denver Broncos" "Detroit Lions" "Green Bay Packers"
-            "Houston Texans" "Indianapolis Colts" "Jacksonville Jaguars" "Kansas City Chiefs"
-            "Las Vegas Raiders" "Los Angeles Chargers" "Los Angeles Rams" "Miami Dolphins"
-            "Minnesota Vikings" "New England Patriots" "New Orleans Saints" "New York Giants"
-            "New York Jets" "Philadelphia Eagles" "Pittsburgh Steelers" "San Francisco 49ers"
-            "Seattle Seahawks" "Tampa Bay Buccaneers" "Tennessee Titans" "Washington Commanders"
-          )
-          N=${#ALL_TEAMS[@]}
-          DAY=$((10#$(date -u +%j)))
-          TEAMS=()
-          for K in 0 1 2 3 4 5 6 7; do
-            TEAMS+=("${ALL_TEAMS[$(( (DAY * 8 + K) % N ))]}")
-          done
-          echo "Today's rotation: ${TEAMS[*]}"
-          FAILED=0
-          for T in "${TEAMS[@]}"; do
-            echo "=== local_team: $T ==="
-            BODY=$(jq -nc --arg t "$T" '{personas:["local_team"],team:$t}')
-            OK=0
-            for i in 1 2 3; do
-              R=$(curl -fsS -X POST "$URL/generate-briefings" \
-                -H "content-type: application/json" \
-                -H "x-cron-secret: $CS" \
-                -d "$BODY") || R='{"error":"curl failed"}'
               echo "$R"
               if echo "$R" | grep -q '"status":"succeeded"'; then OK=1; break; fi
               sleep 5

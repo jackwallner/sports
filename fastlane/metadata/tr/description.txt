@@ -14,7 +14,7 @@ Skor, bahis, fantasy veya yoğun spor haber uygulaması değil. Sadece sohbete y
 
 Ücretsiz: günlük ulusal briefing ile Cocktail Party bağlamı.
 
-The Sideline Pro tüm bağlamları, günde 3 briefinge kadar ve Local Team'i açar.
+The Sideline Pro tüm bağlamları, günde 3 briefinge kadar açar.
 
 The Sideline Pro is an auto-renewing subscription (monthly or annual). Your
 subscription renews automatically unless cancelled at least 24 hours before the
