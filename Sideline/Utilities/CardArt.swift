@@ -25,27 +25,42 @@ enum CardArt {
 
     // MARK: - URLs
 
-    static func imageURL(for bullet: BriefingBullet) -> URL? {
-        // Prefer art stamped by the content pipeline: the cron has already
-        // warmed that exact URL onto the CDN, so it loads instantly.
-        if let stamped = bullet.imageURL { return stamped }
+    /// Fallback chain, best first. A bare gradient in the art zone reads as
+    /// "image failed to load", so a card tries every URL it has before giving
+    /// up: the pipeline-stamped art (hosted, CDN-warmed, loads instantly),
+    /// then the on-demand derived URL (slow free tier, but usually lands).
+    static func imageURLs(for bullet: BriefingBullet) -> [URL] {
+        var chain: [URL] = []
+        if let stamped = bullet.imageURL { chain.append(stamped) }
         let sport = sport(for: bullet)
         let prompt = "\(stylePrefix) \(sport.scene), \(mood(for: bullet.tag)). \(style)"
         // Seed on the source URL, not the talking point: the same story keeps
         // the same art across personas and refresh windows.
-        return pollinationsURL(prompt: prompt, seed: stableSeed(bullet.sourceURL.absoluteString))
+        if let derived = pollinationsURL(prompt: prompt, seed: stableSeed(bullet.sourceURL.absoluteString)) {
+            chain.append(derived)
+        }
+        return dedup(chain)
     }
 
-    static func leadImageURL(for briefing: Briefing) -> URL? {
+    static func leadImageURLs(for briefing: Briefing) -> [URL] {
+        var chain: [URL] = []
         // The pipeline stamps the cover card its own image so the deck never
         // opens on a duplicate of the first story's art.
-        if let stamped = briefing.leadImageURL { return stamped }
-        // Older rows: share the top story's hosted art. A repeated picture
-        // beats a blank one while pre-lead-art rows age out.
-        if let stamped = briefing.bullets.first?.imageURL { return stamped }
+        if let stamped = briefing.leadImageURL { chain.append(stamped) }
+        // Older rows (or a failed lead fetch): the top story's hosted art is
+        // already cached for card 2. A repeated picture beats a blank one.
+        if let stamped = briefing.bullets.first?.imageURL { chain.append(stamped) }
         let scene = briefing.bullets.first.map { sport(for: $0).scene } ?? fallbackScene
         let prompt = "\(stylePrefix) \(scene), grand cinematic atmosphere. \(style)"
-        return pollinationsURL(prompt: prompt, seed: stableSeed(briefing.tlDR))
+        if let derived = pollinationsURL(prompt: prompt, seed: stableSeed(briefing.tlDR)) {
+            chain.append(derived)
+        }
+        return dedup(chain)
+    }
+
+    private static func dedup(_ urls: [URL]) -> [URL] {
+        var seen = Set<URL>()
+        return urls.filter { seen.insert($0).inserted }
     }
 
     /// The house style, kept in lockstep with the pipeline's wrapper in
@@ -264,9 +279,11 @@ enum CardArtStore {
 #endif
 
 /// Full-bleed card art. Renders nothing until the image is in hand, so the
-/// card's gradient stays the floor and the art fades in over it.
+/// card's gradient stays the floor and the art fades in over it. Walks its
+/// URL chain in order: any cached hit wins instantly, otherwise each URL is
+/// fetched until one lands, so one dead URL never leaves a blank art zone.
 struct CardArtImage: View {
-    let url: URL?
+    let urls: [URL]
 
     #if canImport(UIKit)
     @State private var image: UIImage?
@@ -283,20 +300,23 @@ struct CardArtImage: View {
                 }
             }
         }
-        .task(id: url) {
-            guard let url else {
-                image = nil
-                return
+        .task(id: urls) {
+            for url in urls {
+                if let hit = CardArtStore.cached(url) {
+                    image = hit
+                    return
+                }
             }
-            if let hit = CardArtStore.cached(url) {
-                image = hit
-                return
-            }
-            // Clear any previous URL's art so a failed fetch can't leave the
-            // wrong story's image on this card.
+            // Clear any previous chain's art so a failed fetch can't leave
+            // the wrong story's image on this card.
             image = nil
-            guard let fetched = await CardArtStore.fetch(url), !Task.isCancelled else { return }
-            withAnimation(.easeIn(duration: 0.35)) { image = fetched }
+            for url in urls {
+                guard !Task.isCancelled else { return }
+                if let fetched = await CardArtStore.fetch(url), !Task.isCancelled {
+                    withAnimation(.easeIn(duration: 0.35)) { image = fetched }
+                    return
+                }
+            }
         }
         .allowsHitTesting(false)
         .accessibilityHidden(true)

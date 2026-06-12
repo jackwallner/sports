@@ -15,6 +15,9 @@ export function validateBriefing(value: unknown): ValidationResult {
   requireString(value, "headline", 12, 120, errors);
   requireString(value, "tl_dr", 40, 280, errors);
   requireString(value, "suggested_question", 20, 180, errors);
+  // Optional like bullet backstories: a miss degrades the cover card's flip
+  // side, never the whole briefing (and its Gemini call).
+  optionalString(value, "lead_backstory", 0, 700, errors, "briefing");
 
   if (!Array.isArray(value.bullets)) {
     errors.push("bullets must be an array");
@@ -55,6 +58,7 @@ export function normalizeBriefing(value: GeneratedBriefing): GeneratedBriefing {
     })),
     suggested_question: value.suggested_question.trim(),
     source_count: value.source_count,
+    lead_backstory: value.lead_backstory?.trim() || null,
     lead_image_prompt: typeof value.lead_image_prompt === "string" && value.lead_image_prompt.trim()
       ? value.lead_image_prompt.trim().slice(0, 400)
       : null,

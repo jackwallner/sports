@@ -7,6 +7,28 @@ struct PersonaRail: View {
     let onSelect: (Persona) -> Void
 
     var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            // The chips alone read as ambiguous filters. Name the concept and
+            // the payoff in one quiet line: these are separate briefings.
+            HStack(spacing: 6) {
+                Text("ROOMS")
+                    .font(SidelineTheme.eyebrow)
+                    .tracking(1.4)
+                    .foregroundStyle(SidelineTheme.brandPrimary)
+                Text("Each one is its own briefing")
+                    .font(.caption)
+                    .foregroundStyle(SidelineTheme.inkTertiary)
+            }
+            .padding(.horizontal)
+            .padding(.top, 8)
+            .accessibilityElement(children: .combine)
+            .accessibilityAddTraits(.isHeader)
+
+            chips
+        }
+    }
+
+    private var chips: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 10) {
                 ForEach(Persona.allCases) { persona in

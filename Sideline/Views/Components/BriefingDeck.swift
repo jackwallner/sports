@@ -126,8 +126,10 @@ struct BriefingDeck: View {
 
     private func prefetchArt() {
         #if canImport(UIKit)
-        var urls = [CardArt.leadImageURL(for: briefing)]
-        urls += briefing.bullets.map(CardArt.imageURL(for:))
+        // Warm each card's primary URL only; the fallbacks in the chain are
+        // for failures, not worth pre-paying the serial download slot for.
+        var urls = [CardArt.leadImageURLs(for: briefing).first]
+        urls += briefing.bullets.map { CardArt.imageURLs(for: $0).first }
         CardArtStore.prefetch(urls.compactMap { $0 })
         #endif
     }
@@ -275,11 +277,18 @@ enum DeckCard {
     /// Free-deck finale: the other rooms, framed as more stories, not tones.
     case rooms
 
-    /// Story cards carry their detail on the back. Lead, question, and rooms
-    /// cards are single-faced; tapping them does nothing.
+    /// Story cards carry their detail on the back; the lead card does too
+    /// when the pipeline wrote a setup for it. Question and rooms cards are
+    /// single-faced; tapping them does nothing.
     var hasBack: Bool {
-        if case .point = self { return true }
-        return false
+        switch self {
+        case .point:
+            return true
+        case .lead(let briefing):
+            return briefing.leadBackstory?.isEmpty == false
+        case .question, .rooms:
+            return false
+        }
     }
 }
 
@@ -310,8 +319,8 @@ private struct DeckCardView: View {
                 .opacity(isFlipped ? 0 : 1)
                 .allowsHitTesting(!isFlipped)
                 .accessibilityHidden(isFlipped)
-            if case .point(let bullet) = card {
-                back(bullet)
+            if card.hasBack {
+                backFace
                     .rotation3DEffect(.degrees(isFlipped ? 0 : -180), axis: (x: 0, y: 1, z: 0))
                     .opacity(isFlipped ? 1 : 0)
                     // The hidden face must never steal touches — its source
@@ -338,17 +347,21 @@ private struct DeckCardView: View {
         switch card {
         case .lead(let briefing):
             VStack(spacing: 0) {
-                artZone(imageURL: CardArt.leadImageURL(for: briefing)) { EmptyView() }
+                artZone(imageURLs: CardArt.leadImageURLs(for: briefing)) { EmptyView() }
                 panel {
                     eyebrow(icon: "quote.opening", text: "Lead with this")
                     line(briefing.tlDR, size: 25, limit: 7)
                         .copyable(briefing.tlDR)
-                    hint(icon: "hand.draw.fill", text: "Say this first. Swipe for the stories behind it.")
+                    if card.hasBack {
+                        hint(icon: "hand.tap.fill", text: "Say this first. Tap for the setup.")
+                    } else {
+                        hint(icon: "hand.draw.fill", text: "Say this first. Swipe for the stories behind it.")
+                    }
                 }
             }
         case .point(let bullet):
             VStack(spacing: 0) {
-                artZone(imageURL: CardArt.imageURL(for: bullet)) {
+                artZone(imageURLs: CardArt.imageURLs(for: bullet)) {
                     HStack(alignment: .top, spacing: 8) {
                         if let tag = bullet.tag, tag != .neutral {
                             tagPill(tag)
@@ -456,7 +469,7 @@ private struct DeckCardView: View {
     /// The art zone: placeholder gradient floor, generated art on top, a light
     /// scrim up top for the pills, and a fade into the panel color below so
     /// the art settles into the words instead of butting against them.
-    private func artZone<Chips: View>(imageURL: URL?, @ViewBuilder chips: () -> Chips) -> some View {
+    private func artZone<Chips: View>(imageURLs: [URL], @ViewBuilder chips: () -> Chips) -> some View {
         ZStack(alignment: .top) {
             LinearGradient(
                 colors: SidelineTheme.artPlaceholder,
@@ -464,7 +477,7 @@ private struct DeckCardView: View {
                 endPoint: .bottom
             )
 
-            CardArtImage(url: imageURL)
+            CardArtImage(urls: imageURLs)
 
             LinearGradient(
                 stops: [
@@ -548,6 +561,61 @@ private struct DeckCardView: View {
     // the conversation moving (tie-in), then the receipt (source). Old rows
     // without a backstory lead with the tie-in like they always did.
 
+    @ViewBuilder
+    private var backFace: some View {
+        switch card {
+        case .point(let bullet):
+            back(bullet)
+        case .lead(let briefing):
+            leadBack(briefing)
+        case .question, .rooms:
+            EmptyView()
+        }
+    }
+
+    /// The cover card's flip side: the setup behind the one line to say,
+    /// so the very first card can survive a "wait, what happened?".
+    private func leadBack(_ briefing: Briefing) -> some View {
+        ZStack {
+            LinearGradient(
+                colors: SidelineTheme.cardPanel,
+                startPoint: .top,
+                endPoint: .bottom
+            )
+
+            VStack(alignment: .leading, spacing: 14) {
+                eyebrow(icon: "text.bubble.fill", text: "The setup")
+
+                if let setup = nonEmpty(briefing.leadBackstory) {
+                    Text(setup)
+                        .font(SidelineTheme.display(19))
+                        .foregroundStyle(.white)
+                        .lineSpacing(2)
+                        .lineLimit(10)
+                        .minimumScaleFactor(0.75)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .copyable(setup)
+                }
+
+                Spacer(minLength: 12)
+
+                hint(icon: "hand.draw.fill", text: "Swipe for the stories behind it.")
+
+                HStack(spacing: 6) {
+                    Image(systemName: "hand.tap.fill")
+                        .font(.caption2)
+                    Text("Tap to flip back")
+                        .font(.footnote.weight(.medium))
+                }
+                .frame(maxWidth: .infinity)
+                .foregroundStyle(.white.opacity(0.7))
+                .accessibilityHidden(true)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .padding(22)
+        }
+    }
+
     private func back(_ bullet: BriefingBullet) -> some View {
         let backstory = nonEmpty(bullet.backstory)
         let tieIn = nonEmpty(bullet.tieIn)
@@ -565,11 +633,11 @@ private struct DeckCardView: View {
 
                 if let body = backstory ?? tieIn {
                     Text(body)
-                        .font(SidelineTheme.display(19))
+                        .font(SidelineTheme.display(18))
                         .foregroundStyle(.white)
                         .lineSpacing(2)
-                        .lineLimit(8)
-                        .minimumScaleFactor(0.75)
+                        .lineLimit(10)
+                        .minimumScaleFactor(0.7)
                         .fixedSize(horizontal: false, vertical: true)
                         .copyable(body)
                 }
@@ -584,6 +652,8 @@ private struct DeckCardView: View {
                         Text(tieIn)
                             .font(.callout)
                             .lineSpacing(2)
+                            .lineLimit(4)
+                            .minimumScaleFactor(0.85)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                     .foregroundStyle(SidelineTheme.goldOnDark)

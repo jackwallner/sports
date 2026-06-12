@@ -90,6 +90,7 @@ async function generateOne(
       refresh_window: target.refreshWindow,
       headline: normalized.headline,
       tl_dr: normalized.tl_dr,
+      lead_backstory: normalized.lead_backstory ?? null,
       lead_image_url: leadImageUrl,
       bullets: normalized.bullets,
       suggested_question: normalized.suggested_question,

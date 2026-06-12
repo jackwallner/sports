@@ -28,6 +28,9 @@ public struct Briefing: Identifiable, Codable, Equatable, Sendable {
     public let refreshWindow: RefreshWindow
     public let headline: String
     public let tlDR: String
+    /// 2-3 sentences of setup behind the TL;DR, shown on the cover card's
+    /// flip side. Older rows lack it; the cover card stays single-faced.
+    public let leadBackstory: String?
     /// Cover-card art stamped by the pipeline, distinct from every story's
     /// art. Older rows lack it; the app falls back to derived art.
     public let leadImageURL: URL?
@@ -44,6 +47,7 @@ public struct Briefing: Identifiable, Codable, Equatable, Sendable {
         refreshWindow: RefreshWindow,
         headline: String,
         tlDR: String,
+        leadBackstory: String? = nil,
         leadImageURL: URL? = nil,
         bullets: [BriefingBullet],
         suggestedQuestion: String,
@@ -57,6 +61,7 @@ public struct Briefing: Identifiable, Codable, Equatable, Sendable {
         self.refreshWindow = refreshWindow
         self.headline = headline
         self.tlDR = tlDR
+        self.leadBackstory = leadBackstory
         self.leadImageURL = leadImageURL
         self.bullets = bullets
         self.suggestedQuestion = suggestedQuestion
@@ -72,6 +77,7 @@ public struct Briefing: Identifiable, Codable, Equatable, Sendable {
         case refreshWindow = "refresh_window"
         case headline
         case tlDR = "tl_dr"
+        case leadBackstory = "lead_backstory"
         case leadImageURL = "lead_image_url"
         case bullets
         case suggestedQuestion = "suggested_question"
@@ -144,6 +150,7 @@ public extension Briefing {
         refreshWindow: .daily,
         headline: "What everyone's arguing about this week",
         tlDR: "A beloved veteran quarterback got benched, the internet is melting down, and his replacement is a 23-year-old nobody had heard of last month.",
+        leadBackstory: "The Cowboys, the most-watched team in football, sat down their starter of 9 years in the middle of a playoff race. Quarterback is the one job everyone in the building depends on, so this is like a company swapping CEOs the week before earnings. The new guy was stocking warehouse shelves 2 years ago, which is why the whole internet has an opinion.",
         bullets: [
             BriefingBullet(
                 talkingPoint: "The team benched their longtime starter. Fans are split between 'about time' and 'how dare they.'",
