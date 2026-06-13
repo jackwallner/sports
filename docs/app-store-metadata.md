@@ -4,7 +4,7 @@
 
 | Field | Value |
 |---|---|
-| App Name | Sideline: Sports Small Talk (30 char max) |
+| App Name | The Gist: Sports Small Talk (30 char max) |
 | Bundle ID | `com.jackwallner.sports` |
 | Subtitle | Talking points for non-fans (30 char max) |
 | Primary Category | Sports |
