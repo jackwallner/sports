@@ -154,10 +154,13 @@ def main() -> None:
             attrs: dict = {}
             name = read_meta(locale, "name")
             sub = read_meta(locale, "subtitle")
+            priv = read_meta(locale, "privacy_url")
             if name:
                 attrs["name"] = name[:30]
             if sub:
                 attrs["subtitle"] = sub[:30]
+            if priv:
+                attrs["privacyPolicyUrl"] = priv[:255]
             if attrs:
                 try:
                     lid = info_locs[locale]["id"]
