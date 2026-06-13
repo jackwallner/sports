@@ -95,4 +95,4 @@ export interface GenerationTarget {
 }
 
 export const ALLOWED_TAGS: BriefingTag[] = ["nice_guy", "jerk", "redemption", "drama", "neutral"];
-export const PROMPT_VERSION = "sideline-v3-outsider-voice";
+export const PROMPT_VERSION = "sideline-v4-tag-discipline";
