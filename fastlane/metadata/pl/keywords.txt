@@ -1,1 +1,1 @@
-rozmowa,lodołamacz,podsumowanie,krótki,sezon,debata,nagłówki,dyskusja,codzienny,przegląd,informator
+rozmowa,tematy,lodołamacz,piłka,ekstraklasa,siatkówka,podsumowanie,wyniki,wiadomości,kibic

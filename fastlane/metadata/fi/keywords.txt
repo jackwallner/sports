@@ -1,1 +1,1 @@
-keskustelu,jäänmurtaja,yhteenveto,lyhyt,kausi,keskustelu,otsikot,diskusio,päivittäinen,katsaus
+keskustelu,aiheet,jäänmurtaja,jalkapallo,veikkausliiga,jääkiekko,yhteenveto,tulokset,uutiset,fani

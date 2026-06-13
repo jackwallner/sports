@@ -1,1 +1,1 @@
-brise-glace,récap,brief,saison,débat,gros titres,discussion,quotidien,initié,potins,résumé
+conversation,sujets,briseglace,foot,ligue1,rugby,basket,résumé,score,actualité,quotidien,supporter

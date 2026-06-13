@@ -1,1 +1,1 @@
-beszélgetés,jégtörő,összefoglaló,rövid,évad,vita,fejlécek,diszkusszió,napi,áttekintés,bennfentes
+beszélgetés,témák,jégtörő,foci,futball,kosárlabda,összefoglaló,eredmények,hírek,szurkoló

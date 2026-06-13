@@ -1,1 +1,1 @@
-conversation,icebreaker,recap,season,debate,headlines,discussion,smalltalk,starters,weekend,briefing
+conversation,starters,icebreaker,afl,nrl,footy,cricket,banter,mates,recap,scores,news,daily,fan
