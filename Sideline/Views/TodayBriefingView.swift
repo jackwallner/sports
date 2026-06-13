@@ -65,6 +65,17 @@ struct TodayBriefingView: View {
         return entitlement.isPro
     }
 
+    /// Unused free trial still available for this Apple ID. Upsell copy leads
+    /// with "try free" while this is true; "unlock"/"see Pro" once it's spent.
+    private var trialAvailable: Bool {
+        #if canImport(RevenueCat)
+        if Purchases.isConfigured {
+            return store.trialAvailable
+        }
+        #endif
+        return false
+    }
+
     var body: some View {
         NavigationStack {
             mainContent
@@ -111,6 +122,7 @@ struct TodayBriefingView: View {
                     case .proPreview(let persona):
                         ProPreviewSheet(
                             persona: persona,
+                            trialAvailable: trialAvailable,
                             onSeePro: {
                                 pendingPaywallContext = persona
                                 activeSheet = nil
@@ -238,6 +250,7 @@ struct TodayBriefingView: View {
                 briefing: briefing,
                 index: $deckIndex,
                 isPro: isPro,
+                trialAvailable: trialAvailable,
                 onOpenSource: { url in activeSheet = .source(url) },
                 onExploreRooms: { activeSheet = .paywall(viewModel.selectedPersona) }
             )
@@ -381,7 +394,7 @@ struct TodayBriefingView: View {
                 .font(.callout)
                 .foregroundStyle(SidelineTheme.inkSecondary)
                 .multilineTextAlignment(.center)
-            Button("See Pro") {
+            Button(trialAvailable ? "Try Pro Free" : "See Pro") {
                 activeSheet = .paywall(viewModel.selectedPersona)
             }
             .buttonStyle(.borderedProminent)
@@ -436,7 +449,7 @@ struct TodayBriefingView: View {
                 .font(.footnote)
                 .foregroundStyle(SidelineTheme.inkSecondary)
             Spacer(minLength: 8)
-            Button("See Pro") {
+            Button(trialAvailable ? "Try Pro Free" : "See Pro") {
                 activeSheet = .paywall(viewModel.selectedPersona)
             }
             .font(.footnote.weight(.semibold))

@@ -215,6 +215,16 @@ struct PaywallView: View {
             .tint(SidelineTheme.brandPrimary)
             .disabled(isPurchasing || selectedPackage == nil)
 
+            // The single biggest trial-start objection is "will I get charged
+            // today". Answer it in plain words, directly under the button.
+            if let package = selectedPackage,
+               package.sidelinePackageKind != .lifetime,
+               store.isEligibleForIntroOffer(package) {
+                Label("No payment now. Cancel anytime during the trial.", systemImage: "checkmark.shield.fill")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(SidelineTheme.brandPrimary)
+            }
+
             if let disclosure = disclosureText {
                 Text(disclosure)
                     .font(.caption2)
