@@ -28,7 +28,7 @@ import sys
 ROOT = os.path.join(os.path.dirname(__file__), "..", "fastlane", "metadata")
 ROOT = os.path.abspath(ROOT)
 
-SHARED_NAME = "Sideline: Sports Small Talk"  # 27 chars, brand + bridge phrase
+SHARED_NAME = "The Gist: Sports Small Talk"  # 27 chars, brand + bridge phrase
 
 # Subtitle overrides (English stores differentiated). Others: left untouched.
 SUBTITLE = {
