@@ -1,1 +1,1 @@
-conversazione,rompighiaccio,riepilogo,breve,stagione,dibattito,titoli,discussione,quotidiano
+conversazione,argomenti,rompighiaccio,calcio,seriea,basket,riassunto,risultati,notizie,tifoso

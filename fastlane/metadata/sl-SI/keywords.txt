@@ -1,1 +1,1 @@
-pogovor,ledolomilec,povzetek,kratko,sezona,debata,glavne novice,razprava,dnevno,pregled,insider
+pogovor,teme,ledolomilec,nogomet,liga,košarka,povzetek,rezultati,novice,navijač

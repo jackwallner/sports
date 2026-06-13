@@ -1,1 +1,1 @@
-isbryter,sammendrag,kort,sesong,debatt,overskrifter,diskusjon,daglig,oversikt,insider,sladder
+samtale,emner,isbryter,fotball,eliteserien,håndball,sammendrag,resultater,nyheter,daglig,fan

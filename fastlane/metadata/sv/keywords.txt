@@ -1,1 +1,1 @@
-konversation,isbrytare,sammanfattning,kort,säsong,debatt,rubriker,diskussion,daglig,översikt,insider
+konversation,ämnen,isbrytare,fotboll,allsvenskan,hockey,sammanfattning,resultat,nyheter,supporter
