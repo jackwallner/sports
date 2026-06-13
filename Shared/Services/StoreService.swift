@@ -284,6 +284,12 @@ public final class StoreService: NSObject, EntitlementProviding {
         return introEligibility[package.storeProduct.productIdentifier] ?? false
     }
 
+    /// True when any offered plan still has an unused free trial for this
+    /// Apple ID, so upsell surfaces can lead with "try free" instead of "unlock".
+    public var trialAvailable: Bool {
+        products.contains { isEligibleForIntroOffer($0) }
+    }
+
     /// True when Pro is active via an auto-renewable subscription (not lifetime).
     public var hasActiveSubscription: Bool {
         guard let entitlement = customerInfo?.sidelineProEntitlement else {

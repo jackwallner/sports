@@ -3,6 +3,9 @@ import SwiftUI
 
 struct ProPreviewSheet: View {
     let persona: Persona
+    /// When the user still has an unused free trial, every door into Pro
+    /// should say "try free", not "unlock". Free beats locked.
+    var trialAvailable: Bool = false
     let onSeePro: () -> Void
     let onDismiss: () -> Void
 
@@ -59,7 +62,7 @@ struct ProPreviewSheet: View {
                 Button {
                     onSeePro()
                 } label: {
-                    Text("Unlock \(persona.displayName)")
+                    Text(trialAvailable ? "Try \(persona.displayName) Free" : "Unlock \(persona.displayName)")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
