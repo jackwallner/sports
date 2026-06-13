@@ -1,11 +1,11 @@
-# Paste this into Claude Design (repo linked via "Link local code")
+# Paste this into Claude Design (attach the 5 raw-*.png files with it)
 
 Produce exactly 5 finished PNGs and nothing else. No preamble, no
 explanations, no alternates, no manifest, no follow-up questions.
 
 ## The one rule that overrides everything else
 
-The files in `claude-design/raw/` are real device screenshots. **Use them
+The five attached `raw-*.png` files are real device screenshots. **Use them
 verbatim as the screen content.** Composite each raw image, unmodified and
 uncropped, into a drawn iPhone frame on a marketing canvas. Do NOT redraw,
 recreate, re-render, retype, restyle, or "idealize" any part of the app UI.
@@ -55,7 +55,7 @@ the phone, nothing inside the phone.
 
 ## Per-frame spec
 
-| # | Raw (claude-design/raw/) | Output filename | Headline (accent phrase in *italics*) | Subline |
+| # | Raw (attached) | Output filename | Headline (accent phrase in *italics*) | Subline |
 |---|---|---|---|---|
 | 1 | `raw-1-deck-lead.png` | `store-1-deck-lead.png` | Sports small talk, *handled.* | One short daily briefing for people who don't follow sports. |
 | 2 | `raw-2-talking-point.png` | `store-2-talking-point.png` | Say this. *Sound like you watched.* | Witty talking points, each backed by a real source. |
@@ -68,5 +68,5 @@ per the house style (not in italics).
 
 ## Output
 
-Write the five files to `claude-design/output/store/store-1-deck-lead.png`
-... `store-5-question.png`, in that order, and stop.
+Produce the five PNGs named `store-1-deck-lead.png` ... `store-5-question.png`,
+in that order, as downloadable files, and stop.
