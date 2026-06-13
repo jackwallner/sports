@@ -20,6 +20,9 @@ struct BriefingDeck: View {
     let briefing: Briefing
     @Binding var index: Int
     let isPro: Bool
+    /// Whether an unused free trial is still on the table, so the rooms card
+    /// can pitch "try free" instead of "unlock".
+    var trialAvailable: Bool = false
     let onOpenSource: (URL) -> Void
     let onExploreRooms: () -> Void
 
@@ -67,6 +70,7 @@ struct BriefingDeck: View {
                         DeckCardView(
                             card: cards[position],
                             isFlipped: flippedPosition == position,
+                            trialAvailable: trialAvailable,
                             onOpenSource: onOpenSource,
                             onExploreRooms: onExploreRooms
                         )
@@ -309,6 +313,7 @@ private enum ImpactStyle {
 private struct DeckCardView: View {
     let card: DeckCard
     let isFlipped: Bool
+    let trialAvailable: Bool
     let onOpenSource: (URL) -> Void
     let onExploreRooms: () -> Void
 
@@ -441,7 +446,7 @@ private struct DeckCardView: View {
                     HStack(spacing: 8) {
                         Image(systemName: "lock.open.fill")
                             .font(.caption.weight(.bold))
-                        Text("Unlock every room")
+                        Text(trialAvailable ? "Try every room free" : "Unlock every room")
                             .font(.subheadline.weight(.semibold))
                         Spacer(minLength: 4)
                         Image(systemName: "arrow.up.right")
@@ -499,7 +504,9 @@ private struct DeckCardView: View {
         .clipped()
     }
 
-    /// The solid panel every card's words sit on.
+    /// The solid panel every card's words sit on. Wins the height negotiation
+    /// against the flexible art zone above it, so the words get their ideal
+    /// space first and the art absorbs whatever is left.
     private func panel<Content: View>(@ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 12, content: content)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -507,6 +514,7 @@ private struct DeckCardView: View {
             .background(
                 LinearGradient(colors: SidelineTheme.cardPanel, startPoint: .top, endPoint: .bottom)
             )
+            .layoutPriority(1)
     }
 
     private func eyebrow(icon: String?, text: String, color: Color = SidelineTheme.goldOnDark) -> some View {
@@ -524,6 +532,9 @@ private struct DeckCardView: View {
     }
 
     /// The one line to say — white serif on the solid panel, no shadows needed.
+    /// No fixedSize here: a card must never grow past the deck's frame, so
+    /// under pressure the text scales down instead of pushing the card over
+    /// the page dots and footer.
     private func line(_ text: String, size: CGFloat, limit: Int) -> some View {
         Text(text)
             .font(SidelineTheme.display(size))
@@ -531,7 +542,7 @@ private struct DeckCardView: View {
             .lineSpacing(2)
             .lineLimit(limit)
             .minimumScaleFactor(0.6)
-            .fixedSize(horizontal: false, vertical: true)
+            .layoutPriority(1)
     }
 
     /// Quiet, uniform affordance row at the foot of every card.
@@ -593,7 +604,7 @@ private struct DeckCardView: View {
                         .lineSpacing(5)
                         .lineLimit(12)
                         .minimumScaleFactor(0.7)
-                        .fixedSize(horizontal: false, vertical: true)
+                        .layoutPriority(1)
                         .copyable(setup)
                 }
 
@@ -638,7 +649,7 @@ private struct DeckCardView: View {
                         .lineSpacing(5)
                         .lineLimit(12)
                         .minimumScaleFactor(0.7)
-                        .fixedSize(horizontal: false, vertical: true)
+                        .layoutPriority(1)
                         .copyable(body)
                 }
 
@@ -654,7 +665,6 @@ private struct DeckCardView: View {
                             .lineSpacing(3)
                             .lineLimit(5)
                             .minimumScaleFactor(0.85)
-                            .fixedSize(horizontal: false, vertical: true)
                     }
                     .foregroundStyle(SidelineTheme.goldOnDark)
                     .copyable(tieIn)
@@ -666,7 +676,8 @@ private struct DeckCardView: View {
                         Text(reason)
                             .font(.body)
                             .lineSpacing(3)
-                            .fixedSize(horizontal: false, vertical: true)
+                            .lineLimit(5)
+                            .minimumScaleFactor(0.85)
                     }
                     .foregroundStyle(.white.opacity(0.88))
                 }
