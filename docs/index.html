@@ -175,7 +175,7 @@
             overflow-x: auto;
             scroll-snap-type: x mandatory;
             -webkit-overflow-scrolling: touch;
-            padding: 0 24px;
+            padding: 12px 24px 24px;
             max-width: 1200px;
             margin: 0 auto;
             scrollbar-width: none;
@@ -183,64 +183,19 @@
 
         .showcase-scroll::-webkit-scrollbar { display: none; }
 
-        .showcase-card {
-            flex: 0 0 300px;
-            min-height: 520px;
+        .shot {
+            flex: 0 0 264px;
             scroll-snap-align: center;
-            border-radius: 26px;
+            border-radius: 30px;
             overflow: hidden;
             background: #fff;
-            border: 1px solid rgba(31, 92, 69, 0.10);
-            box-shadow: 0 2px 8px rgba(31, 92, 69, 0.05), 0 16px 48px rgba(31, 92, 69, 0.10);
-            padding: 28px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(31, 92, 69, 0.06), 0 18px 52px rgba(31, 92, 69, 0.14);
         }
 
-        .phone-card-label {
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            color: #7c8981;
-            margin-bottom: 12px;
-        }
-
-        .phone-card h2 {
-            font-size: 22px;
-            letter-spacing: -0.3px;
-            line-height: 1.15;
-            margin-bottom: 12px;
-        }
-
-        .phone-card p {
-            font-size: 15px;
-            line-height: 1.5;
-            color: #607067;
-        }
-
-        .briefing-preview {
-            background: #f4f1e8;
-            border-radius: 18px;
-            padding: 16px;
-            margin-top: 24px;
-        }
-
-        .briefing-preview .pill {
-            display: inline-block;
-            font-size: 11px;
-            font-weight: 700;
-            color: #fff;
-            background: #b4452f;
-            padding: 5px 9px;
-            border-radius: 999px;
-            margin-bottom: 10px;
-        }
-
-        .briefing-preview p {
-            color: #18221d;
-            font-size: 14px;
+        .shot img {
+            display: block;
+            width: 100%;
+            height: auto;
         }
 
         .features {
@@ -478,7 +433,7 @@
             .hero { padding: 72px 20px 48px; }
             .hero h1 { font-size: 36px; letter-spacing: -1px; }
             .hero .tagline { font-size: 17px; }
-            .showcase-card { flex-basis: 280px; min-height: 460px; }
+            .shot { flex-basis: 232px; }
             .features-grid { grid-template-columns: 1fr; }
             .features-header h2 { font-size: 28px; }
             .privacy h2, .cta h2 { font-size: 26px; }
@@ -506,39 +461,11 @@
 
     <section class="showcase">
         <div class="showcase-scroll">
-            <div class="showcase-card phone-card">
-                <div>
-                    <div class="phone-card-label">Today's briefing</div>
-                    <h2>One line you can say out loud.</h2>
-                    <p>A plain-English TL;DR leads every briefing, so you know the thing to say before the conversation starts.</p>
-                </div>
-                <div class="briefing-preview">
-                    <span class="pill">Drama</span>
-                    <p>A veteran quarterback got benched, the internet is melting down, and the replacement is suddenly everyone's favorite underdog.</p>
-                </div>
-            </div>
-            <div class="showcase-card phone-card">
-                <div>
-                    <div class="phone-card-label">Conversation fuel</div>
-                    <h2>3 to 6 talking points, then you are done.</h2>
-                    <p>No scores, standings, betting lines, or stat tables. Just the stories people may actually bring up.</p>
-                </div>
-                <div class="briefing-preview">
-                    <span class="pill">Nice guy</span>
-                    <p>The backup was working a normal job 2 years ago and donated his first big check to his old high school.</p>
-                </div>
-            </div>
-            <div class="showcase-card phone-card">
-                <div>
-                    <div class="phone-card-label">Ask them this</div>
-                    <h2>A good question does half the work.</h2>
-                    <p>Every briefing ends with one open question you can ask a fan to keep the conversation going.</p>
-                </div>
-                <div class="briefing-preview">
-                    <span class="pill">Question</span>
-                    <p>Do you think they made the right call, or did they just blow up their season?</p>
-                </div>
-            </div>
+            <div class="shot"><img src="screenshots/store-1-deck-lead.png" alt="The Sideline daily briefing with a plain-English summary of the day's sports stories" loading="lazy" width="720" height="1564"></div>
+            <div class="shot"><img src="screenshots/store-2-talking-point.png" alt="A witty talking point card backed by a real source" loading="lazy" width="720" height="1564"></div>
+            <div class="shot"><img src="screenshots/store-3-backstory.png" alt="A talking point flipped over to reveal its backstory" loading="lazy" width="720" height="1564"></div>
+            <div class="shot"><img src="screenshots/store-4-personas.png" alt="Conversation rooms for cocktail party, office watercooler, date night, and your local team" loading="lazy" width="720" height="1564"></div>
+            <div class="shot"><img src="screenshots/store-5-question.png" alt="Every briefing ends with one good question to ask a fan" loading="lazy" width="720" height="1564"></div>
         </div>
     </section>
 
