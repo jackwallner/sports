@@ -183,22 +183,13 @@ struct PaywallView: View {
         }
     }
 
-    private var trialDayCount: Int? {
-        guard let package = selectedPackage,
-              let intro = package.storeProduct.introductoryDiscount,
-              intro.paymentMode == .freeTrial else { return nil }
-        let period = intro.subscriptionPeriod
-        switch period.unit {
-        case .day:   return period.value
-        case .week:  return period.value * 7
-        case .month: return period.value * 30
-        case .year:  return period.value * 365
-        @unknown default: return nil
-        }
-    }
-
     private var purchaseSection: some View {
         VStack(spacing: 10) {
+            // Apple 3.1.2: the total billed amount must be the most clear and
+            // conspicuous pricing element. Lead with it; any trial or intro
+            // detail stays subordinate in size and color below.
+            billedAmountSummary
+
             Button(action: startPurchase) {
                 ZStack {
                     Text(ctaTitle)
@@ -214,16 +205,6 @@ struct PaywallView: View {
             .controlSize(.large)
             .tint(SidelineTheme.brandPrimary)
             .disabled(isPurchasing || selectedPackage == nil)
-
-            // The single biggest trial-start objection is "will I get charged
-            // today". Answer it in plain words, directly under the button.
-            if let package = selectedPackage,
-               package.sidelinePackageKind != .lifetime,
-               store.isEligibleForIntroOffer(package) {
-                Label("No payment now. Cancel anytime during the trial.", systemImage: "checkmark.shield.fill")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(SidelineTheme.brandPrimary)
-            }
 
             if let disclosure = disclosureText {
                 Text(disclosure)
@@ -262,13 +243,39 @@ struct PaywallView: View {
         }
     }
 
+    // The dominant pricing element: the full billed amount, shown larger and
+    // higher-contrast than any trial or per-month figure (Apple 3.1.2).
+    private var billedAmountSummary: some View {
+        VStack(spacing: 2) {
+            if let package = selectedPackage {
+                Text(package.sidelinePriceLabel)
+                    .font(.title3.weight(.bold))
+                    .foregroundStyle(SidelineTheme.inkPrimary)
+                if let subtext = billingSubtext {
+                    Text(subtext)
+                        .font(.caption2)
+                        .foregroundStyle(SidelineTheme.inkTertiary)
+                }
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .combine)
+    }
+
+    // Trial / intro / calculated pricing — deliberately subordinate to the
+    // billed amount above.
+    private var billingSubtext: String? {
+        guard let package = selectedPackage else { return nil }
+        if package.sidelinePackageKind == .lifetime { return "One-time purchase, no subscription" }
+        if store.isEligibleForIntroOffer(package), let trial = package.sidelineIntroOfferLabel {
+            return "Includes a \(trial)"
+        }
+        return package.sidelineMonthlyEquivalentLabel.map { "Just \($0)" }
+    }
+
     private var ctaTitle: String {
         guard let package = selectedPackage else { return "Continue" }
         if package.sidelinePackageKind == .lifetime { return "Unlock Lifetime" }
-        if store.isEligibleForIntroOffer(package) {
-            if let days = trialDayCount { return "Try \(days) Days Free" }
-            return "Start Free Trial"
-        }
         return "Subscribe"
     }
 
@@ -280,7 +287,7 @@ struct PaywallView: View {
         }
         let renew = "Auto-renews unless turned off at least 24 hours before the end of the current period. Cancel anytime."
         if store.isEligibleForIntroOffer(package), let trial = package.sidelineIntroOfferLabel {
-            return "\(trial.capitalized), then \(price). \(renew)"
+            return "\(price) after a \(trial). \(renew)"
         }
         return "\(price). \(renew)"
     }
@@ -484,8 +491,8 @@ private struct PaywallPlanCard: View {
                     }
                     if showsTrialBadge, let trial = package.sidelineIntroOfferLabel {
                         Text(trial.capitalized)
-                            .font(.caption2.weight(.semibold))
-                            .foregroundStyle(SidelineTheme.brandPrimary)
+                            .font(.caption2)
+                            .foregroundStyle(SidelineTheme.inkTertiary)
                     } else if let perMonth = package.sidelineMonthlyEquivalentLabel {
                         Text(perMonth)
                             .font(.caption2.weight(.medium))
@@ -496,8 +503,8 @@ private struct PaywallPlanCard: View {
                 Spacer(minLength: 8)
 
                 Text(package.sidelinePriceLabel)
-                    .font(.subheadline.weight(.semibold).monospacedDigit())
-                    .foregroundStyle(SidelineTheme.inkSecondary)
+                    .font(.subheadline.weight(.bold).monospacedDigit())
+                    .foregroundStyle(SidelineTheme.inkPrimary)
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 14)
