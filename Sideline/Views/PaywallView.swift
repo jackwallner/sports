@@ -121,16 +121,23 @@ struct PaywallView: View {
     }
 
     private var paywallContent: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            hero
-            benefits
-            Spacer(minLength: 8)
-            planCards
-            purchaseSection
+        // ScrollView so the plans + purchase button are always reachable when
+        // the content is taller than the sheet (e.g. iPad / iPhone-compat or
+        // large Dynamic Type). The column is capped and centred on wide screens
+        // (Apple 4 - Design: subscription page was cut off on iPad).
+        ScrollView {
+            VStack(alignment: .leading, spacing: 18) {
+                hero
+                benefits
+                planCards
+                purchaseSection
+            }
+            .padding(.horizontal, 24)
+            .padding(.top, 8)
+            .padding(.bottom, 16)
+            .frame(maxWidth: 520)
+            .frame(maxWidth: .infinity)
         }
-        .padding(.horizontal, 24)
-        .padding(.top, 8)
-        .padding(.bottom, 16)
     }
 
     private var hero: some View {
@@ -339,6 +346,7 @@ struct PaywallView: View {
 
     private var fallbackPaywall: some View {
         NavigationStack {
+            ScrollView {
             VStack(alignment: .leading, spacing: 24) {
                 VStack(alignment: .leading, spacing: 12) {
                     if !context.isFree {
@@ -368,8 +376,6 @@ struct PaywallView: View {
                     benefit("Refreshed 3× a day", "Morning, midday, and evening, so you're never quoting last week.")
                     benefit("Built for non-fans", "No box scores, no jargon, no expectation that you care.")
                 }
-
-                Spacer()
 
                 Button {
                     #if DEBUG
@@ -402,6 +408,9 @@ struct PaywallView: View {
                 .frame(maxWidth: .infinity)
             }
             .padding(24)
+            .frame(maxWidth: 520)
+            .frame(maxWidth: .infinity)
+            }
             .navigationTitle("The Sideline Pro")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
