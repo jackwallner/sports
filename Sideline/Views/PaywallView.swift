@@ -73,7 +73,7 @@ struct PaywallView: View {
                     paywallContent
                 }
             }
-            .navigationTitle("The Sideline Pro")
+            .navigationTitle("Gist Pro")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif
@@ -318,7 +318,7 @@ struct PaywallView: View {
                     // store.isPro flips and the onChange handler dismisses.
                     break
                 case .pending:
-                    restoreMessage = "Your purchase is pending approval. The Sideline Pro unlocks automatically once it's approved."
+                    restoreMessage = "Your purchase is pending approval. Gist Pro unlocks automatically once it's approved."
                 case .cancelled:
                     // A deliberate cancel is not an error. Stay quiet; the
                     // button re-enables so they can try again.
@@ -338,7 +338,7 @@ struct PaywallView: View {
             defer { isRestoring = false }
             await store.restorePurchases()
             if !store.isPro {
-                restoreMessage = store.lastError ?? "No active The Sideline Pro purchase found for this Apple ID."
+                restoreMessage = store.lastError ?? "No active Gist Pro purchase found for this Apple ID."
             }
         }
     }
@@ -411,7 +411,7 @@ struct PaywallView: View {
             .frame(maxWidth: 520)
             .frame(maxWidth: .infinity)
             }
-            .navigationTitle("The Sideline Pro")
+            .navigationTitle("Gist Pro")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif

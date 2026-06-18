@@ -460,7 +460,7 @@ private struct DeckCardView: View {
                     .overlay(Capsule().stroke(.white.opacity(0.28), lineWidth: 1))
                 }
                 .buttonStyle(.plain)
-                .accessibilityHint("Shows The Sideline Pro plans")
+                .accessibilityHint("Shows Gist Pro plans")
 
                 hint(icon: "sparkles", text: "Different stories, written for that crowd.")
             }

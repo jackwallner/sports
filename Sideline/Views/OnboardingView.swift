@@ -152,7 +152,7 @@ struct OnboardingView: View {
             .opacity(locked ? 0.85 : 1)
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(locked ? "\(persona.displayName), Pro, unlocks with The Sideline Pro" : persona.displayName)
+        .accessibilityLabel(locked ? "\(persona.displayName), Pro, unlocks with Gist Pro" : persona.displayName)
         .accessibilityAddTraits(isSelected ? [.isSelected, .isButton] : .isButton)
     }
 

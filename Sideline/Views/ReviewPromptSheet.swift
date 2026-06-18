@@ -104,7 +104,7 @@ struct ReviewPromptSheet: View {
             }
             .padding(.top, 8)
 
-            Text("A quick App Store rating helps more non-fans find The Sideline. Got a problem or an idea instead? Send feedback and it goes straight to the developer.")
+            Text("A quick App Store rating helps more non-fans find Gist. Got a problem or an idea instead? Send feedback and it goes straight to the developer.")
                 .font(.subheadline)
                 .foregroundStyle(SidelineTheme.inkSecondary)
                 .multilineTextAlignment(.center)
@@ -135,7 +135,7 @@ struct ReviewPromptSheet: View {
 
     private var feedbackContent: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text("What would make The Sideline work better for you?")
+            Text("What would make Gist work better for you?")
                 .font(.subheadline)
                 .foregroundStyle(SidelineTheme.inkSecondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -213,7 +213,7 @@ struct ReviewPromptSheet: View {
         components.scheme = "mailto"
         components.path = "jack@jackwallner.com"
         components.queryItems = [
-            URLQueryItem(name: "subject", value: "The Sideline feedback"),
+            URLQueryItem(name: "subject", value: "Gist feedback"),
             URLQueryItem(name: "body", value: body),
         ]
         return components.url

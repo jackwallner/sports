@@ -356,7 +356,7 @@ public final class StoreService: NSObject, EntitlementProviding {
         do {
             let info = try await Purchases.shared.restorePurchases()
             apply(customerInfo: info)
-            lastError = isPro ? nil : "No active The Sideline Pro purchase was found for this Apple ID."
+            lastError = isPro ? nil : "No active Gist Pro purchase was found for this Apple ID."
         } catch {
             consoleError("StoreService restore failed", error)
             lastError = "Couldn't restore purchases. Try again."
