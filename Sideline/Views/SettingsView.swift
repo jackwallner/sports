@@ -134,15 +134,15 @@ struct SettingsView: View {
         if Purchases.isConfigured, entitlement is StoreService {
             await store.restorePurchases()
             restoreResultMessage = store.isPro
-                ? "The Sideline Pro is active on this device."
-                : store.lastError ?? "No active The Sideline Pro purchase was found for this Apple ID."
+                ? "Gist Pro is active on this device."
+                : store.lastError ?? "No active Gist Pro purchase was found for this Apple ID."
             return
         }
         #endif
         await entitlement.refresh()
         restoreResultMessage = entitlement.isPro
-            ? "The Sideline Pro is active on this device."
-            : "No active The Sideline Pro purchase was found for this Apple ID."
+            ? "Gist Pro is active on this device."
+            : "No active Gist Pro purchase was found for this Apple ID."
     }
 
     private var versionString: String {
@@ -170,7 +170,7 @@ private struct SettingsProRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Label("The Sideline Pro", systemImage: "sparkles")
+                Label("Gist Pro", systemImage: "sparkles")
                     .font(.headline)
                 Spacer()
                 Text(isPro ? "Active" : "See Pro")
