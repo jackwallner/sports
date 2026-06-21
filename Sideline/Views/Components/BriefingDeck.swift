@@ -668,6 +668,12 @@ private struct DeckCardView: View {
                     }
                     .foregroundStyle(SidelineTheme.goldOnDark)
                     .copyable(tieIn)
+                    // The tie-in is the punchline; never let it be the line
+                    // that gets squeezed to a truncated single row. Equal
+                    // priority + fixedSize means the backstory body yields
+                    // height first instead.
+                    .layoutPriority(1)
+                    .fixedSize(horizontal: false, vertical: true)
                 } else if let reason = nonEmpty(bullet.tagReason) {
                     HStack(alignment: .top, spacing: 8) {
                         Image(systemName: (bullet.tag ?? .neutral).symbolName)
@@ -680,6 +686,8 @@ private struct DeckCardView: View {
                             .minimumScaleFactor(0.85)
                     }
                     .foregroundStyle(.white.opacity(0.88))
+                    .layoutPriority(1)
+                    .fixedSize(horizontal: false, vertical: true)
                 }
 
                 Spacer(minLength: 12)
