@@ -599,8 +599,10 @@ private struct DeckCardView: View {
             )
 
             VStack(alignment: .leading, spacing: 16) {
-                // Shrinks to fit the card if the setup ever outgrows it.
-                FitToHeight(minScale: 0.5) {
+                // Full-size, readable text. If a setup is long enough to
+                // outgrow the card it scrolls rather than shrinking or
+                // clipping; short content sits still and reads as static.
+                ScrollView(.vertical, showsIndicators: true) {
                     VStack(alignment: .leading, spacing: 16) {
                         eyebrow(icon: "text.bubble.fill", text: "The setup")
 
@@ -614,6 +616,7 @@ private struct DeckCardView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .topLeading)
                 }
+                .scrollBounceBehavior(.basedOnSize)
 
                 hint(icon: "hand.draw.fill", text: "Swipe for the stories behind it.")
 
@@ -645,13 +648,10 @@ private struct DeckCardView: View {
             )
 
             VStack(alignment: .leading, spacing: 16) {
-                // The backstory + tie-in own the space between the eyebrow and
-                // the pinned footer and shrink to fit it, so the whole story
-                // (punchline included) stays on screen at a glance on any
-                // device or Dynamic Type setting instead of being clipped.
-                // `fitsToHeight` scales the block down only when it would
-                // otherwise overflow; short content renders at full size.
-                FitToHeight(minScale: 0.5) {
+                // Full-size, readable text. A long backstory + tie-in scrolls
+                // instead of shrinking (which looked cramped) or clipping the
+                // tie-in. Short content sits still and reads as a static card.
+                ScrollView(.vertical, showsIndicators: true) {
                     VStack(alignment: .leading, spacing: 16) {
                         eyebrow(icon: "text.bubble.fill", text: "The backstory")
 
@@ -690,6 +690,7 @@ private struct DeckCardView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .topLeading)
                 }
+                .scrollBounceBehavior(.basedOnSize)
 
                 learnMore(bullet)
 
@@ -788,48 +789,6 @@ private struct DeckCardView: View {
         case .jerk, .drama:         return SidelineTheme.tagPillDrama
         default:                    return SidelineTheme.cardPanel[1]
         }
-    }
-}
-
-// MARK: - Fit to height
-
-/// Shrinks its content uniformly, only as much as needed and never below
-/// `minScale`, so a block of text always fits the height it is given instead
-/// of being clipped. Content that already fits is left at full size. This is
-/// the deck's guarantee that no card ever truncates a backstory or tie-in,
-/// whatever the screen size or Dynamic Type setting.
-private struct FitToHeight<Content: View>: View {
-    var minScale: CGFloat = 0.5
-    @ViewBuilder var content: Content
-    @State private var naturalHeight: CGFloat = 0
-
-    var body: some View {
-        GeometryReader { geo in
-            let available = geo.size.height
-            let scale: CGFloat = (naturalHeight > available && available > 0)
-                ? max(minScale, available / naturalHeight)
-                : 1
-            content
-                // Lay the text out at its natural height so we can measure how
-                // tall it really wants to be, independent of the card's bounds.
-                .fixedSize(horizontal: false, vertical: true)
-                .background(
-                    GeometryReader { inner in
-                        Color.clear.preference(key: FitHeightKey.self, value: inner.size.height)
-                    }
-                )
-                .scaleEffect(scale, anchor: .topLeading)
-                .frame(width: geo.size.width, height: available, alignment: .topLeading)
-                .clipped()
-        }
-        .onPreferenceChange(FitHeightKey.self) { naturalHeight = $0 }
-    }
-}
-
-private struct FitHeightKey: PreferenceKey {
-    static var defaultValue: CGFloat { 0 }
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value = max(value, nextValue())
     }
 }
 
