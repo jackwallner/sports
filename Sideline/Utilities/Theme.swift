@@ -202,6 +202,17 @@ enum SidelineTheme {
         #endif
     }
 
+    /// Sans body at a deliberate point size that still scales with Dynamic
+    /// Type (via `UIFontMetrics`). Used where a card needs to fit text by
+    /// stepping the base size down while keeping accessibility scaling.
+    static func scaledBody(_ size: CGFloat) -> Font {
+        #if canImport(UIKit)
+        return Font(UIFontMetrics(forTextStyle: .body).scaledFont(for: .systemFont(ofSize: size)))
+        #else
+        return .system(size: size)
+        #endif
+    }
+
     /// Title — section headings and floated-card titles.
     static let title = Font.system(.title2, design: .serif).weight(.semibold)
 

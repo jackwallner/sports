@@ -599,40 +599,39 @@ private struct DeckCardView: View {
             )
 
             VStack(alignment: .leading, spacing: 16) {
-                // Full-size, readable text. If a setup is long enough to
-                // outgrow the card it scrolls rather than shrinking or
-                // clipping; short content sits still and reads as static.
-                ScrollView(.vertical, showsIndicators: true) {
-                    VStack(alignment: .leading, spacing: 16) {
-                        eyebrow(icon: "text.bubble.fill", text: "The setup")
-
-                        if let setup = nonEmpty(briefing.leadBackstory) {
-                            Text(setup)
-                                .font(SidelineTheme.display(22))
-                                .foregroundStyle(.white)
-                                .lineSpacing(5)
-                                .copyable(setup)
-                        }
+                // Largest setup size that fits; steps down for long setups
+                // instead of clipping. No scroll view, so tap-to-flip is
+                // reliable.
+                ViewThatFits(in: .vertical) {
+                    ForEach(Self.fitScales, id: \.self) { scale in
+                        leadSetupContent(briefing, scale: scale)
                     }
-                    .frame(maxWidth: .infinity, alignment: .topLeading)
                 }
-                .scrollBounceBehavior(.basedOnSize)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
 
                 hint(icon: "hand.draw.fill", text: "Swipe for the stories behind it.")
 
-                HStack(spacing: 6) {
-                    Image(systemName: "hand.tap.fill")
-                        .font(.caption2)
-                    Text("Tap to flip back")
-                        .font(.footnote.weight(.medium))
-                }
-                .frame(maxWidth: .infinity)
-                .foregroundStyle(.white.opacity(0.7))
-                .accessibilityHidden(true)
+                flipBackHint
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .padding(22)
         }
+    }
+
+    @ViewBuilder
+    private func leadSetupContent(_ briefing: Briefing, scale: CGFloat) -> some View {
+        VStack(alignment: .leading, spacing: 16 * scale) {
+            eyebrow(icon: "text.bubble.fill", text: "The setup")
+
+            if let setup = nonEmpty(briefing.leadBackstory) {
+                Text(setup)
+                    .font(SidelineTheme.display(22 * scale))
+                    .foregroundStyle(.white)
+                    .lineSpacing(5 * scale)
+                    .copyable(setup)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .topLeading)
     }
 
     private func back(_ bullet: BriefingBullet) -> some View {
@@ -648,65 +647,83 @@ private struct DeckCardView: View {
             )
 
             VStack(alignment: .leading, spacing: 16) {
-                // Full-size, readable text. A long backstory + tie-in scrolls
-                // instead of shrinking (which looked cramped) or clipping the
-                // tie-in. Short content sits still and reads as a static card.
-                ScrollView(.vertical, showsIndicators: true) {
-                    VStack(alignment: .leading, spacing: 16) {
-                        eyebrow(icon: "text.bubble.fill", text: "The backstory")
-
-                        if let body = backstory ?? tieIn {
-                            Text(body)
-                                .font(SidelineTheme.display(21))
-                                .foregroundStyle(.white)
-                                .lineSpacing(5)
-                                .copyable(body)
-                        }
-
-                        // The conversational next beat, only when it isn't
-                        // already serving as the body above.
-                        if backstory != nil, let tieIn {
-                            HStack(alignment: .top, spacing: 8) {
-                                Image(systemName: "arrow.turn.down.right")
-                                    .font(.callout.weight(.bold))
-                                    .padding(.top, 2)
-                                Text(tieIn)
-                                    .font(.body)
-                                    .lineSpacing(3)
-                            }
-                            .foregroundStyle(SidelineTheme.goldOnDark)
-                            .copyable(tieIn)
-                        } else if let reason = nonEmpty(bullet.tagReason) {
-                            HStack(alignment: .top, spacing: 8) {
-                                Image(systemName: (bullet.tag ?? .neutral).symbolName)
-                                    .font(.callout.weight(.bold))
-                                    .padding(.top, 2)
-                                Text(reason)
-                                    .font(.body)
-                                    .lineSpacing(3)
-                            }
-                            .foregroundStyle(.white.opacity(0.88))
-                        }
+                // Pick the largest text size that fits the card. A long
+                // backstory + tie-in steps the font down a notch (reflowing at
+                // full width, so it just reads as slightly smaller text) rather
+                // than clipping the tie-in or being shrunk into a cramped
+                // corner. No scroll view, so tap-to-flip stays reliable.
+                ViewThatFits(in: .vertical) {
+                    ForEach(Self.fitScales, id: \.self) { scale in
+                        backContent(backstory: backstory, tieIn: tieIn, bullet: bullet, scale: scale)
                     }
-                    .frame(maxWidth: .infinity, alignment: .topLeading)
                 }
-                .scrollBounceBehavior(.basedOnSize)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
 
                 learnMore(bullet)
 
-                HStack(spacing: 6) {
-                    Image(systemName: "hand.tap.fill")
-                        .font(.caption2)
-                    Text("Tap to flip back")
-                        .font(.footnote.weight(.medium))
-                }
-                .frame(maxWidth: .infinity)
-                .foregroundStyle(.white.opacity(0.7))
-                .accessibilityHidden(true)
+                flipBackHint
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .padding(22)
         }
+    }
+
+    /// Scale steps tried by the card backs, largest first. `ViewThatFits` uses
+    /// the first that fits; the smallest still fits far more text than any real
+    /// backstory, so nothing is ever clipped.
+    static let fitScales: [CGFloat] = [1.0, 0.92, 0.84, 0.76, 0.68, 0.6, 0.52, 0.44]
+
+    private var flipBackHint: some View {
+        HStack(spacing: 6) {
+            Image(systemName: "hand.tap.fill")
+                .font(.caption2)
+            Text("Tap to flip back")
+                .font(.footnote.weight(.medium))
+        }
+        .frame(maxWidth: .infinity)
+        .foregroundStyle(.white.opacity(0.7))
+        .accessibilityHidden(true)
+    }
+
+    @ViewBuilder
+    private func backContent(backstory: String?, tieIn: String?, bullet: BriefingBullet, scale: CGFloat) -> some View {
+        VStack(alignment: .leading, spacing: 16 * scale) {
+            eyebrow(icon: "text.bubble.fill", text: "The backstory")
+
+            if let body = backstory ?? tieIn {
+                Text(body)
+                    .font(SidelineTheme.display(21 * scale))
+                    .foregroundStyle(.white)
+                    .lineSpacing(5 * scale)
+                    .copyable(body)
+            }
+
+            // The conversational next beat, only when it isn't already serving
+            // as the body above.
+            if backstory != nil, let tieIn {
+                HStack(alignment: .top, spacing: 8 * scale) {
+                    Image(systemName: "arrow.turn.down.right")
+                        .font(.system(size: 16 * scale, weight: .bold))
+                        .padding(.top, 2)
+                    Text(tieIn)
+                        .font(SidelineTheme.scaledBody(17 * scale))
+                        .lineSpacing(3 * scale)
+                }
+                .foregroundStyle(SidelineTheme.goldOnDark)
+                .copyable(tieIn)
+            } else if let reason = nonEmpty(bullet.tagReason) {
+                HStack(alignment: .top, spacing: 8 * scale) {
+                    Image(systemName: (bullet.tag ?? .neutral).symbolName)
+                        .font(.system(size: 16 * scale, weight: .bold))
+                        .padding(.top, 2)
+                    Text(reason)
+                        .font(SidelineTheme.scaledBody(17 * scale))
+                        .lineSpacing(3 * scale)
+                }
+                .foregroundStyle(.white.opacity(0.88))
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .topLeading)
     }
 
     private func nonEmpty(_ text: String?) -> String? {

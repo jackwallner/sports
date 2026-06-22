@@ -18,7 +18,17 @@ struct SidelineApp: App {
     }
 
     init() {
-        if let config = AppConfig.fromBundle() ?? AppConfig.fromEnvironment() {
+        var debugService: (any BriefingServing)?
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("-SidelineEdgeCases") {
+            debugService = EdgeCaseBriefingService()
+        }
+        #endif
+
+        if let debugService {
+            self.service = debugService
+            self.isDemo = true
+        } else if let config = AppConfig.fromBundle() ?? AppConfig.fromEnvironment() {
             self.service = SupabaseBriefingService(config: config)
             self.isDemo = false
         } else {
