@@ -25,6 +25,8 @@ public enum ReviewPromptTracker {
 
     public static let minimumLaunchCount = 5
     public static let minimumDaysSinceFirstOpen = 7
+    /// Minimum cumulative positive moments before the passive enjoyment funnel surfaces.
+    public static let minimumPositiveMoments = 3
     public static let cooldownDays = 120
 
     public static var appLaunchCount: Int {
@@ -117,6 +119,7 @@ public enum ReviewPromptTracker {
         guard hasCompletedSetup else { return false }
         guard passivePromptAllowed(now: now) else { return false }
         guard appLaunchCount >= minimumLaunchCount else { return false }
+        guard positiveMomentCount >= minimumPositiveMoments else { return false }
         guard let first = firstAppOpenDate else { return false }
         let minInterval = TimeInterval(minimumDaysSinceFirstOpen) * 86_400
         guard now.timeIntervalSince(first) >= minInterval else { return false }

@@ -1,1 +1,1 @@
-Small polish: story card backstories and tie-ins now always fit your screen, so nothing gets cut off no matter your text size.
+Bug fixes and performance improvements to your daily sports briefing.
