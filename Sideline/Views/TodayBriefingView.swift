@@ -15,6 +15,7 @@ struct TodayBriefingView: View {
     @State private var deckIndex = 0
     @StateObject private var reviewPromptCoordinator = ReviewPromptCoordinator.shared
     @State private var reviewPromptShownThisSession = false
+    @State private var pendingNativeReviewAfterDismiss = false
 
     private enum ActiveSheet: Identifiable {
         case proPreview(Persona)
@@ -194,8 +195,8 @@ struct TodayBriefingView: View {
                     defer { reviewPromptCoordinator.clear() }
                     guard activeSheet == nil else { return }
                     switch presentation {
-                    case .rateOrFeedback:
-                        presentReviewPrompt(step: .choose)
+                    case .enjoymentPrompt:
+                        presentReviewPrompt(step: .enjoyment)
                     case .feedbackOnly:
                         presentReviewPrompt(step: .feedback)
                     }
@@ -302,13 +303,9 @@ struct TodayBriefingView: View {
             guard activeSheet == nil,
                   ReviewPromptTracker.shouldShowAfterPositiveMoment(hasCompletedSetup: hasCompletedOnboarding)
             else { return }
-            // Guideline 1.1.7: ask everyone who reaches the engagement
-            // thresholds via Apple's native, rate-limited prompt. No sentiment
-            // pre-screen that would hide the rating from dissatisfied users.
             reviewPromptShownThisSession = true
             ReviewPromptTracker.consumePendingPositiveMoment()
-            ReviewPromptTracker.markShown()
-            requestReview()
+            presentReviewPrompt(step: .enjoyment)
         }
     }
 
@@ -337,9 +334,16 @@ struct TodayBriefingView: View {
             activeSheet = .paywall(persona)
             return
         }
+        if pendingNativeReviewAfterDismiss {
+            pendingNativeReviewAfterDismiss = false
+            requestReview()
+        }
     }
 
     private func handleReviewPromptFinish(_ outcome: ReviewPromptDismissOutcome) {
+        if outcome == .enjoyedMaybeLater {
+            pendingNativeReviewAfterDismiss = true
+        }
         activeSheet = nil
     }
 

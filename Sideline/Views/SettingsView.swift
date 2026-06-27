@@ -95,7 +95,7 @@ struct SettingsView: View {
 
             Section("Help") {
                 Button {
-                    ReviewPromptCoordinator.shared.requestRateOrFeedback()
+                    ReviewPromptCoordinator.shared.requestEnjoymentPrompt()
                 } label: {
                     Label("Rate or Send Feedback", systemImage: "star.bubble")
                 }
