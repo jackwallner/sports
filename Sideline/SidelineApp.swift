@@ -68,9 +68,21 @@ struct SidelineApp: App {
 
     var body: some Scene {
         WindowGroup {
+            #if DEBUG
+            if let mode = PaywallScreenshotMode.current {
+                PaywallScreenshotHarness(mode: mode)
+                    .environment(store)
+                    .preferredColorScheme(appearanceMode.colorScheme)
+            } else {
+                TodayBriefingView(service: service, entitlement: entitlement, store: store, isDemo: isDemo)
+                    .environment(store)
+                    .preferredColorScheme(appearanceMode.colorScheme)
+            }
+            #else
             TodayBriefingView(service: service, entitlement: entitlement, store: store, isDemo: isDemo)
                 .environment(store)
                 .preferredColorScheme(appearanceMode.colorScheme)
+            #endif
         }
     }
 }

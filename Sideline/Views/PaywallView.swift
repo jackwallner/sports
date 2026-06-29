@@ -121,47 +121,68 @@ struct PaywallView: View {
     }
 
     private var paywallContent: some View {
-        // ScrollView so the plans + purchase button are always reachable when
-        // the content is taller than the sheet (e.g. iPad / iPhone-compat or
-        // large Dynamic Type). The column is capped and centred on wide screens
-        // (Apple 4 - Design: subscription page was cut off on iPad).
-        ScrollView {
-            VStack(alignment: .leading, spacing: 18) {
-                hero
-                benefits
-                planCards
-                purchaseSection
-            }
-            .padding(.horizontal, 24)
-            .padding(.top, 8)
-            .padding(.bottom, 16)
-            .frame(maxWidth: 520)
-            .frame(maxWidth: .infinity)
+        VStack(alignment: .leading, spacing: 12) {
+            hero
+            compactBenefits
+            planCards
+            Spacer(minLength: 0)
+            purchaseSection
         }
+        .padding(.horizontal, 22)
+        .padding(.top, 8)
+        .padding(.bottom, 14)
+        .frame(maxWidth: 520)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     private var hero: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 6) {
             if !context.isFree {
                 HStack(spacing: 6) {
                     Image(systemName: context.symbolName)
-                        .font(.caption.weight(.bold))
+                        .font(.caption2.weight(.bold))
                     Text(context.contextHeader)
-                        .font(.caption.weight(.heavy))
+                        .font(.caption2.weight(.heavy))
                         .tracking(1.2)
                 }
                 .foregroundStyle(SidelineTheme.brandPrimary)
             }
 
             Text(paywallHeadline)
-                .font(SidelineTheme.display(28))
+                .font(SidelineTheme.display(24))
                 .foregroundStyle(SidelineTheme.inkPrimary)
-                .fixedSize(horizontal: false, vertical: true)
+                .lineLimit(2)
+                .minimumScaleFactor(0.9)
 
-            Text("Four 30-second briefings so you never get caught flat-footed when sports come up.")
-                .font(.subheadline)
+            Text("Fresh takes for every room, all day.")
+                .font(.footnote)
                 .foregroundStyle(SidelineTheme.inkSecondary)
-                .fixedSize(horizontal: false, vertical: true)
+                .lineLimit(1)
+                .minimumScaleFactor(0.9)
+        }
+    }
+
+    private var compactBenefits: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            compactBenefit("4 briefings a day: one for each room you're in")
+            compactBenefit("3× daily refresh: morning, midday, and evening")
+            compactBenefit("Built for non-fans: no box scores, no jargon")
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func compactBenefit(_ title: String) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: "checkmark.circle.fill")
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(SidelineTheme.brandPrimary)
+                .frame(width: 24)
+            Text(title)
+                .font(.subheadline)
+                .foregroundStyle(SidelineTheme.inkPrimary)
+                .lineLimit(2)
+                .minimumScaleFactor(0.85)
+            Spacer(minLength: 0)
         }
     }
 
@@ -201,25 +222,30 @@ struct PaywallView: View {
                 ZStack {
                     Text(ctaTitle)
                         .font(.headline)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.72)
                         .frame(maxWidth: .infinity)
                         .opacity(isPurchasing ? 0 : 1)
                     if isPurchasing {
                         ProgressView()
                     }
                 }
+                .frame(height: 44)
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
             .tint(SidelineTheme.brandPrimary)
             .disabled(isPurchasing || selectedPackage == nil)
 
-            if let disclosure = disclosureText {
-                Text(disclosure)
-                    .font(.caption2)
-                    .foregroundStyle(SidelineTheme.inkTertiary)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
+            Text(disclosureText ?? " ")
+                .font(.caption2)
+                .foregroundStyle(SidelineTheme.inkTertiary)
+                .multilineTextAlignment(.center)
+                .lineLimit(4)
+                .minimumScaleFactor(0.9)
+                .frame(minHeight: 56, alignment: .top)
+                .opacity(disclosureText == nil ? 0 : 1)
+                .accessibilityHidden(disclosureText == nil)
 
             if let errorMessage {
                 Text(errorMessage)
@@ -254,18 +280,19 @@ struct PaywallView: View {
     // higher-contrast than any trial or per-month figure (Apple 3.1.2).
     private var billedAmountSummary: some View {
         VStack(spacing: 2) {
-            if let package = selectedPackage {
-                Text(package.sidelinePriceLabel)
-                    .font(.title3.weight(.bold))
-                    .foregroundStyle(SidelineTheme.inkPrimary)
-                if let subtext = billingSubtext {
-                    Text(subtext)
-                        .font(.caption2)
-                        .foregroundStyle(SidelineTheme.inkTertiary)
-                }
-            }
+            Text(selectedPackage?.sidelinePriceLabel ?? " ")
+                .font(.title3.weight(.bold))
+                .foregroundStyle(SidelineTheme.inkPrimary)
+                .opacity(selectedPackage == nil ? 0 : 1)
+            Text(billingSubtext ?? " ")
+                .font(.caption2)
+                .foregroundStyle(SidelineTheme.inkTertiary)
+                .lineLimit(2)
+                .minimumScaleFactor(0.85)
+                .opacity(billingSubtext == nil ? 0 : 1)
+                .accessibilityHidden(billingSubtext == nil)
         }
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, minHeight: 48)
         .accessibilityElement(children: .combine)
     }
 
@@ -300,6 +327,19 @@ struct PaywallView: View {
     }
 
     private func selectDefaultPackageIfNeeded() {
+        #if DEBUG
+        if let mode = PaywallScreenshotMode.current, !store.products.isEmpty {
+            switch mode {
+            case .monthly:
+                selectedPackage = store.products.first { $0.sidelinePackageKind == .monthly }
+            case .lifetime:
+                selectedPackage = store.products.first { $0.sidelinePackageKind == .lifetime }
+            case .yearly, .trial:
+                selectedPackage = store.products.first { $0.sidelinePackageKind == .annual }
+            }
+            return
+        }
+        #endif
         guard selectedPackage == nil, !store.products.isEmpty else { return }
         selectedPackage = store.products.first { $0.sidelinePackageKind == .annual }
             ?? store.products.first
@@ -346,37 +386,40 @@ struct PaywallView: View {
 
     private var fallbackPaywall: some View {
         NavigationStack {
-            ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 14) {
+                VStack(alignment: .leading, spacing: 6) {
                     if !context.isFree {
                         HStack(spacing: 6) {
                             Image(systemName: context.symbolName)
-                                .font(.caption.weight(.bold))
+                                .font(.caption2.weight(.bold))
                             Text(context.contextHeader)
-                                .font(.caption.weight(.heavy))
+                                .font(.caption2.weight(.heavy))
                                 .tracking(1.2)
                         }
                         .foregroundStyle(SidelineTheme.brandPrimary)
                     }
-
                     Text(paywallHeadline)
-                        .font(SidelineTheme.display(34))
+                        .font(SidelineTheme.display(24))
                         .foregroundStyle(SidelineTheme.inkPrimary)
-                        .fixedSize(horizontal: false, vertical: true)
-
-                    Text("Four 30-second briefings so you never get caught flat-footed when sports come up.")
-                        .font(.body)
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.9)
+                    Text("Four 30-second briefings so you're never caught flat-footed.")
+                        .font(.caption)
                         .foregroundStyle(SidelineTheme.inkSecondary)
-                        .fixedSize(horizontal: false, vertical: true)
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.9)
                 }
 
-                VStack(alignment: .leading, spacing: 12) {
-                    benefit("4 rooms, 4 briefings a day", "Each room gets its own stories, picked and told for that crowd.")
-                    benefit("Refreshed 3× a day", "Morning, midday, and evening, so you're never quoting last week.")
-                    benefit("Built for non-fans", "No box scores, no jargon, no expectation that you care.")
+                VStack(alignment: .leading, spacing: 8) {
+                    fallbackBenefit("4 briefings a day: one for each room you're in")
+                    fallbackBenefit("3× daily refresh: morning, midday, and evening")
+                    fallbackBenefit("Built for non-fans: no box scores, no jargon")
                 }
+                .padding(.horizontal, 14)
+                .padding(.vertical, 10)
+                .background(SidelineTheme.paperSurface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
 
+                Spacer(minLength: 0)
                 Button {
                     #if DEBUG
                     if let local = entitlement as? LocalEntitlementStore {
@@ -407,10 +450,9 @@ struct PaywallView: View {
                 .foregroundStyle(SidelineTheme.inkTertiary)
                 .frame(maxWidth: .infinity)
             }
-            .padding(24)
+            .padding(22)
             .frame(maxWidth: 520)
-            .frame(maxWidth: .infinity)
-            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .navigationTitle("Gist Pro")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
@@ -422,6 +464,20 @@ struct PaywallView: View {
                     }
                 }
             }
+        }
+    }
+
+    private func fallbackBenefit(_ title: String) -> some View {
+        HStack(spacing: 10) {
+            Image(systemName: "checkmark.circle.fill")
+                .font(.caption.weight(.bold))
+                .foregroundStyle(SidelineTheme.brandPrimary)
+            Text(title)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(SidelineTheme.inkPrimary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.85)
+            Spacer(minLength: 0)
         }
     }
 
