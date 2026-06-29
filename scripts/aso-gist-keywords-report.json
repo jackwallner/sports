@@ -1,0 +1,302 @@
+{
+  "ar-SA": {
+    "subtitle": "نقاط حديث لغير المعجبين",
+    "old": "محادثة,كسر الجليد,ملخص,موجز,موسم,مناقشة,عناوين,نقاش,يومي,استعراض,داخلي,نميمة",
+    "new": "محادثة,كسر الجليد,ملخص,موجز,موسم,مناقشة,عناوين,نقاش,يومي,استعراض,داخلي,نميمة",
+    "len": 76
+  },
+  "bn-BD": {
+    "subtitle": "অ-ভক্তদের জন্য আলোচনা",
+    "old": "কথোপকথন,বরফ ভাঙ্গা,সারসংক্ষেপ,সংক্ষিপ্ত,মৌসুম,বিতর্ক,শিরোনাম,দৈনিক,ওভারভিউ,ইনসাইডার,গসিপ",
+    "new": "কথোপকথন,বরফ ভাঙ্গা,সারসংক্ষেপ,সংক্ষিপ্ত,মৌসুম,বিতর্ক,শিরোনাম,দৈনিক,ওভারভিউ,ইনসাইডার,গসিপ",
+    "len": 88
+  },
+  "ca": {
+    "subtitle": "Temes per a no aficionats",
+    "old": "conversació,trencaglaç,resum,breu,temporada,debat,titulars,discussió,diari,repàs,informat,xafarderia",
+    "new": "conversació,trencaglaç,resum,breu,temporada,debat,titulars,discussió,diari,repàs,informat,xafarderia",
+    "len": 100
+  },
+  "cs": {
+    "subtitle": "Témata pro nefanoušky",
+    "old": "konverzace,ledoborec,souhrn,stručný,sezóna,debata,titulky,diskuze,denní,přehled,insider,drby",
+    "new": "konverzace,ledoborec,souhrn,stručný,sezóna,debata,titulky,diskuze,denní,přehled,insider,drby",
+    "len": 92
+  },
+  "da": {
+    "subtitle": "Samtaleemner for ikke-fans",
+    "old": "isbryder,resumé,kort,sæson,debat,overskrifter,dikussion,daglig,rundtur,insider,sladder",
+    "new": "isbryder,resumé,kort,sæson,debat,overskrifter,dikussion,daglig,rundtur,insider,sladder",
+    "len": 86
+  },
+  "de-DE": {
+    "subtitle": "Gesprächstipps für Non-Fans",
+    "old": "aufhänger,zusammenfassung,kurz,debste,saison,schlagzeilen,diskussion,täglich,zusammenstellung",
+    "new": "aufhänger,zusammenfassung,kurz,debatte,saison,schlagzeilen,diskussion,täglich,zusammenstellung",
+    "len": 94
+  },
+  "el": {
+    "subtitle": "Θέματα για μη φίλους",
+    "old": "συζήτηση,παγοθραύστης,περίληψη,σύντομο,σεζόν,τίτλοι,καθημερινό,ανασκόπηση,μυημένος,κουτσομπολιό",
+    "new": "συζήτηση,παγοθραύστης,περίληψη,σύντομο,σεζόν,τίτλοι,καθημερινό,ανασκόπηση,μυημένος,κουτσομπολιό",
+    "len": 95
+  },
+  "en-AU": {
+    "subtitle": "Footy chat for non-fans",
+    "old": "conversation,icebreaker,recap,season,debate,headlines,discussion,roundup,insider,barstool,highlights",
+    "new": "conversation,icebreaker,recap,season,debate,headlines,discussion,roundup,insider,barstool,highlights",
+    "len": 100
+  },
+  "en-CA": {
+    "subtitle": "Hockey chat for non-fans",
+    "old": "conversation,icebreaker,recap,season,debate,headlines,discussion,roundup,insider,barstool,highlights",
+    "new": "conversation,icebreaker,recap,season,debate,headlines,discussion,roundup,insider,barstool,highlights",
+    "len": 100
+  },
+  "en-GB": {
+    "subtitle": "Football chat for non-fans",
+    "old": "conversation,icebreaker,recap,season,debate,headlines,discussion,roundup,insider,barstool,highlights",
+    "new": "conversation,icebreaker,recap,season,debate,headlines,discussion,roundup,insider,barstool,highlights",
+    "len": 100
+  },
+  "en-US": {
+    "subtitle": "Talking points for non-fans",
+    "old": "conversation,icebreaker,recap,season,debate,headlines,discussion,roundup,insider,barstool,highlights",
+    "new": "conversation,icebreaker,recap,season,debate,headlines,discussion,roundup,insider,barstool,highlights",
+    "len": 100
+  },
+  "es-ES": {
+    "subtitle": "Temas para no aficionados",
+    "old": "conversación,rompehielos,resumen,breve,temporada,debate,titulares,discusión,diario,repaso",
+    "new": "conversación,rompehielos,resumen,breve,temporada,debate,titulares,discusión,diario,repaso",
+    "len": 89
+  },
+  "es-MX": {
+    "subtitle": "Temas para no aficionados",
+    "old": "conversación,rompehielos,resumen,breve,temporada,debate,titulares,plática,diario,repaso,información",
+    "new": "conversación,rompehielos,resumen,breve,temporada,debate,titulares,plática,diario,repaso,información",
+    "len": 99
+  },
+  "fi": {
+    "subtitle": "Puheenaiheet ei-faneille",
+    "old": "keskustelu,jäänmurtaja,yhteenveto,lyhyt,kausi,otsikot,diskusio,päivittäinen,katsaus,sisaapiiri,juttu",
+    "new": "keskustelu,jäänmurtaja,yhteenveto,lyhyt,kausi,otsikot,diskusio,päivittäinen,katsaus,sisaapiiri,juttu",
+    "len": 100
+  },
+  "fr-CA": {
+    "subtitle": "Points de conv. non-fans",
+    "old": "brise-glace,récap,brief,saison,débat,gros titres,discussion,quotidien,initié,potins,résumé",
+    "new": "brise-glace,récap,brief,saison,débat,gros titres,discussion,quotidien,initié,potins,résumé",
+    "len": 90
+  },
+  "fr-FR": {
+    "subtitle": "Points de conv. non-fans",
+    "old": "brise-glace,récap,brief,saison,débat,gros titres,discussion,quotidien,initié,potins,résumé",
+    "new": "brise-glace,récap,brief,saison,débat,gros titres,discussion,quotidien,initié,potins,résumé",
+    "len": 90
+  },
+  "gu-IN": {
+    "subtitle": "બિન-ચાહકો માટે વાતચીત",
+    "old": "બરફ તોડનાર,સારાંશ,સંક્ષિપ્ત,સીઝન,ચર્ચા,હેડલાઇન્સ,દૈનિક,ઝાંખી,ઇનસાઇડર,ગપસપ",
+    "new": "બરફ તોડનાર,સારાંશ,સંક્ષિપ્ત,સીઝન,ચર્ચા,હેડલાઇન્સ,દૈનિક,ઝાંખી,ઇનસાઇડર,ગપસપ",
+    "len": 73
+  },
+  "he": {
+    "subtitle": "נקודות שיחה ללא אוהדים",
+    "old": "שובר קרח,סיכום,קצר,עונה,דיון,כותרות,יומי,סקירה,חדשות,רכילות",
+    "new": "שובר קרח,סיכום,קצר,עונה,דיון,כותרות,יומי,סקירה,חדשות,רכילות",
+    "len": 59
+  },
+  "hi": {
+    "subtitle": "गैर-प्रशंसकों के लिए",
+    "old": "बातचीत,बर्फ तोड़ने वाला,सारांश,संक्षिप्त,सीज़न,बहस,सुर्खियाँ,चर्चा,दैनिक,समीक्षा,इनसाइडर,गपशप",
+    "new": "बातचीत,बर्फ तोड़ने वाला,सारांश,संक्षिप्त,सीज़न,बहस,सुर्खियाँ,चर्चा,दैनिक,समीक्षा,इनसाइडर,गपशप",
+    "len": 93
+  },
+  "hr": {
+    "subtitle": "Teme za ne-navijače",
+    "old": "razgovor,ledolomica,sažetak,kratko,sezona,debata,naslovi,rasprava,dnevno,pregled,insider,trač",
+    "new": "razgovor,ledolomica,sažetak,kratko,sezona,debata,naslovi,rasprava,dnevno,pregled,insider,trač",
+    "len": 93
+  },
+  "hu": {
+    "subtitle": "Témák nem szurkolóknak",
+    "old": "beszélgetés,jégtörő,összefoglaló,rövid,évad,vita,fejlécek,diszkusszió,napi,áttekintés,bennfentes",
+    "new": "beszélgetés,jégtörő,összefoglaló,rövid,évad,vita,fejlécek,diszkusszió,napi,áttekintés,bennfentes",
+    "len": 96
+  },
+  "id": {
+    "subtitle": "Topik untuk bukan penggemar",
+    "old": "percakapan,pemecah kebekuan,ringkasan,singkat,musim,perdebatan,berita utama,diskusi bankan,harian",
+    "new": "percakapan,pemecah kebekuan,ringkasan,singkat,musim,perdebatan,berita utama,diskusi bankan,harian",
+    "len": 97
+  },
+  "it": {
+    "subtitle": "Punti per non tifosi",
+    "old": "conversazione,rompighiaccio,riepilogo,breve,stagione,dibattito,titoli,discussione,quotidiano",
+    "new": "conversazione,rompighiaccio,riepilogo,breve,stagione,dibattito,titoli,discussione,quotidiano",
+    "len": 92
+  },
+  "ja": {
+    "subtitle": "非ファン向け話題",
+    "old": "会話,アイスブレイク,まとめ,簡潔,シーズン,議論,見出し,討論,毎日,総集編,インサイダー,ゴシップ",
+    "new": "会話,アイスブレイク,まとめ,簡潔,シーズン,議論,見出し,討論,毎日,総集編,インサイダー,ゴシップ",
+    "len": 51
+  },
+  "kn-IN": {
+    "subtitle": "ಅಭಿಮಾನಿಗಳಲ್ಲದವರಿಗೆ",
+    "old": "ಸಂಭಾಷಣೆ,ಐಸ್‌ಬ್ರೇಕರ್,ಸಾರಾಂಶ,ಸಂಕ್ಷಿಪ್ತ,ಸೀಸನ್,ಚರ್ಚೆ,ಶೀರ್ಷಿಕೆಗಳು,ದೈನಂದಿನ,ಅವಲೋಕನ,ಇನ್‌ಸೈಡರ್,ಗಾಸಿಪ್",
+    "new": "ಸಂಭಾಷಣೆ,ಐಸ್‌ಬ್ರೇಕರ್,ಸಾರಾಂಶ,ಸಂಕ್ಷಿಪ್ತ,ಸೀಸನ್,ಚರ್ಚೆ,ಶೀರ್ಷಿಕೆಗಳು,ದೈನಂದಿನ,ಅವಲೋಕನ,ಇನ್‌ಸೈಡರ್,ಗಾಸಿಪ್",
+    "len": 92
+  },
+  "ko": {
+    "subtitle": "비팬을 위한 화제",
+    "old": "대화,아이스브레이크,요약,간략,시즌,토론,헤드라인,논의,매일,개괄,인사이더,가십",
+    "new": "대화,아이스브레이크,요약,간략,시즌,토론,헤드라인,논의,매일,개괄,인사이더,가십",
+    "len": 44
+  },
+  "ml-IN": {
+    "subtitle": "അഭിമാനികളല്ലാത്തവർക്ക്",
+    "old": "സംഭാഷണം,ഐസ്‌ബ്രേക്കർ,ചുരുക്കം,ഹ്രസ്വം,സീസൺ,ചർച്ച,തലക്കെട്ടുകൾ,ദൈനംദിന,അവലോകനം,ഇൻസൈഡർ,ഗോസിപ്പ്",
+    "new": "സംഭാഷണം,ഐസ്‌ബ്രേക്കർ,ചുരുക്കം,ഹ്രസ്വം,സീസൺ,ചർച്ച,തലക്കെട്ടുകൾ,ദൈനംദിന,അവലോകനം,ഇൻസൈഡർ,ഗോസിപ്പ്",
+    "len": 93
+  },
+  "mr-IN": {
+    "subtitle": "चाहत्यांसाठी नाही",
+    "old": "संभाषण,बर्फ तोडणारा,सारांश,संक्षिप्त,हंगाम,वाद,ठळक बातम्या,चर्चा,दैनंदिन,आढावा,इनसाइडर,गप्पा",
+    "new": "संभाषण,बर्फ तोडणारा,सारांश,संक्षिप्त,हंगाम,वाद,ठळक बातम्या,चर्चा,दैनंदिन,आढावा,इनसाइडर,गप्पा",
+    "len": 92
+  },
+  "ms": {
+    "subtitle": "Topik untuk bukan peminat",
+    "old": "perbualan,pemecah ais,ringkasan,ringkas,musim,perdebatan,berita utama,perbincangan,harian,ikhtisar",
+    "new": "perbualan,pemecah ais,ringkasan,ringkas,musim,perdebatan,berita utama,perbincangan,harian,ikhtisar",
+    "len": 98
+  },
+  "nl-NL": {
+    "subtitle": "Gesprekstips voor non-fans",
+    "old": "ijsbreker,samenvatting,kort,seizoen,debat,krantenkoppen,discussie,dagelijks,overzicht,ingewijde",
+    "new": "ijsbreker,samenvatting,kort,seizoen,debat,krantenkoppen,discussie,dagelijks,overzicht,ingewijde",
+    "len": 95
+  },
+  "no": {
+    "subtitle": "Samtaleemner for ikke-fans",
+    "old": "isbryter,sammendrag,kort,sesong,debatt,overskrifter,diskusjon,daglig,oversikt,insider,sladder",
+    "new": "isbryter,sammendrag,kort,sesong,debatt,overskrifter,diskusjon,daglig,oversikt,insider,sladder",
+    "len": 93
+  },
+  "or-IN": {
+    "subtitle": "ଅଭିମାନୀ ନୁହେଁଙ୍କ ପାଇଁ",
+    "old": "କଥାବାର୍ତ୍ତା,ବରଫ ଭଙ୍ଗକାରୀ,ସାରାଂଶ,ସଂକ୍ଷିପ୍ତ,ଋତୁ,ବିତର୍କ,ସୁର୍ଖି,ଆଲୋଚନା,ଦୈନିକ,ସମୀକ୍ଷା,ଇନସାଇଡର,ଗପ",
+    "new": "କଥାବାର୍ତ୍ତା,ବରଫ ଭଙ୍ଗକାରୀ,ସାରାଂଶ,ସଂକ୍ଷିପ୍ତ,ଋତୁ,ବିତର୍କ,ସୁର୍ଖି,ଆଲୋଚନା,ଦୈନିକ,ସମୀକ୍ଷା,ଇନସାଇଡର,ଗପ",
+    "len": 91
+  },
+  "pa-IN": {
+    "subtitle": "ਗੈਰ-ਪ੍ਰਸ਼ੰਸਕਾਂ ਲਈ",
+    "old": "ਗੱਲਬਾਤ,ਬਰਫ ਤੋੜਨ ਵਾਲਾ,ਸਾਰ,ਸੰਖੇਪ,ਸੀਜ਼ਨ,ਬਹਿਸ,ਸੁਰਖੀਆਂ,ਚਰਚਾ,ਰੋਜ਼ਾਨਾ,ਸੰਖੇਪ ਜਾਣਕਾਰੀ,ਇਨਸਾਈਡਰ,ਗੱਪ",
+    "new": "ਗੱਲਬਾਤ,ਬਰਫ ਤੋੜਨ ਵਾਲਾ,ਸਾਰ,ਸੰਖੇਪ,ਸੀਜ਼ਨ,ਬਹਿਸ,ਸੁਰਖੀਆਂ,ਚਰਚਾ,ਰੋਜ਼ਾਨਾ,ਸੰਖੇਪ ਜਾਣਕਾਰੀ,ਇਨਸਾਈਡਰ,ਗੱਪ",
+    "len": 88
+  },
+  "pl": {
+    "subtitle": "Tematy dla nietifów",
+    "old": "rozmowa,lodołamacz,podsumowanie,krótki,sezon,debata,nagłówki,dyskusja,codzienny,przegląd,informator",
+    "new": "rozmowa,lodołamacz,podsumowanie,krótki,sezon,debata,nagłówki,dyskusja,codzienny,przegląd,informator",
+    "len": 99
+  },
+  "pt-BR": {
+    "subtitle": "Papos para não torcedores",
+    "old": "conversa,quebra-gelo,resumo,breve,temporada,debate,manchetes,discussão,diário,resenha,informação",
+    "new": "conversa,quebra-gelo,resumo,breve,temporada,debate,manchetes,discussão,diário,resenha,informação",
+    "len": 96
+  },
+  "pt-PT": {
+    "subtitle": "Papos para não adeptos",
+    "old": "conversa,quebra-gelo,resumo,breve,temporada,debate,títulos,discussão,diário,resenha,informação",
+    "new": "conversa,quebra-gelo,resumo,breve,temporada,debate,títulos,discussão,diário,resenha,informação",
+    "len": 94
+  },
+  "ro": {
+    "subtitle": "Subiecte pentru ne-fani",
+    "old": "conversație,spărgător de gheață,rezumat,scurt,sezon,dezbatere,titluri,discuție,zilnic,sumar,insider",
+    "new": "conversație,spărgător de gheață,rezumat,scurt,sezon,dezbatere,titluri,discuție,zilnic,sumar,insider",
+    "len": 99
+  },
+  "ru": {
+    "subtitle": "Темы для не болельщиков",
+    "old": "разговор,ледокол,резюме,кратко,сезон,дискуссия,заголовки,обсуждение,ежедневно,обзор,инсайдер,сплетни",
+    "new": "разговор,ледокол,резюме,кратко,сезон,дискуссия,заголовки,обсуждение,ежедневно,обзор,инсайдер,сплетни",
+    "len": 100
+  },
+  "sk": {
+    "subtitle": "Témy pre nefanúšikov",
+    "old": "konverzácia,ľadoborec,súhrn,stručný,sezóna,debata,titulky,diskusia,denný,prehľad,insider,drby",
+    "new": "konverzácia,ľadoborec,súhrn,stručný,sezóna,debata,titulky,diskusia,denný,prehľad,insider,drby",
+    "len": 93
+  },
+  "sl-SI": {
+    "subtitle": "Teme za ne-navijače",
+    "old": "pogovor,ledolomilec,povzetek,kratko,sezona,debata,glavne novice,razprava,dnevno,pregled,insider",
+    "new": "pogovor,ledolomilec,povzetek,kratko,sezona,debata,glavne novice,razprava,dnevno,pregled,insider",
+    "len": 95
+  },
+  "sv": {
+    "subtitle": "Samtalsämnen för icke-fans",
+    "old": "konversation,isbrytare,sammanfattning,kort,säsong,debatt,rubriker,dikussion,daglig,översikt,insider",
+    "new": "konversation,isbrytare,sammanfattning,kort,säsong,debatt,rubriker,dikussion,daglig,översikt,insider",
+    "len": 99
+  },
+  "ta-IN": {
+    "subtitle": "பக்தர்கள் அல்லாதவர்களுக்கு",
+    "old": "உரையாடல்,ஐஸ் பிரேக்கர்,சுருக்கம்,சுருக்கமான,சீசன்,விவாதம்,தலைப்புச் செய்திகள்,தினசரி,கண்ணோட்டம்",
+    "new": "உரையாடல்,ஐஸ் பிரேக்கர்,சுருக்கம்,சுருக்கமான,சீசன்,விவாதம்,தலைப்புச் செய்திகள்,தினசரி,கண்ணோட்டம்",
+    "len": 95
+  },
+  "te-IN": {
+    "subtitle": "అభిమానులు కాదు వారికి",
+    "old": "సంభాషణ,ఐస్‌బ్రేకర్,సారాంశం,సంక్షిప్తం,సీజన్,చర్చ,హెడ్‌లైన్స్,రోజువారీ,అవలోకనం,ఇన్‌సైడర్,గాసిప్",
+    "new": "సంభాషణ,ఐస్‌బ్రేకర్,సారాంశం,సంక్షిప్తం,సీజన్,చర్చ,హెడ్‌లైన్స్,రోజువారీ,అవలోకనం,ఇన్‌సైడర్,గాసిప్",
+    "len": 94
+  },
+  "th": {
+    "subtitle": "หัวข้อสำหรับคนไม่แฟน",
+    "old": "บทสนทนา,น้ำแข็งแตก,สรุป,สั้น,ซีซั่น,ถกเถียง,พาดหัว,อภิปราย,รายวัน,สรุปวงใน,ซุบซิบ",
+    "new": "บทสนทนา,น้ำแข็งแตก,สรุป,สั้น,ซีซั่น,ถกเถียง,พาดหัว,อภิปราย,รายวัน,สรุปวงใน,ซุบซิบ",
+    "len": 81
+  },
+  "tr": {
+    "subtitle": "Taraftar olmayanlara",
+    "old": "sohbet,buzkıran,özet,kısa,sezon,tartışma,manşetler,günlük,insider,dedikodu",
+    "new": "sohbet,buzkıran,özet,kısa,sezon,tartışma,manşetler,günlük,insider,dedikodu",
+    "len": 74
+  },
+  "uk": {
+    "subtitle": "Теми для не вболівальників",
+    "old": "розмова,криголам,резюме,коротко,сезон,дискусія,заголовки,обговорення,щоденно,огляд,інсайдер,плітки",
+    "new": "розмова,криголам,резюме,коротко,сезон,дискусія,заголовки,обговорення,щоденно,огляд,інсайдер,плітки",
+    "len": 98
+  },
+  "ur-PK": {
+    "subtitle": "غیر پرستاروں کے لیے",
+    "old": "بات چیت,برف توڑنے والا,خلاصہ,مختصر,سیزن,بحث,سرخیاں,روزانہ,جائزہ,اندرونی,گپ شپ",
+    "new": "بات چیت,برف توڑنے والا,خلاصہ,مختصر,سیزن,بحث,سرخیاں,روزانہ,جائزہ,اندرونی,گپ شپ",
+    "len": 77
+  },
+  "vi": {
+    "subtitle": "Chủ đề cho người không hâm mộ",
+    "old": "trò chuyện,phá băng,tóm tắt,ngắn,mùa giải,tranh luận,tiêu đề,thảo luận,hàng ngày,tổng quan,nội gián",
+    "new": "trò chuyện,phá băng,tóm tắt,ngắn,mùa giải,tranh luận,tiêu đề,thảo luận,hàng ngày,tổng quan,nội gián",
+    "len": 99
+  },
+  "zh-Hans": {
+    "subtitle": "非球迷聊天话题",
+    "old": "对话,破冰,摘要,简报,赛季,讨论,头条,每日,回顾,内幕,八卦",
+    "new": "对话,破冰,摘要,简报,赛季,讨论,头条,每日,回顾,内幕,八卦",
+    "len": 32
+  },
+  "zh-Hant": {
+    "subtitle": "非球迷聊天話題",
+    "old": "對話,破冰,摘要,簡報,賽季,討論,頭條,每日,回顧,內幕,八卦",
+    "new": "對話,破冰,摘要,簡報,賽季,討論,頭條,每日,回顧,內幕,八卦",
+    "len": 32
+  }
+}

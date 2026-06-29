@@ -1,1 +1,1 @@
-conversation,starters,icebreaker,recap,nfl,nba,mlb,nhl,casual,fan,scores,news,daily,brief,trivia
+conversation,icebreaker,recap,season,debate,headlines,discussion,roundup,insider,barstool,highlights

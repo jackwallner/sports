@@ -1,1 +1,1 @@
-konverzácia,témy,ľadoborec,futbal,liga,hokej,súhrn,výsledky,správy,denne,fanúšik
+konverzácia,ľadoborec,súhrn,stručný,sezóna,debata,titulky,diskusia,denný,prehľad,insider,drby

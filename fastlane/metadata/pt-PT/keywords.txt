@@ -1,1 +1,1 @@
-conversa,tema,quebragelo,futebol,liga,benfica,basquete,resumo,placar,notícias,diário,adepto
+conversa,quebra-gelo,resumo,breve,temporada,debate,títulos,discussão,diário,resenha,informação

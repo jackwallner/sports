@@ -1,1 +1,1 @@
-conversa,temes,trencaglaç,futbol,bàsquet,resum,resultats,notícies,diari,afició,esport
+conversació,trencaglaç,resum,breu,temporada,debat,titulars,discussió,diari,repàs,informat,xafarderia
