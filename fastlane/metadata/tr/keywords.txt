@@ -1,1 +1,1 @@
-sohbet,konular,buzkıran,futbol,superlig,basketbol,özet,skorlar,haberler,günlük,taraftar
+sohbet,buzkıran,özet,kısa,sezon,tartışma,manşetler,günlük,insider,dedikodu

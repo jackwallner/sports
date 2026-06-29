@@ -1,1 +1,1 @@
-razgovor,teme,ledolomac,nogomet,liga,košarka,sažetak,rezultati,vijesti,dnevno,navijač
+razgovor,ledolomica,sažetak,kratko,sezona,debata,naslovi,rasprava,dnevno,pregled,insider,trač

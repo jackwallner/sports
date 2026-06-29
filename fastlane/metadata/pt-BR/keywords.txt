@@ -1,1 +1,1 @@
-conversa,papo,assunto,quebragelo,futebol,brasileirão,vôlei,nba,resumo,placar,notícias,torcida
+conversa,quebra-gelo,resumo,breve,temporada,debate,manchetes,discussão,diário,resenha,informação

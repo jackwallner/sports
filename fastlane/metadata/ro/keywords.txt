@@ -1,1 +1,1 @@
-conversație,subiecte,spărgător,fotbal,liga,baschet,rezumat,scoruri,știri,zilnic,suporter
+conversație,spărgător de gheață,rezumat,scurt,sezon,dezbatere,titluri,discuție,zilnic,sumar,insider

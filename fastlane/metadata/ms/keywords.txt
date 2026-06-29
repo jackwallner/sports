@@ -1,1 +1,1 @@
-perbualan,topik,pemecah,bola sepak,basket,ringkasan,skor,berita,harian,peminat
+perbualan,pemecah ais,ringkasan,ringkas,musim,perdebatan,berita utama,perbincangan,harian,ikhtisar

@@ -1,1 +1,1 @@
-charla,conversación,temas,rompehielos,fútbol,laliga,baloncesto,resumen,marcador,noticias,afición
+conversación,rompehielos,resumen,breve,temporada,debate,titulares,discusión,diario,repaso
