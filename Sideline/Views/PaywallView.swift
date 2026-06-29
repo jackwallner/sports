@@ -123,6 +123,7 @@ struct PaywallView: View {
     private var paywallContent: some View {
         VStack(alignment: .leading, spacing: 12) {
             hero
+            trialBanner
             compactBenefits
             planCards
             Spacer(minLength: 0)
@@ -159,6 +160,29 @@ struct PaywallView: View {
                 .foregroundStyle(SidelineTheme.inkSecondary)
                 .lineLimit(1)
                 .minimumScaleFactor(0.9)
+        }
+    }
+
+    // Trial-forward banner: the most visible "you get 7 days free" callout,
+    // high on the screen. Self-hides for non-trial selections (e.g. lifetime).
+    @ViewBuilder
+    private var trialBanner: some View {
+        if let text = trialBannerText {
+            HStack(spacing: 8) {
+                Image(systemName: "gift.fill")
+                    .font(.footnote.weight(.bold))
+                Text(text)
+                    .font(.subheadline.weight(.bold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+                Spacer(minLength: 0)
+            }
+            .foregroundStyle(.white)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 10)
+            .frame(maxWidth: .infinity)
+            .background(SidelineTheme.brandPrimary, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .accessibilityElement(children: .combine)
         }
     }
 
@@ -237,6 +261,16 @@ struct PaywallView: View {
             .tint(SidelineTheme.brandPrimary)
             .disabled(isPurchasing || selectedPackage == nil)
 
+            Text(trialReassuranceLine ?? " ")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(SidelineTheme.brandPrimary)
+                .multilineTextAlignment(.center)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+                .frame(minHeight: 18)
+                .opacity(trialReassuranceLine == nil ? 0 : 1)
+                .accessibilityHidden(trialReassuranceLine == nil)
+
             Text(disclosureText ?? " ")
                 .font(.caption2)
                 .foregroundStyle(SidelineTheme.inkTertiary)
@@ -310,7 +344,44 @@ struct PaywallView: View {
     private var ctaTitle: String {
         guard let package = selectedPackage else { return "Continue" }
         if package.sidelinePackageKind == .lifetime { return "Unlock Lifetime" }
+        // Naming the trial in the button itself ("what am I agreeing to?")
+        // converts better than a generic "Subscribe".
+        if store.isEligibleForIntroOffer(package), let trial = package.sidelineIntroOfferLabel {
+            return "Start My \(trial.capitalized)"
+        }
         return "Subscribe"
+    }
+
+    // Free-trial length in days, read straight from the intro offer.
+    private var trialDays: Int? {
+        guard let intro = selectedPackage?.storeProduct.introductoryDiscount,
+              intro.paymentMode == .freeTrial else { return nil }
+        let period = intro.subscriptionPeriod
+        switch period.unit {
+        case .day: return period.value
+        case .week: return period.value * 7
+        case .month: return period.value * 30
+        case .year: return period.value * 365
+        @unknown default: return nil
+        }
+    }
+
+    // Top banner copy: "7 days free, then $19.99 / year".
+    private var trialBannerText: String? {
+        guard let package = selectedPackage,
+              store.isEligibleForIntroOffer(package),
+              let days = trialDays else { return nil }
+        return "\(days) days free, then \(package.sidelinePriceLabel)"
+    }
+
+    // Blinkist-style timeline transparency under the CTA: when the reminder
+    // arrives and when billing starts. Lifts trial conversion, cuts complaints.
+    private var trialReassuranceLine: String? {
+        guard let package = selectedPackage,
+              store.isEligibleForIntroOffer(package),
+              let days = trialDays else { return nil }
+        let reminderDay = max(1, days - 2)
+        return "No payment today · Reminder day \(reminderDay) · Billing day \(days)"
     }
 
     private var disclosureText: String? {
