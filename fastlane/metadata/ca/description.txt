@@ -1,4 +1,4 @@
-The Sideline et dóna temes de conversa esportiva i cultura pop abans d'entrar a la sala.
+Gist et dóna temes de conversa esportiva i cultura pop abans d'entrar a la sala.
 
 Per a qui no segueix l'esport però té gent esportista a la vida: companys, parella, amics, fills, pares i tothom a la festa amb opinió del quarterback.
 
@@ -14,9 +14,9 @@ No és app de resultats, apostes, fantasy ni fil dens de notícies. Només conte
 
 Gratuït: context Cocktail Party amb briefing nacional diari.
 
-The Sideline Pro desbloqueja tots els contextos, fins a 3 briefings al dia.
+Gist Pro desbloqueja tots els contextos, fins a 3 briefings al dia.
 
-The Sideline Pro is an auto-renewing subscription (monthly or annual). Your
+Gist Pro is an auto-renewing subscription (monthly or annual). Your
 subscription renews automatically unless cancelled at least 24 hours before the
 end of the period. Manage or cancel anytime in your Apple ID settings.
 Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

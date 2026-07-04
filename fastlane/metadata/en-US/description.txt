@@ -1,23 +1,21 @@
-The Sideline gives you quick sports pop-culture talking points before you walk into the room.
-
-It is built for people who do not follow sports but still have sports people in their life: coworkers, partners, friends, kids, parents, and everyone at the party who suddenly has an opinion about a quarterback.
+Gist gives you the sports everyone is talking about, in five minutes a day. It is made for casual fans and busy people who want to keep up without watching every game or reading a dense news feed.
 
 Open the app, pick the room you are walking into, and read a short briefing:
 
-- One plain-English TL;DR you can say out loud.
-- 3 to 6 talking points framed for non-fans.
-- Pop-culture angles, drama, nice-guy stories, and redemption arcs.
-- A source link on every point so you can check the original reporting.
-- One question to ask a fan when you want to keep the conversation going.
+- One plain-English summary you can actually say out loud.
+- 3 to 6 talking points written for people who do not live and breathe sports.
+- The pop-culture angles, drama, and storylines that make it interesting.
+- A source link on every point, so you can trust it and go deeper.
+- One good question to ask, so you can keep the conversation going.
 
-The Sideline is not a scores app, betting app, fantasy app, or dense sports news feed. No standings. No stat tables. No team-logo wallpaper. Just enough context to feel included in the conversation.
+Whether it is the big soccer tournament this summer, football season, or the playoff everyone at work is buzzing about, Gist gets you up to speed fast.
 
-The free version includes the Cocktail Party context with a daily national briefing.
+Gist is not a scores app, betting app, fantasy app, or dense sports news feed. No standings. No stat tables. Just enough to keep up and feel included.
 
-The Sideline Pro unlocks all contexts and fresher briefings up to 3 times a day.
+The free version includes the Cocktail Party room with a daily briefing.
 
-The Sideline Pro is an auto-renewing subscription (monthly or annual). Your
-subscription renews automatically unless cancelled at least 24 hours before the
-end of the period. Manage or cancel anytime in your Apple ID settings.
+Gist Pro unlocks every room and fresher briefings up to 3 times a day.
+
+Gist Pro is an auto-renewing subscription (monthly or annual). Your subscription renews automatically unless cancelled at least 24 hours before the end of the period. Manage or cancel anytime in your Apple ID settings.
 Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 Privacy: https://jackwallner.github.io/sports/privacy-policy.html
