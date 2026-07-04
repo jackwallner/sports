@@ -1,4 +1,4 @@
-The Sideline vous donne des sujets de conversation sport et pop culture avant d'entrer dans la pièce.
+Gist vous donne des sujets de conversation sport et pop culture avant d'entrer dans la pièce.
 
 Pour ceux qui ne suivent pas le sport mais côtoient des fans : collègues, partenaires, amis, enfants, parents, et toute la fête avec un avis soudain sur le quarterback.
 
@@ -14,9 +14,9 @@ Pas une app de scores, paris, fantasy ou fil d'actu sportive dense. Juste assez 
 
 Gratuit : contexte Cocktail Party avec briefing national quotidien.
 
-The Sideline Pro débloque tous les contextes, jusqu'à 3 briefings par jour.
+Gist Pro débloque tous les contextes, jusqu'à 3 briefings par jour.
 
-The Sideline Pro is an auto-renewing subscription (monthly or annual). Your
+Gist Pro is an auto-renewing subscription (monthly or annual). Your
 subscription renews automatically unless cancelled at least 24 hours before the
 end of the period. Manage or cancel anytime in your Apple ID settings.
 Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

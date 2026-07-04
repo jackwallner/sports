@@ -1,4 +1,4 @@
-The Sideline antaa nopeat urheilu- ja popkulttuuri-keskustelunaiheet ennen kuin astut huoneeseen.
+Gist antaa nopeat urheilu- ja popkulttuuri-keskustelunaiheet ennen kuin astut huoneeseen.
 
 Niille, jotka eivät seuraa urheilua mutta elävät fanien keskellä: työkaverit, kumppani, ystävät, lapset, vanhemmat ja kaikki juhlissa äkillisellä mielipiteellä quarterbackista.
 
@@ -14,9 +14,9 @@ Ei tulos-, vedonlyönti-, fantasy- tai tiheä urheiluuutissovellus. Vain tarpeek
 
 Ilmainen: Cocktail Party -konteksti päivittäisellä briefingillä.
 
-The Sideline Pro avaa kaikki kontekstit, jopa 3 briefingiä päivässä.
+Gist Pro avaa kaikki kontekstit, jopa 3 briefingiä päivässä.
 
-The Sideline Pro is an auto-renewing subscription (monthly or annual). Your
+Gist Pro is an auto-renewing subscription (monthly or annual). Your
 subscription renews automatically unless cancelled at least 24 hours before the
 end of the period. Manage or cancel anytime in your Apple ID settings.
 Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

@@ -1,4 +1,4 @@
-The Sideline은 방에 들어가기 전 스포츠와 팝컬처 대화 주제를 빠르게 제공합니다.
+Gist은 방에 들어가기 전 스포츠와 팝컬처 대화 주제를 빠르게 제공합니다.
 
 스포츠를 따르지 않지만 주변에 스포츠 팬이 있는 사람들을 위해: 동료, 파트너, 친구, 아이, 부모, 그리고 갑자기 쿼터백 이야기를 하는 파티 사람들.
 
@@ -14,9 +14,9 @@ The Sideline은 방에 들어가기 전 스포츠와 팝컬처 대화 주제를 
 
 무료: Cocktail Party 컨텍스트와 매일 전국 브리핑.
 
-The Sideline Pro로 모든 컨텍스트, 하루 최대 3회 브리핑 이용.
+Gist Pro로 모든 컨텍스트, 하루 최대 3회 브리핑 이용.
 
-The Sideline Pro is an auto-renewing subscription (monthly or annual). Your
+Gist Pro is an auto-renewing subscription (monthly or annual). Your
 subscription renews automatically unless cancelled at least 24 hours before the
 end of the period. Manage or cancel anytime in your Apple ID settings.
 Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
