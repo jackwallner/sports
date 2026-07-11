@@ -78,6 +78,31 @@ struct TodayBriefingView: View {
     }
 
     var body: some View {
+        // Root swap — not fullScreenCover. Cover animates up over the briefing
+        // on cold launch and reads as a glitch (app visible behind onboarding).
+        Group {
+            if !hasCompletedOnboarding {
+                OnboardingView(
+                    hasCompletedOnboarding: $hasCompletedOnboarding,
+                    lastPersona: $lastPersonaRaw,
+                    hasSeenOnboardingPaywall: $hasSeenOnboardingPaywall,
+                    isPro: isPro
+                )
+            } else {
+                briefingRoot
+            }
+        }
+        // Post-onboarding work hangs off the persisted flag so the one-time
+        // Pro fallback still fires when products failed to load in onboarding.
+        .onChange(of: hasCompletedOnboarding) { _, completed in
+            guard completed else { return }
+            applyUsablePersonaFromStorage()
+            Task { await viewModel.load() }
+            presentOnboardingPaywallIfNeeded()
+        }
+    }
+
+    private var briefingRoot: some View {
         NavigationStack {
             mainContent
                 .background(Color.sidelineBackground)
@@ -150,30 +175,6 @@ struct TodayBriefingView: View {
                         EmptyView()
                         #endif
                     }
-                }
-                .modifier(OnboardingPresenter(
-                    isPresented: Binding(
-                        get: { !hasCompletedOnboarding },
-                        set: { newValue in hasCompletedOnboarding = !newValue }
-                    ),
-                    content: {
-                        OnboardingView(
-                            hasCompletedOnboarding: $hasCompletedOnboarding,
-                            lastPersona: $lastPersonaRaw,
-                            hasSeenOnboardingPaywall: $hasSeenOnboardingPaywall,
-                            isPro: isPro
-                        )
-                    }
-                ))
-                // Post-onboarding work hangs off the persisted flag, not the
-                // cover's onDisappear — SwiftUI doesn't reliably call
-                // onDisappear on fullScreenCover content torn down by a state
-                // change, which silently dropped the one-time Pro framing.
-                .onChange(of: hasCompletedOnboarding) { _, completed in
-                    guard completed else { return }
-                    applyUsablePersonaFromStorage()
-                    Task { await viewModel.load() }
-                    presentOnboardingPaywallIfNeeded()
                 }
                 // Entitlements load async: on a cold launch a Pro user's stored
                 // room fails canUse before customerInfo arrives and selection
@@ -312,13 +313,11 @@ struct TodayBriefingView: View {
 
     private func presentOnboardingPaywallIfNeeded(attempt: Int = 0) {
         guard !hasSeenOnboardingPaywall, !isDemo, !isPro else { return }
-        // Frame Pro/trial once before the free experience. Only burn the
-        // one-time flag at the moment the sheet actually presents; if another
-        // sheet is up, retry a few times rather than dropping it forever.
-        // The wait must outlast the onboarding cover's dismissal animation or
-        // the sheet presentation is silently swallowed.
+        // Fallback only: products failed to load on the onboarding trial page.
+        // Brief delay so briefingRoot is on-screen before the sheet presents;
+        // if another sheet is up, retry a few times rather than dropping it.
         Task { @MainActor in
-            try? await Task.sleep(nanoseconds: 800_000_000)
+            try? await Task.sleep(nanoseconds: 350_000_000)
             guard !hasSeenOnboardingPaywall, !isPro else { return }
             guard activeSheet == nil else {
                 if attempt < 3 { presentOnboardingPaywallIfNeeded(attempt: attempt + 1) }
@@ -480,15 +479,3 @@ struct TodayBriefingView: View {
     }
 }
 
-private struct OnboardingPresenter<SheetContent: View>: ViewModifier {
-    @Binding var isPresented: Bool
-    @ViewBuilder let content: () -> SheetContent
-
-    func body(content base: Content) -> some View {
-        #if os(iOS)
-        base.fullScreenCover(isPresented: $isPresented, content: content)
-        #else
-        base.sheet(isPresented: $isPresented, content: content)
-        #endif
-    }
-}
