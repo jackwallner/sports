@@ -160,6 +160,7 @@ struct TodayBriefingView: View {
                         OnboardingView(
                             hasCompletedOnboarding: $hasCompletedOnboarding,
                             lastPersona: $lastPersonaRaw,
+                            hasSeenOnboardingPaywall: $hasSeenOnboardingPaywall,
                             isPro: isPro
                         )
                     }

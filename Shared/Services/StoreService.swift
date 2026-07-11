@@ -290,6 +290,25 @@ public final class StoreService: NSObject, EntitlementProviding {
         products.contains { isEligibleForIntroOffer($0) }
     }
 
+    /// The annual package — the one-tap conversion target for the onboarding
+    /// trial page. That surface purchases this directly; the full `PaywallView`
+    /// is only the fallback when this is nil (products not loaded).
+    public var yearlyPackage: Package? {
+        products.first { $0.sidelinePackageKind == .annual }
+    }
+
+    /// Full Apple-3.1.2 auto-renew disclosure for the yearly plan, shown under a
+    /// direct-purchase CTA so the price (and trial terms, when offered) are
+    /// present at the point of purchase. Nil until the yearly package loads.
+    public var yearlyCTADisclosureText: String? {
+        guard let yearly = yearlyPackage else { return nil }
+        let renew = "Auto-renews unless cancelled at least 24 hours before the end of the current period. Cancel anytime in Settings."
+        if isEligibleForIntroOffer(yearly), let trial = yearly.sidelineIntroOfferLabel {
+            return "\(trial.capitalized), then \(yearly.sidelinePriceLabel). \(renew)"
+        }
+        return "\(yearly.sidelinePriceLabel). \(renew)"
+    }
+
     /// True when Pro is active via an auto-renewable subscription (not lifetime).
     public var hasActiveSubscription: Bool {
         guard let entitlement = customerInfo?.sidelineProEntitlement else {
