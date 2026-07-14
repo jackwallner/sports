@@ -148,8 +148,15 @@ enum SidelineTheme {
     /// at the bottom of the art zone, so art settles into the panel seamlessly.
     static let cardPanel: [Color] = [Color(red: 0.082, green: 0.216, blue: 0.165),  // #15372A
                                      Color(red: 0.122, green: 0.361, blue: 0.271)]  // #1F5C45
-    /// The finale "Your move" card goes gold — the single accent at the end.
-    static let cardPanelGold: [Color] = heroGold
+    /// The finale "Ask this" card goes gold — the single accent at the end. It
+    /// has no art, so its top zone is a gold wash behind an oversized glyph
+    /// that fades into the panel below. Same two-zone anatomy as every story
+    /// card, so it doesn't read as a flat slab with words in the corner.
+    static let cardWashGold: [Color] = [Color(red: 0.820, green: 0.612, blue: 0.129),
+                                        Color(red: 0.337, green: 0.220, blue: 0.047)]
+    /// The gold card's panel: dark end of the gold, white type on top.
+    static let cardPanelGold: [Color] = [Color(red: 0.337, green: 0.220, blue: 0.047),
+                                         Color(red: 0.502, green: 0.341, blue: 0.071)]
     /// Eyebrows / kickers on the dark panel.
     static let goldOnDark = Color(red: 0.937, green: 0.788, blue: 0.439)  // #EFC970
     /// Art-zone floor while generated art loads; darkens toward the panel.

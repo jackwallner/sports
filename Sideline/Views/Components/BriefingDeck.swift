@@ -80,6 +80,10 @@ struct BriefingDeck: View {
                             .rotationEffect(slot == 0 ? topRotation : .zero, anchor: .bottom)
                             .zIndex(Double(count - slot))
                             .allowsHitTesting(slot == 0)
+                            // The peeking cards behind the front one are all
+                            // but invisible; VoiceOver shouldn't read them out
+                            // as extra stops.
+                            .accessibilityHidden(slot != 0)
                             .gesture(dragGesture(size: size, count: count))
                             .onTapGesture { flip(position: position, card: cards[position]) }
                             .accessibilityActions {
@@ -284,10 +288,17 @@ enum DeckCard {
     /// Story cards carry their detail on the back; the lead card does too
     /// when the pipeline wrote a setup for it. Question and rooms cards are
     /// single-faced; tapping them does nothing.
+    ///
+    /// A story card only has a back if the row actually carries back content.
+    /// Older rows have no backstory, tie-in or tag reason at all — claiming a
+    /// back for those flipped the card onto an empty panel with an orphan
+    /// "THE BACKSTORY" header and nothing under it.
     var hasBack: Bool {
         switch self {
-        case .point:
-            return true
+        case .point(let bullet):
+            return bullet.backstory?.isEmpty == false
+                || bullet.tieIn?.isEmpty == false
+                || bullet.tagReason?.isEmpty == false
         case .lead(let briefing):
             return briefing.leadBackstory?.isEmpty == false
         case .question, .rooms:
@@ -310,6 +321,51 @@ private enum ImpactStyle {
     #endif
 }
 
+/// A two-sided card that rotates around its own spine.
+///
+/// The face swap is driven by the *live* angle (this view is `Animatable`, so
+/// its body re-runs every frame of the spring), which means the swap happens
+/// exactly at 90°, where the card is edge-on and neither face is visible. The
+/// old code animated `rotation3DEffect` and `opacity` as two independent
+/// modifiers off the same `Bool`; halfway through, both faces were half-faded
+/// AND foreshortened to a sliver, so the card never looked fully flipped and
+/// the static surface behind them read as an outline.
+private struct FlipCard<Front: View, Back: View>: View, Animatable {
+    var angle: Double
+    @ViewBuilder let front: Front
+    @ViewBuilder let back: Back
+
+    // SwiftUI drives this off the main actor while interpolating the spring.
+    nonisolated var animatableData: Double {
+        get { angle }
+        set { angle = newValue }
+    }
+
+    var body: some View {
+        let showingBack = angle >= 90
+        ZStack {
+            front
+                .opacity(showingBack ? 0 : 1)
+                .allowsHitTesting(!showingBack)
+                .accessibilityHidden(showingBack)
+            // Pre-mirrored, so once the card is over it reads the right way
+            // round instead of as its own reflection.
+            back
+                .rotation3DEffect(.degrees(180), axis: (x: 0, y: 1, z: 0))
+                .opacity(showingBack ? 1 : 0)
+                // The hidden face must never steal touches — its source button
+                // sits right where flip taps land.
+                .allowsHitTesting(showingBack)
+                .accessibilityHidden(!showingBack)
+        }
+        // Inside the rotation, so the shadow turns with the card.
+        .shadow(color: SidelineTheme.inkPrimary.opacity(0.16), radius: 22, x: 0, y: 12)
+        // Gentle perspective: the default keystones a near-full-width card hard
+        // enough that the flip looks like a collapse.
+        .rotation3DEffect(.degrees(angle), axis: (x: 0, y: 1, z: 0), perspective: 0.35)
+    }
+}
+
 private struct DeckCardView: View {
     let card: DeckCard
     let isFlipped: Bool
@@ -318,31 +374,33 @@ private struct DeckCardView: View {
     let onExploreRooms: () -> Void
 
     var body: some View {
-        ZStack {
-            front
-                .rotation3DEffect(.degrees(isFlipped ? 180 : 0), axis: (x: 0, y: 1, z: 0))
-                .opacity(isFlipped ? 0 : 1)
-                .allowsHitTesting(!isFlipped)
-                .accessibilityHidden(isFlipped)
+        // The whole card rotates as one object — surface, corner clip and
+        // shadow included. Rotating only the faces inside a static container
+        // left the container's own background and shadow standing still, so
+        // mid-flip you saw a full-size card-shaped outline behind a thin
+        // rotating sliver.
+        FlipCard(angle: isFlipped ? 180 : 0) {
+            cardFace { front }
+        } back: {
             if card.hasBack {
-                backFace
-                    .rotation3DEffect(.degrees(isFlipped ? 0 : -180), axis: (x: 0, y: 1, z: 0))
-                    .opacity(isFlipped ? 1 : 0)
-                    // The hidden face must never steal touches — its source
-                    // button sits right where flip taps land.
-                    .allowsHitTesting(isFlipped)
-                    .accessibilityHidden(!isFlipped)
+                cardFace { backFace }
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.sidelineDeckCard)
-        .clipShape(RoundedRectangle(cornerRadius: SidelineTheme.deckCornerRadius, style: .continuous))
-        .shadow(color: SidelineTheme.inkPrimary.opacity(0.16), radius: 22, x: 0, y: 12)
         // A card is a fixed box. Cap how far the text can grow so the largest
         // Dynamic Type settings can't blow a single card past the screen; the
-        // back face also scrolls, and the front scales, so nothing is clipped.
+        // back face steps its type down to fit, so nothing is clipped.
         .dynamicTypeSize(...DynamicTypeSize.accessibility3)
         .accessibilityElement(children: .contain)
+    }
+
+    /// One physical side of the card: content on an opaque surface, clipped to
+    /// the card's corners. Opaque on both sides so nothing can show through
+    /// while the card is edge-on.
+    private func cardFace<Content: View>(@ViewBuilder _ content: () -> Content) -> some View {
+        content()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color.sidelineDeckCard)
+            .clipShape(RoundedRectangle(cornerRadius: SidelineTheme.deckCornerRadius, style: .continuous))
     }
 
     // MARK: Front — art on top, words on one solid panel below
@@ -383,25 +441,29 @@ private struct DeckCardView: View {
                     eyebrow(icon: nil, text: kicker(for: bullet))
                     line(bullet.talkingPoint, size: 23, limit: 8)
                         .copyable(bullet.talkingPoint)
-                    hint(icon: "hand.tap.fill", text: "Tap for the backstory")
+                    // Never promise a back the card doesn't have: tapping a
+                    // backless card is a no-op, so it must not invite the tap.
+                    if card.hasBack {
+                        hint(icon: "hand.tap.fill", text: "Tap for the backstory")
+                    } else {
+                        hint(icon: "hand.draw.fill", text: "Swipe for the next story.")
+                    }
                 }
             }
         case .question(let question):
-            // No art: the gold full-stop card. Same anatomy, one accent.
-            ZStack {
-                LinearGradient(
-                    colors: SidelineTheme.cardPanelGold,
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-                VStack(alignment: .leading, spacing: 12) {
-                    eyebrow(icon: "questionmark.bubble.fill", text: "Ask this", color: .white.opacity(0.92))
+            // The gold full-stop card. It has no art, but it keeps the deck's
+            // two-zone anatomy: an oversized glyph fills the top zone the way
+            // art does everywhere else, and the words sit on a real panel. It
+            // used to be one flat gold slab with the text jammed into the
+            // bottom-left corner under a large empty void.
+            VStack(spacing: 0) {
+                questionZone
+                panel(colors: SidelineTheme.cardPanelGold) {
+                    eyebrow(icon: "questionmark.bubble.fill", text: "Ask this")
                     line(question, size: 25, limit: 8)
                         .copyable(question)
                     hint(icon: "person.2.fill", text: "Toss it out and let them do the talking.")
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
-                .padding(22)
             }
         case .rooms:
             roomsCard
@@ -508,15 +570,39 @@ private struct DeckCardView: View {
         .clipped()
     }
 
+    /// The question card's top zone. Stands in for the art: an oversized,
+    /// low-contrast glyph on the gold wash, fading into the panel below on the
+    /// same gradient the art zone uses, so the card has weight up top instead
+    /// of dead space.
+    private var questionZone: some View {
+        ZStack {
+            LinearGradient(
+                colors: SidelineTheme.cardWashGold,
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            Image(systemName: "quote.bubble.fill")
+                .font(.system(size: 116, weight: .semibold))
+                .foregroundStyle(.white.opacity(0.15))
+                .offset(y: -8)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .clipped()
+        .accessibilityHidden(true)
+    }
+
     /// The solid panel every card's words sit on. Wins the height negotiation
     /// against the flexible art zone above it, so the words get their ideal
     /// space first and the art absorbs whatever is left.
-    private func panel<Content: View>(@ViewBuilder content: () -> Content) -> some View {
+    private func panel<Content: View>(
+        colors: [Color] = SidelineTheme.cardPanel,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
         VStack(alignment: .leading, spacing: 12, content: content)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(22)
             .background(
-                LinearGradient(colors: SidelineTheme.cardPanel, startPoint: .top, endPoint: .bottom)
+                LinearGradient(colors: colors, startPoint: .top, endPoint: .bottom)
             )
             .layoutPriority(1)
     }
@@ -748,8 +834,9 @@ private struct DeckCardView: View {
             }
             .foregroundStyle(.white)
             .padding(.horizontal, 12)
-            .padding(.vertical, 9)
+            .padding(.vertical, 13)
             .frame(maxWidth: .infinity)
+            .contentShape(Capsule())
             .background(.white.opacity(0.18), in: Capsule())
             .overlay(Capsule().stroke(.white.opacity(0.28), lineWidth: 1))
         }
