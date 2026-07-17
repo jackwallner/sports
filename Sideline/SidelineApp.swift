@@ -36,7 +36,7 @@ struct SidelineApp: App {
             self.isDemo = true
         }
 
-        #if canImport(RevenueCat)
+        #if canImport(RevenueCat) && !targetEnvironment(simulator)
         if
             let apiKey = Bundle.main.object(forInfoDictionaryKey: "SIDELINE_REVENUECAT_API_KEY") as? String,
             !apiKey.isEmpty,

@@ -1,11 +1,11 @@
-Gist 在你走进房间之前，提供快速的体育与流行文化聊天话题。
+Sports Small Talk 在你走进房间之前，提供快速的体育与流行文化聊天话题。
 
 适合不追体育但身边有体育爱好者的人：同事、伴侣、朋友、孩子、父母，以及派对上突然对四分卫发表意见的人。
 
 选择场景，阅读短简报：
 
 - 可以大声说出的 TL;DR
-- 3–6 个面向非球迷的聊天点
+- 3-6 个面向非球迷的聊天点
 - 流行文化、八卦、好人故事与救赎
 - 每点附来源链接
 - 一个问球迷的好问题
@@ -14,9 +14,9 @@ Gist 在你走进房间之前，提供快速的体育与流行文化聊天话题
 
 免费：Cocktail Party 场景与每日全国简报。
 
-Gist Pro 解锁全部场景、每天最多 3 次更新。
+Small Talk Pro 解锁全部场景、每天最多 3 次更新。
 
-Gist Pro is an auto-renewing subscription (monthly or annual). Your
+Small Talk Pro is an auto-renewing subscription (monthly or annual). Your
 subscription renews automatically unless cancelled at least 24 hours before the
 end of the period. Manage or cancel anytime in your Apple ID settings.
 Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

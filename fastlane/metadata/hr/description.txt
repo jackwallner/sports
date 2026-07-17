@@ -1,11 +1,11 @@
-Gist daje brze teme sportske i pop-kulture razgovora prije nego uđete u sobu.
+Sports Small Talk daje brze teme sportske i pop-kulture razgovora prije nego uđete u sobu.
 
 Za one koji ne prate sport, ali imaju sportske ljude u životu: kolege, partnera, prijatelje, djecu, roditelje i sve na tulumu s naglim mišljenjem o quarterbacku.
 
 Odaberite kontekst i pročitajte kratki briefing:
 
 - TL;DR koji možete reći naglas.
-- 3–6 točaka razgovora za ne-navijače.
+- 3-6 točaka razgovora za ne-navijače.
 - Pop kultura, drama, lijepe priče i comebacki.
 - Link izvora uz svaku točku.
 - Jedno pitanje za navijača.
@@ -14,9 +14,9 @@ Nije app rezultata, klađenja, fantasyja ili gust feed vijesti. Samo dovoljno ko
 
 Besplatno: Cocktail Party kontekst s dnevnim briefingom.
 
-Gist Pro otključava sve kontekste, do 3 briefinga dnevno.
+Small Talk Pro otključava sve kontekste, do 3 briefinga dnevno.
 
-Gist Pro is an auto-renewing subscription (monthly or annual). Your
+Small Talk Pro is an auto-renewing subscription (monthly or annual). Your
 subscription renews automatically unless cancelled at least 24 hours before the
 end of the period. Manage or cancel anytime in your Apple ID settings.
 Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

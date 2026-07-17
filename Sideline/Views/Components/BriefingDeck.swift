@@ -416,7 +416,7 @@ private struct DeckCardView: View {
             VStack(spacing: 0) {
                 artZone(imageURLs: CardArt.leadImageURLs(for: briefing)) { EmptyView() }
                 panel {
-                    eyebrow(icon: "newspaper.fill", text: "The gist")
+                    eyebrow(icon: "newspaper.fill", text: "The brief")
                     line(briefing.tlDR, size: 25, limit: 9)
                         .copyable(briefing.tlDR)
                     if card.hasBack {
@@ -526,7 +526,7 @@ private struct DeckCardView: View {
                     .overlay(Capsule().stroke(.white.opacity(0.28), lineWidth: 1))
                 }
                 .buttonStyle(.plain)
-                .accessibilityHint("Shows Gist Pro plans")
+                .accessibilityHint("Shows Small Talk Pro plans")
 
                 hint(icon: "sparkles", text: "Different stories, written for that crowd.")
             }

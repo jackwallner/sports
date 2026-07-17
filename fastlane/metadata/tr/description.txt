@@ -1,11 +1,11 @@
-Gist, odaya girmeden önce hızlı spor ve pop kültürü sohbet konuları verir.
+Sports Small Talk, odaya girmeden önce hızlı spor ve pop kültürü sohbet konuları verir.
 
 Sporu takip etmeyen ama hayatında spor insanları olanlar için: iş arkadaşları, partner, arkadaşlar, çocuklar, ebeveynler ve quarterback hakkında ani fikri olan herkes.
 
 Bağlamı seç ve kısa bir briefing oku:
 
 - Yüksek sesle söyleyebileceğin TL;DR.
-- Taraftar olmayanlar için 3–6 konu.
+- Taraftar olmayanlar için 3-6 konu.
 - Pop kültür, drama, güzel hikâyeler ve dönüşler.
 - Her noktada kaynak linki.
 - Bir taraftara sorulacak bir soru.
@@ -14,9 +14,9 @@ Skor, bahis, fantasy veya yoğun spor haber uygulaması değil. Sadece sohbete y
 
 Ücretsiz: günlük ulusal briefing ile Cocktail Party bağlamı.
 
-Gist Pro tüm bağlamları, günde 3 briefinge kadar açar.
+Small Talk Pro tüm bağlamları, günde 3 briefinge kadar açar.
 
-Gist Pro is an auto-renewing subscription (monthly or annual). Your
+Small Talk Pro is an auto-renewing subscription (monthly or annual). Your
 subscription renews automatically unless cancelled at least 24 hours before the
 end of the period. Manage or cancel anytime in your Apple ID settings.
 Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

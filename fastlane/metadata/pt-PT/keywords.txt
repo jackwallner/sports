@@ -1,1 +1,1 @@
-mundial,futebol,conversa,quebra-gelo,resumo,breve,temporada,debate,títulos,discussão,diário,resenha
+mundial,futebol,conversa,resumo,breve,temporada,debate,títulos,discussão,diário,resenha

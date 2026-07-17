@@ -1,1 +1,1 @@
-copa do mundo,futebol,conversa,quebra-gelo,resumo,breve,temporada,debate,manchetes,discussão,diário
+copa do mundo,futebol,conversa,resumo,breve,temporada,debate,manchetes,discussão,diário

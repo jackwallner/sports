@@ -87,7 +87,7 @@ struct ReviewPromptSheet: View {
 
     private var navigationTitle: String {
         switch step {
-        case .enjoyment: "Enjoying Gist?"
+        case .enjoyment: "Enjoying Sports Small Talk?"
         case .reviewPitch: "Support an indie app"
         case .feedback: "Help us improve"
         }
@@ -105,7 +105,7 @@ struct ReviewPromptSheet: View {
             }
             .padding(.top, 8)
 
-            Text("If Gist is helping you sound sharp before the game, a quick App Store rating helps more people find it.")
+            Text("If Sports Small Talk is helping you sound sharp before the game, a quick App Store rating helps more people find it.")
                 .font(.subheadline)
                 .foregroundStyle(SidelineTheme.inkSecondary)
                 .multilineTextAlignment(.center)
@@ -134,7 +134,7 @@ struct ReviewPromptSheet: View {
 
     private var reviewPitchContent: some View {
         VStack(spacing: 18) {
-            Text("Gist is built by one indie developer. No ads, no accounts, and your briefing preferences stay on your phone.")
+            Text("Sports Small Talk is built by one indie developer. No ads, no accounts, and your briefing preferences stay on your phone.")
                 .font(.subheadline)
                 .foregroundStyle(SidelineTheme.inkSecondary)
                 .multilineTextAlignment(.center)
@@ -172,7 +172,7 @@ struct ReviewPromptSheet: View {
 
     private var feedbackContent: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text("What would make Gist work better for you?")
+            Text("What would make Sports Small Talk work better for you?")
                 .font(.subheadline)
                 .foregroundStyle(SidelineTheme.inkSecondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -250,7 +250,7 @@ struct ReviewPromptSheet: View {
         components.scheme = "mailto"
         components.path = "jack@jackwallner.com"
         components.queryItems = [
-            URLQueryItem(name: "subject", value: "Gist feedback"),
+            URLQueryItem(name: "subject", value: "Sports Small Talk feedback"),
             URLQueryItem(name: "body", value: body),
         ]
         return components.url

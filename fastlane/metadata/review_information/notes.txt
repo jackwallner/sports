@@ -5,7 +5,7 @@ sources and refreshed on a schedule.
 WHAT YOU WILL SEE
 1. First launch: a 2-page onboarding. Tap "Start", pick a room (Cocktail
    Party is free), then tap "Use this room".
-2. A one-time paywall sheet ("Gist Pro") may appear after
+2. A one-time paywall sheet ("Small Talk Pro") may appear after
    onboarding. Tap "Not now" to dismiss it.
 3. Main screen: a horizontal rail of room chips (Cocktail Party, Sports
    Talk for Moms, Office Watercooler, Date Night) above a
@@ -17,14 +17,14 @@ WHAT YOU WILL SEE
 IN-APP PURCHASE (auto-renewable subscription plus a lifetime option)
 - Path: tap any locked room chip (lock icon), a preview sheet opens, tap
   "Unlock <room>" to reach the paywall. Or tap the gear icon (top right)
-  and tap "Gist Pro" row in Settings.
+  and tap "Small Talk Pro" row in Settings.
 - The paywall lists Monthly, Annual, and Lifetime plans with price,
   duration, auto-renewal terms, Restore Purchases, Terms (Apple standard
   EULA), and Privacy Policy links.
 - Please test with a sandbox Apple ID.
 
 SETTINGS (gear icon, top right)
-- Gist Pro row (opens paywall), Theme, Manual refresh (Pro),
+- Small Talk Pro row (opens paywall), Theme, Manual refresh (Pro),
   Restore Purchases, Rate or Send Feedback, Privacy Policy, Terms of
   Use, version.
 

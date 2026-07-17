@@ -1,11 +1,11 @@
-Gist memberi topik perbualan sukan dan pop culture sebelum anda masuk bilik.
+Sports Small Talk memberi topik perbualan sukan dan pop culture sebelum anda masuk bilik.
 
 Untuk mereka yang tidak ikut sukan tetapi ada peminat sukan dalam hidup: rakan sekerja, pasangan, kawan, anak, ibu bapa, dan semua orang di parti dengan pendapat mendadak tentang quarterback.
 
 Pilih konteks dan baca briefing pendek:
 
 - TL;DR yang boleh disebut kuat.
-- 3–6 titik perbualan untuk bukan peminat.
+- 3-6 titik perbualan untuk bukan peminat.
 - Pop culture, drama, cerita menarik.
 - Pautan sumber setiap titik.
 - Satu soalan untuk peminat.
@@ -14,9 +14,9 @@ Bukan app skor, pertaruhan, fantasy atau suapan berita padat. Cukup konteks untu
 
 Percuma: konteks Cocktail Party dengan briefing kebangsaan harian.
 
-Gist Pro membuka semua konteks, sehingga 3 briefing sehari.
+Small Talk Pro membuka semua konteks, sehingga 3 briefing sehari.
 
-Gist Pro is an auto-renewing subscription (monthly or annual). Your
+Small Talk Pro is an auto-renewing subscription (monthly or annual). Your
 subscription renews automatically unless cancelled at least 24 hours before the
 end of the period. Manage or cancel anytime in your Apple ID settings.
 Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

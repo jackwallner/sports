@@ -1,11 +1,11 @@
-A Gist gyors sport- és popkultúra-beszélgetési témákat ad, mielőtt belépsz a szobába.
+A Sports Small Talk gyors sport- és popkultúra-beszélgetési témákat ad, mielőtt belépsz a szobába.
 
 Azoknak, akik nem követik a sportot, de sportrajongók veszik körül: kollégák, pár, barátok, gyerekek, szülők és mindenki a bulin hirtelen quarterback-véleménnyel.
 
 Válaszd ki a kontextust és olvass egy rövid briefinget:
 
 - Egy TL;DR, amit hangosan elmondhatsz.
-- 3–6 beszélgetési pont nem szurkolóknak.
+- 3-6 beszélgetési pont nem szurkolóknak.
 - Popkultúra, dráma, kedves sztorik és comebackek.
 - Forráshivatkozás minden pontnál.
 - Egy kérdés egy szurkolónak.
@@ -14,9 +14,9 @@ Nem eredmény-, fogadás-, fantasy- vagy sűrű sport-hír app. Csak annyi konte
 
 Ingyenes: Cocktail Party kontextus napi briefinggel.
 
-A Gist Pro feloldja az összes kontextust, napi 3 briefingig.
+A Small Talk Pro feloldja az összes kontextust, napi 3 briefingig.
 
-Gist Pro is an auto-renewing subscription (monthly or annual). Your
+Small Talk Pro is an auto-renewing subscription (monthly or annual). Your
 subscription renews automatically unless cancelled at least 24 hours before the
 end of the period. Manage or cancel anytime in your Apple ID settings.
 Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
