@@ -1,11 +1,11 @@
-Gist daje szybkie tematy rozmów o sporcie i popkulturze, zanim wejdziesz do pokoju.
+Sports Small Talk daje szybkie tematy rozmów o sporcie i popkulturze, zanim wejdziesz do pokoju.
 
 Dla osób, które nie śledzą sportu, ale mają wokół siebie fanów: współpracowników, partnera, przyjaciół, dzieci, rodziców i wszystkich na imprezie z nagłą opinią o quarterbacku.
 
 Wybierz kontekst i przeczytaj krótki briefing:
 
 - TL;DR, które możesz powiedzieć na głos.
-- 3–6 punktów rozmowy dla nietifów.
+- 3-6 punktów rozmowy dla nietifów.
 - Popkultura, dramaty, miłe historie i powroty.
 - Link do źródła przy każdym punkcie.
 - Jedno pytanie do fana.
@@ -14,9 +14,9 @@ To nie app wyników, zakładów, fantasy ani gęsty feed newsów. Tylko tyle kon
 
 Za darmo: kontekst Cocktail Party z codziennym briefingiem.
 
-Gist Pro odblokowuje wszystkie konteksty, do 3 briefingów dziennie.
+Small Talk Pro odblokowuje wszystkie konteksty, do 3 briefingów dziennie.
 
-Gist Pro is an auto-renewing subscription (monthly or annual). Your
+Small Talk Pro is an auto-renewing subscription (monthly or annual). Your
 subscription renews automatically unless cancelled at least 24 hours before the
 end of the period. Manage or cancel anytime in your Apple ID settings.
 Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

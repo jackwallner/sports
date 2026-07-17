@@ -1,11 +1,11 @@
-Gist ಕೋಣೆಗೆ ಪ್ರವೇಶಿಸುವ ಮೊದಲು ವೇಗವಾದ ಕ್ರೀಡೆ ಮತ್ತು ಪಾಪ್-ಕಲ್ಚರ್ ಸಂಭಾಷಣಾ ವಿಷಯಗಳನ್ನು ನೀಡುತ್ತದೆ.
+Sports Small Talk ಕೋಣೆಗೆ ಪ್ರವೇಶಿಸುವ ಮೊದಲು ವೇಗವಾದ ಕ್ರೀಡೆ ಮತ್ತು ಪಾಪ್-ಕಲ್ಚರ್ ಸಂಭಾಷಣಾ ವಿಷಯಗಳನ್ನು ನೀಡುತ್ತದೆ.
 
 ಕ್ರೀಡೆಯನ್ನು ಅನುಸರಿಸದವರಿಗೆ ಆದರೆ ಜೀವನದಲ್ಲಿ ಕ್ರೀಡಾಭಿಮಾನಿಗಳಿದ್ದಾರೆ: ಸಹ-worker, ಪartner, ಸ್ನೇಹಿತರು, ಮಕ್ಕಳು, ಪೋಷಕರು ಮತ್ತು ಪಾರ್ಟಿಯಲ್ಲಿ quarterback ಬಗ್ಗೆ sudden ಅಭಿಪ್ರಾಯ.
 
 ಸಂದರ್ಭ ಆಯ್ಕೆಮಾಡಿ ಚಿಕ್ಕ ಬ್ರಿಫಿಂಗ್ ಓದಿ:
 
 - ಜೋರಾಗಿ ಹೇಳಬಹುದಾದ TL;DR
-- ಅಭಿಮಾನಿಗಳಲ್ಲದವರಿಗೆ 3–6 ಪಾಯಿಂಟ್‌ಗಳು
+- ಅಭಿಮಾನಿಗಳಲ್ಲದವರಿಗೆ 3-6 ಪಾಯಿಂಟ್‌ಗಳು
 - ಪಾಪ್-ಕಲ್ಚರ್, ನಾಟಕ, ಒಳ್ಳೆಯ ಕಥೆಗಳು
 - ಪ್ರತಿ ಪಾಯಿಂಟ್‌ಗೆ ಮೂಲ ಲಿಂಕ್
 - ಅಭಿಮಾನಿಗೆ ಒಂದು ಪ್ರಶ್ನೆ
@@ -14,9 +14,9 @@ Gist ಕೋಣೆಗೆ ಪ್ರವೇಶಿಸುವ ಮೊದಲು ವೇಗ
 
 ಉಚಿತ: Cocktail Party ಸಂದರ್ಭ ಮತ್ತು ದೈನಂದಿನ ರಾಷ್ಟ್ರೀಯ ಬ್ರಿಫಿಂಗ್.
 
-Gist Pro ಎಲ್ಲಾ ಸಂದರ್ಭಗಳು, ದಿನಕ್ಕೆ 3 ಬ್ರಿಫಿಂಗ್‌ಗಳು ಅನ್ಲಾಕ್.
+Small Talk Pro ಎಲ್ಲಾ ಸಂದರ್ಭಗಳು, ದಿನಕ್ಕೆ 3 ಬ್ರಿಫಿಂಗ್‌ಗಳು ಅನ್ಲಾಕ್.
 
-Gist Pro is an auto-renewing subscription (monthly or annual). Your
+Small Talk Pro is an auto-renewing subscription (monthly or annual). Your
 subscription renews automatically unless cancelled at least 24 hours before the
 end of the period. Manage or cancel anytime in your Apple ID settings.
 Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

@@ -106,14 +106,14 @@ struct TodayBriefingView: View {
         NavigationStack {
             mainContent
                 .background(Color.sidelineBackground)
-                .navigationTitle("Gist")
+                .navigationTitle("Sports Small Talk")
                 #if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)
                 #endif
                 .toolbar {
                     // Serif wordmark ties the chrome to the editorial cards.
                     ToolbarItem(placement: .principal) {
-                        Text("Gist")
+                        Text("Sports Small Talk")
                             .font(.system(.headline, design: .serif).weight(.semibold))
                             .foregroundStyle(SidelineTheme.inkPrimary)
                             .accessibilityAddTraits(.isHeader)

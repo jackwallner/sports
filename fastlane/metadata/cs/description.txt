@@ -1,11 +1,11 @@
-Gist vám dá rychlá témata sportovní a popkultury, než vstoupíte do místnosti.
+Sports Small Talk vám dá rychlá témata sportovní a popkultury, než vstoupíte do místnosti.
 
 Pro lidi, kteří nesledují sport, ale mají kolem sebe fanoušky: kolegy, partnera, přátele, děti, rodiče a všechny na párty s náhlým názorem na quarterbacka.
 
 Vyberte kontext a přečtěte krátký briefing:
 
 - TL;DR, které můžete říct nahlas.
-- 3–6 bodů konverzace pro nefanoušky.
+- 3-6 bodů konverzace pro nefanoušky.
 - Popkultura, drama, milé příběhy a comebacky.
 - Odkaz na zdroj u každého bodu.
 - Jedna otázka pro fana.
@@ -14,9 +14,9 @@ Ne appka výsledků, sázek, fantasy ani hustý sportovní feed. Jen dost kontex
 
 Zdarma: kontext Cocktail Party s denním briefingem.
 
-Gist Pro odemkne všechny kontexty, až 3 briefingy denně.
+Small Talk Pro odemkne všechny kontexty, až 3 briefingy denně.
 
-Gist Pro is an auto-renewing subscription (monthly or annual). Your
+Small Talk Pro is an auto-renewing subscription (monthly or annual). Your
 subscription renews automatically unless cancelled at least 24 hours before the
 end of the period. Manage or cancel anytime in your Apple ID settings.
 Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

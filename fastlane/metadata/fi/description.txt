@@ -1,11 +1,11 @@
-Gist antaa nopeat urheilu- ja popkulttuuri-keskustelunaiheet ennen kuin astut huoneeseen.
+Sports Small Talk antaa nopeat urheilu- ja popkulttuuri-keskustelunaiheet ennen kuin astut huoneeseen.
 
 Niille, jotka eivät seuraa urheilua mutta elävät fanien keskellä: työkaverit, kumppani, ystävät, lapset, vanhemmat ja kaikki juhlissa äkillisellä mielipiteellä quarterbackista.
 
 Valitse konteksti ja lue lyhyt briefing:
 
 - TL;DR, jonka voit sanoa ääneen.
-- 3–6 puheenaihetta ei-faneille.
+- 3-6 puheenaihetta ei-faneille.
 - Popkulttuuri, draama, kivat tarinat ja comebackit.
 - Lähdelinkki jokaisessa kohdassa.
 - Yksi kysymys fanille.
@@ -14,9 +14,9 @@ Ei tulos-, vedonlyönti-, fantasy- tai tiheä urheiluuutissovellus. Vain tarpeek
 
 Ilmainen: Cocktail Party -konteksti päivittäisellä briefingillä.
 
-Gist Pro avaa kaikki kontekstit, jopa 3 briefingiä päivässä.
+Small Talk Pro avaa kaikki kontekstit, jopa 3 briefingiä päivässä.
 
-Gist Pro is an auto-renewing subscription (monthly or annual). Your
+Small Talk Pro is an auto-renewing subscription (monthly or annual). Your
 subscription renews automatically unless cancelled at least 24 hours before the
 end of the period. Manage or cancel anytime in your Apple ID settings.
 Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

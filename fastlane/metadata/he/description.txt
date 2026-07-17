@@ -1,11 +1,11 @@
-Gist נותן נקודות שיחה מהירות על ספורט ותרבות פופ לפני שאתם נכנסים לחדר.
+Sports Small Talk נותן נקודות שיחה מהירות על ספורט ותרבות פופ לפני שאתם נכנסים לחדר.
 
 למי שלא עוקב אחרי ספורט אבל יש סביבם אוהדי ספורט: עמיתים, בן/בת זוג, חברים, ילדים, הורים וכל מי במסיבה עם דעה פתאומית על הקוורטרבק.
 
 בחרו הקשר וקראו תקציר קצר:
 
 - TL;DR שאפשר לומר בקול.
-- 3–6 נקודות שיחה ללא אוהדים.
+- 3-6 נקודות שיחה ללא אוהדים.
 - תרבות פופ, דרמה, סיפורים נחמדים וקамбacks.
 - קישור מקור בכל נקודה.
 - שאלה אחת לאוהד.
@@ -14,9 +14,9 @@ Gist נותן נקודות שיחה מהירות על ספורט ותרבות פ
 
 חינם: הקשר Cocktail Party עם תקציר לאומי יומי.
 
-Gist Pro פותח את כל ההקשרים, עד 3 תקצירים ביום.
+Small Talk Pro פותח את כל ההקשרים, עד 3 תקצירים ביום.
 
-Gist Pro is an auto-renewing subscription (monthly or annual). Your
+Small Talk Pro is an auto-renewing subscription (monthly or annual). Your
 subscription renews automatically unless cancelled at least 24 hours before the
 end of the period. Manage or cancel anytime in your Apple ID settings.
 Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

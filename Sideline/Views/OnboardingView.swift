@@ -178,7 +178,7 @@ struct OnboardingView: View {
             .opacity(locked ? 0.85 : 1)
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(locked ? "\(persona.displayName), Pro, unlocks with Gist Pro" : persona.displayName)
+        .accessibilityLabel(locked ? "\(persona.displayName), Pro, unlocks with Small Talk Pro" : persona.displayName)
         .accessibilityAddTraits(isSelected ? [.isSelected, .isButton] : .isButton)
     }
 
@@ -194,7 +194,7 @@ struct OnboardingView: View {
                 .font(SidelineTheme.display(28))
                 .foregroundStyle(SidelineTheme.inkPrimary)
                 .fixedSize(horizontal: false, vertical: true)
-            Text("Gist Pro opens all four rooms and keeps them fresh all day. Start free, cancel anytime.")
+            Text("Small Talk Pro opens all four rooms and keeps them fresh all day. Start free, cancel anytime.")
                 .font(.body)
                 .foregroundStyle(SidelineTheme.inkSecondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -335,7 +335,7 @@ struct OnboardingView: View {
             if store.isEligibleForIntroOffer(yearly), let trial = yearly.sidelineIntroOfferLabel {
                 return "Start \(trial)"
             }
-            return "Get Gist Pro"
+            return "Get Small Talk Pro"
         }
         #endif
         return "Start free trial"

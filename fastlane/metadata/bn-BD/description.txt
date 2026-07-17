@@ -1,11 +1,11 @@
-Gist ঘরে ঢোকার আগে দ্রুত খেলা ও পপ-কালচার কথোপকথনের বিষয় দেয়।
+Sports Small Talk ঘরে ঢোকার আগে দ্রুত খেলা ও পপ-কালচার কথোপকথনের বিষয় দেয়।
 
 যারা খেলা অনুসরণ করেন না কিন্তু জীবনে খেলাভিজ্ঞ মানুষ আছে: সহকর্মী, সঙ্গী, বন্ধু, সন্তান, বাবা-মা এবং পার্টিতে হঠাৎ কোয়ার্টারব্যাক নিয়ে মতামত দেওয়া সবাই।
 
 প্রসঙ্গ বেছে নিয়ে ছোট ব্রিফিং পড়ুন:
 
 - জোরে বলার মতো TL;DR
-- অ-ভক্তদের জন্য ৩–৬ কথোপকথনের পয়েন্ট
+- অ-ভক্তদের জন্য ৩-৬ কথোপকথনের পয়েন্ট
 - পপ-কালচার, নাটক, ভালো গল্প
 - প্রতিটি পয়েন্টে সূত্র লিংক
 - ভক্তকে একটি প্রশ্ন
@@ -14,9 +14,9 @@ Gist ঘরে ঢোকার আগে দ্রুত খেলা ও পপ
 
 বিনামূল্যে: Cocktail Party প্রসঙ্গ ও দৈনিক জাতীয় ব্রিফিং।
 
-Gist Pro সব প্রসঙ্গ, দিনে ৩ ব্রিফিং পর্যন্ত আনলক করে।
+Small Talk Pro সব প্রসঙ্গ, দিনে ৩ ব্রিফিং পর্যন্ত আনলক করে।
 
-Gist Pro is an auto-renewing subscription (monthly or annual). Your
+Small Talk Pro is an auto-renewing subscription (monthly or annual). Your
 subscription renews automatically unless cancelled at least 24 hours before the
 end of the period. Manage or cancel anytime in your Apple ID settings.
 Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

@@ -1,11 +1,11 @@
-Gist कमरे में जाने से पहले तेज़ स्पोर्ट और पॉप-कल्चर बातचीत के बिंदु देता है।
+Sports Small Talk कमरे में जाने से पहले तेज़ स्पोर्ट और पॉप-कल्चर बातचीत के बिंदु देता है।
 
 उन लोगों के लिए जो स्पोर्ट नहीं देखते, लेकिन जीवन में स्पोर्ट प्रेमी हैं: सहकर्मी, पार्टनर, दोस्त, बच्चे, माता-पिता, और पार्टी में अचानक क्वार्टरबैक पर राय रखने वाले सभी।
 
 संदर्भ चुनें और छोटा ब्रीफिंग पढ़ें:
 
 - जोर से बोलने योग्य TL;DR
-- गैर-प्रशंसकों के लिए 3–6 बातचीत बिंदु
+- गैर-प्रशंसकों के लिए 3-6 बातचीत बिंदु
 - पॉप-कल्चर, ड्रामा, अच्छी कहानियाँ
 - हर बिंदु पर स्रोत लिंक
 - प्रशंसक से एक सवाल
@@ -14,9 +14,9 @@ Gist कमरे में जाने से पहले तेज़ स्
 
 मुफ़्त: Cocktail Party संदर्भ और दैनिक राष्ट्रीय ब्रीफिंग।
 
-Gist Pro सभी संदर्भ, दिन में 3 ब्रीफिंग तक अनलॉक करता है।
+Small Talk Pro सभी संदर्भ, दिन में 3 ब्रीफिंग तक अनलॉक करता है।
 
-Gist Pro is an auto-renewing subscription (monthly or annual). Your
+Small Talk Pro is an auto-renewing subscription (monthly or annual). Your
 subscription renews automatically unless cancelled at least 24 hours before the
 end of the period. Manage or cancel anytime in your Apple ID settings.
 Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
