@@ -401,6 +401,7 @@ private struct DeckCardView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.sidelineDeckCard)
             .clipShape(RoundedRectangle(cornerRadius: SidelineTheme.deckCornerRadius, style: .continuous))
+            .compositingGroup()
     }
 
     // MARK: Front — art on top, words on one solid panel below
@@ -413,7 +414,9 @@ private struct DeckCardView: View {
     private var front: some View {
         switch card {
         case .lead(let briefing):
-            VStack(spacing: 0) {
+            // Overlap the zones by a pixel so fractional flex sizing cannot
+            // reveal a light seam while the face is rotating in 3D.
+            VStack(spacing: -1) {
                 artZone(imageURLs: CardArt.leadImageURLs(for: briefing)) { EmptyView() }
                 panel {
                     eyebrow(icon: "newspaper.fill", text: "The brief")
@@ -427,7 +430,7 @@ private struct DeckCardView: View {
                 }
             }
         case .point(let bullet):
-            VStack(spacing: 0) {
+            VStack(spacing: -1) {
                 artZone(imageURLs: CardArt.imageURLs(for: bullet)) {
                     HStack(alignment: .top, spacing: 8) {
                         if let tag = bullet.tag, tag != .neutral {
@@ -604,6 +607,15 @@ private struct DeckCardView: View {
             .background(
                 LinearGradient(colors: colors, startPoint: .top, endPoint: .bottom)
             )
+            // Cover the fractional-pixel join between the flexible art zone
+            // and this panel. Without the overlap, 3D interpolation can expose
+            // a one-pixel light seam above the eyebrow.
+            .overlay(alignment: .top) {
+                Rectangle()
+                    .fill(colors[0])
+                    .frame(height: 1)
+                    .allowsHitTesting(false)
+            }
             .layoutPriority(1)
     }
 
