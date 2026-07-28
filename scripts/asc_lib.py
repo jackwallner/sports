@@ -192,10 +192,10 @@ def ensure_draft_version(client: ASCClient, app_id: str, preferred: str | None =
     if editable:
         return editable
     live = find_live_version(client, app_id)
-    base = preferred or (live["attributes"]["versionString"] if live else "1.0.0")
+    base = live["attributes"]["versionString"] if live else "1.0.0"
     if preferred and find_version_by_string(client, app_id, preferred):
         return find_version_by_string(client, app_id, preferred)  # type: ignore
-    candidate = bump_version(base)
+    candidate = preferred or bump_version(base)
     for _ in range(8):
         if find_version_by_string(client, app_id, candidate):
             candidate = bump_version(candidate)
