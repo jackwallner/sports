@@ -19,16 +19,14 @@ struct TodayBriefingView: View {
 
     private enum ActiveSheet: Identifiable {
         case proPreview(Persona)
-        case paywall(Persona)
-        case onboardingPaywall
+        case paywall(Persona, String)
         case review(ReviewPromptSheet.Step)
         case source(URL)
 
         var id: String {
             switch self {
             case .proPreview(let persona): return "preview-\(persona.rawValue)"
-            case .paywall(let persona): return "paywall-\(persona.rawValue)"
-            case .onboardingPaywall: return "onboarding-paywall"
+            case .paywall(let persona, let impressionId): return "paywall-\(persona.rawValue)-\(impressionId)"
             case .review: return "review"
             case .source(let url): return "source-\(url.absoluteString)"
             }
@@ -38,7 +36,6 @@ struct TodayBriefingView: View {
     @Environment(\.requestReview) private var requestReview
 
     @AppStorage("sideline.hasCompletedOnboarding") private var hasCompletedOnboarding = false
-    @AppStorage("sideline.hasSeenOnboardingPaywall") private var hasSeenOnboardingPaywall = false
     @AppStorage("sideline.lastPersona") private var lastPersonaRaw = Persona.cocktailParty.rawValue
 
     private let entitlement: any EntitlementProviding
@@ -85,20 +82,16 @@ struct TodayBriefingView: View {
                 OnboardingView(
                     hasCompletedOnboarding: $hasCompletedOnboarding,
                     lastPersona: $lastPersonaRaw,
-                    hasSeenOnboardingPaywall: $hasSeenOnboardingPaywall,
                     isPro: isPro
                 )
             } else {
                 briefingRoot
             }
         }
-        // Post-onboarding work hangs off the persisted flag so the one-time
-        // Pro fallback still fires when products failed to load in onboarding.
         .onChange(of: hasCompletedOnboarding) { _, completed in
             guard completed else { return }
             applyUsablePersonaFromStorage()
             Task { await viewModel.load() }
-            presentOnboardingPaywallIfNeeded()
         }
     }
 
@@ -106,14 +99,14 @@ struct TodayBriefingView: View {
         NavigationStack {
             mainContent
                 .background(Color.sidelineBackground)
-                .navigationTitle("Sports Small Talk")
+                .navigationTitle("Gist")
                 #if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)
                 #endif
                 .toolbar {
                     // Serif wordmark ties the chrome to the editorial cards.
                     ToolbarItem(placement: .principal) {
-                        Text("Sports Small Talk")
+                        Text("Gist")
                             .font(.system(.headline, design: .serif).weight(.semibold))
                             .foregroundStyle(SidelineTheme.inkPrimary)
                             .accessibilityAddTraits(.isHeader)
@@ -155,16 +148,11 @@ struct TodayBriefingView: View {
                             },
                             onDismiss: { activeSheet = nil }
                         )
-                    case .paywall(let persona):
+                    case .paywall(let persona, let impressionId):
                         PaywallView(
                             entitlement: entitlement,
                             context: persona,
-                            impressionId: "sideline_paywall_sheet"
-                        )
-                    case .onboardingPaywall:
-                        PaywallView(
-                            entitlement: entitlement,
-                            impressionId: "sideline_onboarding_paywall"
+                            impressionId: impressionId
                         )
                     case .review(let step):
                         ReviewPromptSheet(initialStep: step, onFinish: handleReviewPromptFinish)
@@ -255,7 +243,9 @@ struct TodayBriefingView: View {
                 isPro: isPro,
                 trialAvailable: trialAvailable,
                 onOpenSource: { url in activeSheet = .source(url) },
-                onExploreRooms: { activeSheet = .paywall(viewModel.selectedPersona) }
+                onExploreRooms: {
+                    activeSheet = .paywall(viewModel.selectedPersona, "sideline_free_deck_rooms_paywall")
+                }
             )
 
             FreshnessFooter(briefing: briefing, isOffline: isOffline, isPro: isPro)
@@ -311,27 +301,10 @@ struct TodayBriefingView: View {
         }
     }
 
-    private func presentOnboardingPaywallIfNeeded(attempt: Int = 0) {
-        guard !hasSeenOnboardingPaywall, !isDemo, !isPro else { return }
-        // Fallback only: products failed to load on the onboarding trial page.
-        // Brief delay so briefingRoot is on-screen before the sheet presents;
-        // if another sheet is up, retry a few times rather than dropping it.
-        Task { @MainActor in
-            try? await Task.sleep(nanoseconds: 350_000_000)
-            guard !hasSeenOnboardingPaywall, !isPro else { return }
-            guard activeSheet == nil else {
-                if attempt < 3 { presentOnboardingPaywallIfNeeded(attempt: attempt + 1) }
-                return
-            }
-            hasSeenOnboardingPaywall = true
-            activeSheet = .onboardingPaywall
-        }
-    }
-
     private func handleSheetDismiss() {
         if let persona = pendingPaywallContext {
             pendingPaywallContext = nil
-            activeSheet = .paywall(persona)
+            activeSheet = .paywall(persona, "sideline_locked_room_paywall_\(persona.rawValue)")
             return
         }
         if pendingNativeReviewAfterDismiss {
@@ -399,7 +372,7 @@ struct TodayBriefingView: View {
                 .foregroundStyle(SidelineTheme.inkSecondary)
                 .multilineTextAlignment(.center)
             Button(trialAvailable ? "Try Pro Free" : "See Pro") {
-                activeSheet = .paywall(viewModel.selectedPersona)
+                activeSheet = .paywall(viewModel.selectedPersona, "sideline_refresh_limit_paywall")
             }
             .buttonStyle(.borderedProminent)
             .tint(SidelineTheme.brandPrimary)
@@ -454,7 +427,7 @@ struct TodayBriefingView: View {
                 .foregroundStyle(SidelineTheme.inkSecondary)
             Spacer(minLength: 8)
             Button(trialAvailable ? "Try Pro Free" : "See Pro") {
-                activeSheet = .paywall(viewModel.selectedPersona)
+                activeSheet = .paywall(viewModel.selectedPersona, "sideline_refresh_limit_paywall")
             }
             .font(.footnote.weight(.semibold))
             .foregroundStyle(SidelineTheme.brandPrimary)

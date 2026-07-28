@@ -11,9 +11,9 @@ public enum SidelinePurchaseState: Sendable {
 }
 
 public enum SidelinePackageKind: Int, Sendable {
-    case lifetime = 0
-    case annual = 1
-    case monthly = 2
+    case annual = 0
+    case monthly = 1
+    case lifetime = 2
     case other = 3
 }
 
@@ -290,25 +290,6 @@ public final class StoreService: NSObject, EntitlementProviding {
         products.contains { isEligibleForIntroOffer($0) }
     }
 
-    /// The annual package — the one-tap conversion target for the onboarding
-    /// trial page. That surface purchases this directly; the full `PaywallView`
-    /// is only the fallback when this is nil (products not loaded).
-    public var yearlyPackage: Package? {
-        products.first { $0.sidelinePackageKind == .annual }
-    }
-
-    /// Full Apple-3.1.2 auto-renew disclosure for the yearly plan, shown under a
-    /// direct-purchase CTA so the price (and trial terms, when offered) are
-    /// present at the point of purchase. Nil until the yearly package loads.
-    public var yearlyCTADisclosureText: String? {
-        guard let yearly = yearlyPackage else { return nil }
-        let renew = "Auto-renews unless cancelled at least 24 hours before the end of the current period. Cancel anytime in Settings."
-        if isEligibleForIntroOffer(yearly), let trial = yearly.sidelineIntroOfferLabel {
-            return "\(trial.capitalized), then \(yearly.sidelinePriceLabel). \(renew)"
-        }
-        return "\(yearly.sidelinePriceLabel). \(renew)"
-    }
-
     /// True when Pro is active via an auto-renewable subscription (not lifetime).
     public var hasActiveSubscription: Bool {
         guard let entitlement = customerInfo?.sidelineProEntitlement else {
@@ -375,7 +356,7 @@ public final class StoreService: NSObject, EntitlementProviding {
         do {
             let info = try await Purchases.shared.restorePurchases()
             apply(customerInfo: info)
-            lastError = isPro ? nil : "No active Small Talk Pro purchase was found for this Apple ID."
+            lastError = isPro ? nil : "No active Gist Pro purchase was found for this Apple ID."
         } catch {
             consoleError("StoreService restore failed", error)
             lastError = "Couldn't restore purchases. Try again."

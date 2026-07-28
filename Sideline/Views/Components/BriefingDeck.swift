@@ -1,5 +1,8 @@
 import Shared
 import SwiftUI
+#if canImport(RevenueCat)
+import RevenueCat
+#endif
 #if canImport(UIKit)
 import UIKit
 #endif
@@ -117,8 +120,16 @@ struct BriefingDeck: View {
 
             pageDots(count: count)
         }
-        .onChange(of: index) { _, _ in
+        .onChange(of: index) { _, newIndex in
             flippedPosition = nil
+            #if canImport(RevenueCat)
+            if cards[newIndex].isRoomsCard {
+                StoreService.shared.trackPaywallImpression(
+                    id: "sideline_free_deck_rooms_card",
+                    oncePerSession: true
+                )
+            }
+            #endif
         }
     }
 
@@ -293,6 +304,11 @@ enum DeckCard {
     /// Older rows have no backstory, tie-in or tag reason at all — claiming a
     /// back for those flipped the card onto an empty panel with an orphan
     /// "THE BACKSTORY" header and nothing under it.
+    var isRoomsCard: Bool {
+        if case .rooms = self { return true }
+        return false
+    }
+
     var hasBack: Bool {
         switch self {
         case .point(let bullet):
@@ -529,7 +545,7 @@ private struct DeckCardView: View {
                     .overlay(Capsule().stroke(.white.opacity(0.28), lineWidth: 1))
                 }
                 .buttonStyle(.plain)
-                .accessibilityHint("Shows Small Talk Pro plans")
+                .accessibilityHint("Shows Gist Pro plans")
 
                 hint(icon: "sparkles", text: "Different stories, written for that crowd.")
             }

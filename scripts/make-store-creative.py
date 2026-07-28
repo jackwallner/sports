@@ -27,13 +27,14 @@ CREAM = (247, 241, 227)
 BEZEL = (10, 26, 18)
 SHADOW = (0, 0, 0, 110)
 
-# (background, ui capture, headline lines)
+# (background, UI capture, headline lines)
+# Zero-padded output names keep ASC order deterministic.
 FRAMES = [
-    ("bg-1.png", "store-1.png", ["Know enough", "to join in."]),
-    ("bg-2.png", "store-5.png", ["Get the story", "in minutes."]),
-    ("bg-3.png", "store-3.png", ["Never blank", "on game day."]),
-    ("bg-4.png", "store-2.png", ["The drama,", "decoded."]),
-    ("bg-5.png", "store-4.png", ["Real stories,", "real sources."]),
+    ("bg-1.png", "store-1.png", ["Sports,", "made simple."]),
+    ("bg-2.png", "store-5.png", ["What happened.", "Why it matters."]),
+    ("bg-3.png", "store-3.png", ["One thing", "to say."]),
+    ("bg-4.png", "store-2.png", ["The backstory,", "when they ask."]),
+    ("bg-5.png", "store-4.png", ["A briefing", "for every room."]),
 ]
 
 FONT_SIZE = 128
@@ -128,7 +129,7 @@ def build_icons() -> None:
 def main() -> None:
     OUT_REVIEW.mkdir(parents=True, exist_ok=True)
     for i, (bg, ui, lines) in enumerate(FRAMES, start=1):
-        build_frame(bg, ui, lines, f"store-{i}.png")
+        build_frame(bg, ui, lines, f"{i:02d}-store.png")
     build_icons()
 
 

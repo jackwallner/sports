@@ -73,7 +73,7 @@ struct PaywallView: View {
                     paywallContent
                 }
             }
-            .navigationTitle("Small Talk Pro")
+            .navigationTitle("Gist Pro")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif
@@ -188,9 +188,9 @@ struct PaywallView: View {
 
     private var compactBenefits: some View {
         VStack(alignment: .leading, spacing: 8) {
-            compactBenefit("4 briefings a day: one for each room you're in")
-            compactBenefit("3× daily refresh: morning, midday, and evening")
-            compactBenefit("Built for non-fans: no box scores, no jargon")
+            compactBenefit("A separate daily briefing for every room")
+            compactBenefit("Fresh stories morning, midday, and evening")
+            compactBenefit("Plain-English context and one thing to say")
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -227,6 +227,7 @@ struct PaywallView: View {
                     isSelected: selectedPackage?.identifier == package.identifier,
                     showsTrialBadge: store.isEligibleForIntroOffer(package),
                     isBestValue: package.sidelinePackageKind == .annual,
+                    isSecondary: package.sidelinePackageKind == .lifetime,
                     savingsPercent: monthly.flatMap { package.sidelineSavingsPercent(vsMonthly: $0) }
                 ) {
                     selectedPackage = package
@@ -418,6 +419,10 @@ struct PaywallView: View {
 
     private func startPurchase() {
         guard let package = selectedPackage else { return }
+        store.trackPaywallImpression(
+            id: "\(impressionId)_purchase_\(package.sidelinePackageKind)",
+            oncePerSession: true
+        )
         errorMessage = nil
         restoreMessage = nil
         isPurchasing = true
@@ -429,7 +434,7 @@ struct PaywallView: View {
                     // store.isPro flips and the onChange handler dismisses.
                     break
                 case .pending:
-                    restoreMessage = "Your purchase is pending approval. Small Talk Pro unlocks automatically once it's approved."
+                    restoreMessage = "Your purchase is pending approval. Gist Pro unlocks automatically once it's approved."
                 case .cancelled:
                     // A deliberate cancel is not an error. Stay quiet; the
                     // button re-enables so they can try again.
@@ -449,7 +454,7 @@ struct PaywallView: View {
             defer { isRestoring = false }
             await store.restorePurchases()
             if !store.isPro {
-                restoreMessage = store.lastError ?? "No active Small Talk Pro purchase found for this Apple ID."
+                restoreMessage = store.lastError ?? "No active Gist Pro purchase found for this Apple ID."
             }
         }
     }
@@ -524,7 +529,7 @@ struct PaywallView: View {
             .padding(22)
             .frame(maxWidth: 520)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .navigationTitle("Small Talk Pro")
+            .navigationTitle("Gist Pro")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif
@@ -587,6 +592,7 @@ private struct PaywallPlanCard: View {
     let isSelected: Bool
     let showsTrialBadge: Bool
     let isBestValue: Bool
+    let isSecondary: Bool
     let savingsPercent: Int?
     let onTap: () -> Void
 
@@ -645,6 +651,7 @@ private struct PaywallPlanCard: View {
             .padding(.horizontal, 16)
             .padding(.vertical, 14)
             .background(Color.sidelineCard, in: RoundedRectangle(cornerRadius: SidelineTheme.cardCornerRadius))
+            .opacity(isSecondary && !isSelected ? 0.72 : 1)
             .overlay {
                 RoundedRectangle(cornerRadius: SidelineTheme.cardCornerRadius)
                     .stroke(isSelected ? SidelineTheme.brandPrimary : .clear, lineWidth: 2)

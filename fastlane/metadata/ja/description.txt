@@ -1,4 +1,4 @@
-Sports Small Talkは、部屋に入る前にスポーツとポップカルチャーの会話ネタを素早く届けます。
+Gistは、部屋に入る前にスポーツとポップカルチャーの会話ネタを素早く届けます。
 
 スポーツを追わないけれど、周りにスポーツ好きがいる人向け。同僚、パートナー、友人、子ども、親、そして急にクォーターバックの話を始めるパーティーの人たち。
 
@@ -14,9 +14,9 @@ Sports Small Talkは、部屋に入る前にスポーツとポップカルチャ
 
 無料：Cocktail Partyコンテキストと毎日の全国ブリーフィング。
 
-Small Talk Proですべてのコンテキスト、1日最大3回の更新が利用可能。
+Gist Proですべてのコンテキスト、1日最大3回の更新が利用可能。
 
-Small Talk Pro is an auto-renewing subscription (monthly or annual). Your
+Gist Pro is an auto-renewing subscription (monthly or annual). Your
 subscription renews automatically unless cancelled at least 24 hours before the
 end of the period. Manage or cancel anytime in your Apple ID settings.
 Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
