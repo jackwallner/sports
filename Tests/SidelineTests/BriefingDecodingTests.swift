@@ -67,4 +67,10 @@ final class BriefingDecodingTests: XCTestCase {
         XCTAssertFalse(Briefing.sample.bullets.isEmpty)
         XCTAssertTrue(Briefing.sample.bullets.allSatisfy { $0.sourceURL.scheme == "https" })
     }
+
+    func testPaywallPackagePriorityLeadsWithSubscriptions() {
+        XCTAssertLessThan(SidelinePackageKind.annual.rawValue, SidelinePackageKind.monthly.rawValue)
+        XCTAssertLessThan(SidelinePackageKind.monthly.rawValue, SidelinePackageKind.lifetime.rawValue)
+        XCTAssertLessThan(SidelinePackageKind.lifetime.rawValue, SidelinePackageKind.other.rawValue)
+    }
 }

@@ -1,21 +1,22 @@
-Sports Small Talk gives you the sports news everyone is talking about, in five minutes a day. It is made for casual fans and busy people who want to keep up without watching every game or reading a dense news feed.
+Gist makes sports easy to follow in five minutes a day.
 
-Open the app, pick the room you are walking into, and read a short briefing:
+Open one short briefing and get exactly what you need:
 
-- One plain-English summary you can actually say out loud.
-- 3 to 6 talking points written for people who do not live and breathe sports.
-- The pop-culture angles, drama, and storylines that make it interesting.
-- A source link on every point, so you can trust it and go deeper.
-- One good question to ask, so you can keep the conversation going.
+- What happened, in plain English.
+- Why people care about it.
+- One useful thing to say out loud.
+- The backstory if someone asks a follow-up.
+- A real source link for every story.
+- One question that keeps the conversation going.
 
-Whether it is the World Cup, football season, or the playoff everyone at work is buzzing about, Sports Small Talk gets you up to speed fast.
+Gist is built for busy people who want the story without scores tables, betting noise, fantasy advice, or an endless news feed.
 
-Sports Small Talk is not a scores app, betting app, fantasy app, or dense sports news feed. No standings. No stat tables. Just enough to keep up and feel included.
+Choose the room you are walking into. The free Cocktail Party briefing covers the essential stories. Gist Pro adds separate briefings for work, family, and date night, refreshed morning, midday, and evening.
 
-The free version includes the Cocktail Party room with a daily briefing.
+FREE AND PRO
+The free version includes the Cocktail Party room with one daily briefing.
 
-Small Talk Pro unlocks every room and fresher briefings up to 3 times a day.
+Gist Pro offers monthly and annual auto-renewing subscriptions. Eligible new subscribers can start with a one-week free trial. Payment is charged to your Apple ID after trial confirmation. Subscriptions renew automatically unless cancelled at least 24 hours before the end of the current period. Renewal is charged within 24 hours before the period ends. Manage or cancel anytime in your Apple ID subscription settings.
 
-Small Talk Pro is an auto-renewing subscription (monthly or annual). Your subscription renews automatically unless cancelled at least 24 hours before the end of the period. Manage or cancel anytime in your Apple ID settings.
 Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 Privacy: https://jackwallner.github.io/sports/privacy-policy.html
