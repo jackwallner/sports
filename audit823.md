@@ -844,3 +844,44 @@ These are the only product decisions that should be made before implementation s
 ## Bottom line
 
 Gist's strongest conversion asset is the short, concrete first-value promise. The immediate work is to make every surface tell the same truth, guarantee that a release reaches real content and real purchase services, and measure the path from first briefing to trial and Pro value. Once those gates are in place, the onboarding timing, preview friction, plan framing, trial copy, screenshot set, and review timing are all good candidates for controlled experiments rather than guesswork.
+
+## Activity and success context, 2026-08-23
+
+Classification: **low-scale monetizing**. Confidence: **low**. Trend: **no ASC comparison displayed**.
+
+ASC release state: `iOS 1.1.2 Ready for Distribution`. ASC evidence: [Analytics Overview](https://appstoreconnect.apple.com/apps/6770138156/analytics/overview?dateSpec=d90), selected range `dateSpec=d90`.
+RevenueCat evidence: [Project Overview](https://app.revenuecat.com/projects/56682a14/overview), production mode, selected range `Last 28 days, 2026-07-27 through 2026-08-23`.
+
+### Observed activity
+
+| Source | Metric | Value | Window or comparison |
+| --- | --- | ---: | --- |
+| ASC | first-time downloads | 19 | 90-day Analytics Overview |
+| ASC | redownloads | 2 | 90-day Analytics Overview |
+| ASC | conversion rate | 0.3% | comparison not displayed |
+| ASC | proceeds | $37 | 90-day Analytics Overview |
+| ASC | in-app purchases | 4 | 90-day Analytics Overview |
+| RevenueCat | new customers | 15 | last 28 days |
+| RevenueCat | active customers | 16 | last 28 days |
+| RevenueCat | active trials | 0 | current total |
+| RevenueCat | active subscriptions | 2 | current total |
+| RevenueCat | MRR | $3 | current total |
+| RevenueCat | revenue | $0 | last 28 days |
+
+A missing value above means the source did not expose that metric in this read-only snapshot. It is not a zero.
+
+### Interpretation and implementation focus
+
+Gist has 19 ASC first-time downloads, a 0.3% ASC conversion rate, 15 RevenueCat new customers, 2 active subscriptions, and $37 of ASC proceeds while RevenueCat shows $0 in the last 28 days. The source windows and product mix need reconciliation before calling this a revenue inconsistency. Treat the short first briefing as the acquisition asset, then measure preview-to-trial and trial-to-paid with a defined cohort.
+
+The deterministic classifier recommends: Protect the current paid path, then use release and cohort baselines to decide whether acquisition or conversion is the next constraint.
+
+- Join ASC first-time download, first launch, first value, paywall shown, offer loaded, trial started, trial canceled, trial converted, entitlement active, restore, and purchase failure events with the app version and build.
+- Keep ASC's 90-day acquisition and proceeds window separate from RevenueCat's 28-day customer and revenue window. Do not calculate a conversion rate by dividing values from different windows.
+- Use a mature trial cohort and a minimum sample before choosing a native paywall or onboarding A/B winner. Record the offering identifier, package, placement, experiment variant, and build.
+- Put the app's classification and the next baseline date in the release handoff so Cursor, Claude, and Codex do not optimize from an old qualitative audit.
+
+### Boundary on success or death
+
+This snapshot supports the label **low-scale monetizing**, not a lifetime verdict. The app has current paid activity, but ASC does not expose a positive comparison for the selected window. A later decision should include a clean 28-day RevenueCat trend, ASC acquisition and conversion trend, ratings and review count, crash and hang evidence, and a release-specific cohort.
+This dated section supersedes earlier statements in this file that per-app ASC or RevenueCat activity was unavailable as of 2026-08-23. Earlier statements remain historical evidence boundaries for their original audit pass.
