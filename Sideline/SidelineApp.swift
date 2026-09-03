@@ -46,9 +46,32 @@ struct SidelineApp: App {
             StoreService.shared.start()
         }
         #endif
+        #if canImport(RevenueCat) && targetEnvironment(simulator) && DEBUG
+        // The one simulator path allowed to configure RevenueCat, and only ever
+        // with the Test Store key: a separate RevenueCat app inside the same
+        // project, so a probe run cannot touch App Store customers, revenue or
+        // charts. See RevenueCatProbe.
+        if RevenueCatProbe.isEnabled {
+            Purchases.logLevel = .debug
+            Purchases.configure(
+                with: Configuration.Builder(withAPIKey: RevenueCatProbe.testStoreKey)
+                    .with(appUserID: RevenueCatProbe.appUserID)
+                    .build()
+            )
+            StoreService.shared.start()
+        }
+        #endif
 
         self.entitlement = Self.makeEntitlement()
         ReviewPromptTracker.recordAppLaunch()
+        ConversionDiagnostics.recordAppOpen()
+        #if canImport(RevenueCat) && DEBUG
+        if RevenueCatProbe.isEnabled {
+            // Same entry point the real paywall screens call, so what this
+            // proves is the actual path and not a parallel one.
+            StoreService.shared.trackPaywallImpression(id: RevenueCatProbe.impressionID)
+        }
+        #endif
     }
 
     private static func makeEntitlement() -> any EntitlementProviding {
@@ -86,3 +109,31 @@ struct SidelineApp: App {
         }
     }
 }
+
+#if DEBUG && canImport(RevenueCat)
+/// Simulator-only proof path for the fleet-wide funnel attributes.
+///
+/// Under the normal rules the attributes cannot be verified on a simulator: the
+/// production key must never be configured there, so RevenueCat is never
+/// configured, so nothing is ever sent, so a physical device is the only
+/// witness. The Test Store key is a different RevenueCat app inside the same
+/// project, so a probe run cannot touch App Store customers, revenue or charts.
+///
+/// DEBUG only, and only with the launch argument, so it cannot reach a Release
+/// build or an ordinary simulator run.
+enum RevenueCatProbe {
+    static var isEnabled: Bool {
+        ProcessInfo.processInfo.arguments.contains("-rcfunnelprobe")
+    }
+
+    static let testStoreKey = "test_wQHrMUOWwwPqnWHeqxyPdiTcyNt"
+
+    static var appUserID: String {
+        ProcessInfo.processInfo.environment["RC_PROBE_USER"] ?? "funnel-probe-sports"
+    }
+
+    static var impressionID: String {
+        ProcessInfo.processInfo.environment["RC_PROBE_SURFACE"] ?? "sideline_onboarding_paywall"
+    }
+}
+#endif

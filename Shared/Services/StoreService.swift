@@ -310,9 +310,34 @@ public final class StoreService: NSObject, EntitlementProviding {
             guard !paywallImpressionsThisSession.contains(id) else { return }
             paywallImpressionsThisSession.insert(id)
         }
+        ConversionDiagnostics.recordPitchView(impressionID: id)
+        syncConversionAttributes()
         Purchases.shared.trackCustomPaywallImpression(
             CustomPaywallImpressionParams(paywallId: id)
         )
+    }
+
+    /// Mirrors the on-device paywall record onto the RevenueCat customer.
+    ///
+    /// Attributes rather than extra impressions: RevenueCat treats every
+    /// impression id as a paywall encounter, so funnel steps sent that way would
+    /// drive the encounter rate to 100% and destroy the one server-side number
+    /// that currently works.
+    ///
+    /// `Purchases.isConfigured` is the load-bearing guard: `Purchases.shared`
+    /// traps when RevenueCat was never configured, which is every simulator run.
+    ///
+    /// `setAttributes` only queues. RevenueCat uploads when the app backgrounds
+    /// or folds the queue into the POST that creates a customer, so a probe run
+    /// has to background the app before reading anything back.
+    public func syncConversionAttributes() {
+        guard Purchases.isConfigured else { return }
+        var attributes = ConversionDiagnostics.subscriberAttributes
+        guard !attributes.isEmpty else { return }
+        if let offering = currentOffering?.identifier {
+            attributes["offering_id"] = offering
+        }
+        Purchases.shared.attribution.setAttributes(attributes)
     }
 
     @discardableResult
@@ -321,12 +346,19 @@ public final class StoreService: NSObject, EntitlementProviding {
         purchaseInFlight = true
         defer { purchaseInFlight = false }
 
+        let startedTrial = isEligibleForIntroOffer(package)
         let result = try await Purchases.shared.purchase(package: package)
         apply(customerInfo: result.customerInfo)
         if result.userCancelled {
             return .cancelled
         }
         if result.customerInfo.hasSidelineProEntitlement {
+            ConversionDiagnostics.recordConversion(
+                plan: package.storeProduct.productIdentifier,
+                startedTrial: startedTrial,
+                offeringID: currentOffering?.identifier
+            )
+            syncConversionAttributes()
             return .purchased
         }
         return .pending
