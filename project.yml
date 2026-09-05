@@ -30,6 +30,18 @@ packages:
     from: 5.67.0
 
 schemes:
+  SidelineUITests:
+    build:
+      targets:
+        Sideline: all
+        SidelineUITests: [test]
+    test:
+      config: Debug
+      targets:
+        - SidelineUITests
+    run:
+      config: Debug
+
   Sideline:
     build:
       targets:
@@ -85,3 +97,20 @@ targets:
       base:
         GENERATE_INFOPLIST_FILE: YES
         PRODUCT_BUNDLE_IDENTIFIER: com.jackwallner.sports.tests
+
+  # The paywall purchase probe. Its own target and scheme: the app's own test
+  # action activates StoreKit Testing, and this has to reach RevenueCat's Test
+  # Store instead.
+  SidelineUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: SidelineUITests
+    dependencies:
+      - target: Sideline
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.jackwallner.sports.uitests
+        TEST_TARGET_NAME: Sideline
+
