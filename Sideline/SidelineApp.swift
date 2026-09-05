@@ -70,6 +70,22 @@ struct SidelineApp: App {
             // Same entry point the real paywall screens call, so what this
             // proves is the actual path and not a parallel one.
             StoreService.shared.trackPaywallImpression(id: RevenueCatProbe.impressionID)
+            if RevenueCatProbe.wantsPurchase {
+                Task {
+                    await StoreService.shared.fetchProducts()
+                    // Logged rather than asserted: when the Test Store sheet
+                    // never appears, this separates "nothing came back" from
+                    // "purchase threw".
+                    NSLog("RCPROBE packages=%d", StoreService.shared.products.count)
+                    guard let package = StoreService.shared.products.first else { return }
+                    do {
+                        let state = try await StoreService.shared.purchase(package)
+                        NSLog("RCPROBE purchase outcome=%@", String(describing: state))
+                    } catch {
+                        NSLog("RCPROBE purchase error=%@", String(describing: error))
+                    }
+                }
+            }
         }
         #endif
     }
@@ -134,6 +150,12 @@ enum RevenueCatProbe {
 
     static var impressionID: String {
         ProcessInfo.processInfo.environment["RC_PROBE_SURFACE"] ?? "sideline_onboarding_paywall"
+    }
+
+    /// Drives a Test Store purchase after the impression, so the `converted_*`
+    /// half of the funnel record is exercised and not just the impression half.
+    static var wantsPurchase: Bool {
+        ProcessInfo.processInfo.arguments.contains("-rcfunnelprobepurchase")
     }
 }
 #endif
