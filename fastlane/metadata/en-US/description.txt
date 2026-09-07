@@ -1,22 +1,10 @@
-Gist makes sports easy to follow in five minutes a day.
+Know what happened, why it matters, and one thing to say. Read a free daily sports briefing in five minutes, with source links and no endless feed.
 
-Open one short briefing and get exactly what you need:
-
-- What happened, in plain English.
-- Why people care about it.
-- One useful thing to say out loud.
-- The backstory if someone asks a follow-up.
-- A real source link for every story.
-- One question that keeps the conversation going.
-
-Gist is built for busy people who want the story without scores tables, betting noise, fantasy advice, or an endless news feed.
-
-Choose the room you are walking into. The free Cocktail Party briefing covers the essential stories. Gist Pro adds separate briefings for work, family, and date night, refreshed morning, midday, and evening.
+Briefings are in English.
 
 FREE AND PRO
-The free version includes the Cocktail Party room with one daily briefing.
+The free Cocktail Party briefing gives you the stories, background, source links, and a conversation starter once a day. Gist Pro adds separate briefings for work, family, and date night, refreshed morning, midday, and evening. No betting tips, fantasy advice, or endless scores tables.
 
-Gist Pro offers monthly and annual auto-renewing subscriptions. Eligible new subscribers can start with a one-week free trial. Payment is charged to your Apple ID after trial confirmation. Subscriptions renew automatically unless cancelled at least 24 hours before the end of the current period. Renewal is charged within 24 hours before the period ends. Manage or cancel anytime in your Apple ID subscription settings.
-
-Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-Privacy: https://jackwallner.github.io/sports/privacy-policy.html
+Monthly plan: US$5.99. Yearly plan: US$29.99. Both subscriptions renew automatically, and each offers a 7-day free trial when eligible. Apple charges your Apple Account when you confirm the purchase or after an eligible trial. If you are not eligible, Apple charges at confirmation. The renewal charge is made within 24 hours before the current period ends. Manage or cancel in Settings › Apple Account › Subscriptions at least 24 hours before the period ends. Prices vary by region and are shown before purchase.
+Privacy Policy: https://jackwallner.github.io/sports/privacy-policy.html
+Terms of Use (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

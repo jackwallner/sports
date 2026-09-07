@@ -1,1 +1,1 @@
-sohbet,buzkıran,özet,kısa,sezon,tartışma,manşetler,günlük,insider,dedikodu
+haber,futbol,nfl,nba,mlb,nhl,f1,sohbet,bağlam,basketbol,beyzbol,hokey,sonuçlar,gündem

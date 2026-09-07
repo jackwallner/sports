@@ -1,23 +1,10 @@
-Gistは、部屋に入る前にスポーツとポップカルチャーの会話ネタを素早く届けます。
+何が起きたのか、なぜ話題なのか、どう話せばいいのか。出典リンク付きの短いスポーツ要約を毎日無料で。終わりのないフィードなしで5分で追いつけます。
 
-スポーツを追わないけれど、周りにスポーツ好きがいる人向け。同僚、パートナー、友人、子ども、親、そして急にクォーターバックの話を始めるパーティーの人たち。
+要約は英語で提供されます。
 
-シーンを選んで短いブリーフィングを読むだけ：
+無料とPRO
+無料のCocktail Party要約では、話題、背景、出典リンク、会話のきっかけを1日1回お届け。Gist Proでは仕事、家族、デート向けの要約が加わり、朝・昼・夜に更新されます。賭けやファンタジースポーツの助言、延々と続くスコア表はありません。
 
-- 声に出して言えるTL;DR
-- 非ファン向けの会話ポイント3〜6個
-- ポップカルチャー、ドラマ、好人物、復活ストーリー
-- 各ポイントにソースリンク
-- ファンへの質問を1つ
-
-スコア、ベッティング、ファンタジー、密集ニュースアプリではありません。会話に参加するのに十分なコンテキストだけ。
-
-無料：Cocktail Partyコンテキストと毎日の全国ブリーフィング。
-
-Gist Proですべてのコンテキスト、1日最大3回の更新が利用可能。
-
-Gist Pro is an auto-renewing subscription (monthly or annual). Your
-subscription renews automatically unless cancelled at least 24 hours before the
-end of the period. Manage or cancel anytime in your Apple ID settings.
-Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-Privacy: https://jackwallner.github.io/sports/privacy-policy.html
+月額プランはUS$5.99、年額プランはUS$29.99です。どちらも自動更新され、対象者は7日間無料で試せます。Appleは購入確認時、または対象となる無料トライアル終了後にApple Accountへ請求します。対象外の場合は確認時に請求します。更新料金は現在の期間終了前24時間以内に請求されます。期間終了の24時間前までに、設定 › Apple Account › サブスクリプションで管理または解約してください。価格は地域により異なり、購入前に表示されます。
+プライバシーポリシー: https://jackwallner.github.io/sports/privacy-policy.html
+利用規約 (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

@@ -1,1 +1,1 @@
-keskustelu,jäänmurtaja,yhteenveto,lyhyt,kausi,otsikot,diskusio,päivittäinen,katsaus,sisaapiiri,juttu
+uutiset,jalkapallo,nfl,nba,mlb,nhl,f1,keskustelu,taustat,koripallo,baseball,jääkiekko,ottelut

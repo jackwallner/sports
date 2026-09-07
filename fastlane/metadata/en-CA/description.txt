@@ -1,23 +1,10 @@
-Gist gives you quick sports pop-culture talking points before you walk into the room.
+Know what happened, why it matters, and one thing to say. Read a free daily sports briefing in five minutes, with source links and no endless feed.
 
-Built for people who do not follow sports but still have sports people in their life: coworkers, partners, friends, kids, parents, and everyone at the party with a sudden opinion about hockey or the NFL.
+Briefings are in English.
 
-Pick the room you are walking into and read a short briefing:
+FREE AND PRO
+The free Cocktail Party briefing gives you the stories, background, source links, and a conversation starter once a day. Gist Pro adds separate briefings for work, family, and date night, refreshed morning, midday, and evening. No betting tips, fantasy advice, or endless scores tables.
 
-- One plain-English TL;DR you can say out loud.
-- 3 to 6 talking points framed for non-fans.
-- Pop-culture angles, drama, nice-guy stories, and redemption arcs.
-- A source link on every point.
-- One question to ask a fan to keep the conversation going.
-
-Not a scores app, betting app, fantasy app, or dense sports news feed. Just enough context to feel included.
-
-Free: Cocktail Party context with a daily national briefing.
-
-Gist Pro unlocks all contexts and fresher briefings up to 3 times a day.
-
-Gist Pro is an auto-renewing subscription (monthly or annual). Your
-subscription renews automatically unless cancelled at least 24 hours before the
-end of the period. Manage or cancel anytime in your Apple ID settings.
-Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-Privacy: https://jackwallner.github.io/sports/privacy-policy.html
+Monthly plan: US$5.99. Yearly plan: US$29.99. Both subscriptions renew automatically, and each offers a 7-day free trial when eligible. Apple charges your Apple Account when you confirm the purchase or after an eligible trial. If you are not eligible, Apple charges at confirmation. The renewal charge is made within 24 hours before the current period ends. Manage or cancel in Settings › Apple Account › Subscriptions at least 24 hours before the period ends. Prices vary by region and are shown before purchase.
+Privacy Policy: https://jackwallner.github.io/sports/privacy-policy.html
+Terms of Use (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

@@ -1,1 +1,1 @@
-coupe du monde,foot,récap,brief,saison,débat,gros titres,discussion,quotidien,initié
+actualité,football,nfl,nba,mlb,nhl,f1,résumé,conversation,contexte,infos,match,basket,hockey
