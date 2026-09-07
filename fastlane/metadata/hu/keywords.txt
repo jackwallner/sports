@@ -1,1 +1,1 @@
-hírek,futball,nfl,nba,mlb,nhl,f1,beszélgetés,háttér,kosárlabda,baseball,jégkorong,eredmények
+foci,nb i,vízilabda,bajnokok ligája,f1,kosárlabda,tenisz,nba,sporthírek,úszás,háttér,cimek

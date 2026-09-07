@@ -1,1 +1,1 @@
-novice,nogomet,nfl,nba,mlb,nhl,f1,povzetek,pogovor,ozadje,košarka,bejzbol,hokej,rezultati
+nogomet,košarka,liga prvakov,f1,rokomet,tenis,nba,športne novice,povzetek,ozadje,naslovi

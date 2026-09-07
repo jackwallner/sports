@@ -1,1 +1,1 @@
-noticias,fútbol,nfl,nba,mlb,nhl,f1,conversación,contexto,baloncesto,béisbol,hockey,actualidad
+fútbol,laliga,champions,f1,motogp,baloncesto,tenis,nba,noticias deportivas,contexto,titulares

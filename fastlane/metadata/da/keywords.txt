@@ -1,1 +1,1 @@
-nyheder,fodbold,nfl,nba,mlb,nhl,f1,resumé,samtale,baggrund,basketball,baseball,ishockey,resultater
+fodbold,håndbold,ishockey,f1,tennis,basketball,nba,sportsnyheder,resumé,baggrund,overskrifter

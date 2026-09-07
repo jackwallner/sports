@@ -1,1 +1,1 @@
-nieuws,voetbal,nfl,nba,mlb,nhl,f1,samenvatting,gesprek,achtergrond,basketbal,honkbal,hockey
+voetbal,eredivisie,champions league,f1,basketbal,tennis,nba,sportnieuws,samenvatting,achtergrond

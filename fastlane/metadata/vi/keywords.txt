@@ -1,1 +1,1 @@
-bóng đá,nfl,nba,mlb,nhl,f1,trò chuyện,bối cảnh,bóng rổ,bóng chày,khúc côn cầu,trận đấu
+bóng đá,ngoại hạng anh,bóng rổ,cúp c1,world cup,f1,cầu lông,quần vợt,nba,tin thể thao,bối cảnh

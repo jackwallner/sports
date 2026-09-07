@@ -1,1 +1,1 @@
-știri,fotbal,nfl,nba,mlb,nhl,f1,conversație,context,baschet,baseball,hochei,rezultate,actualitate
+fotbal,handbal,liga campionilor,f1,baschet,tenis,nba,știri sportive,rezumat,context,titluri

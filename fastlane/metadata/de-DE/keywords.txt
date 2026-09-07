@@ -1,1 +1,1 @@
-nachrichten,fußball,nfl,nba,mlb,nhl,formel1,zusammenfassung,gespräch,hintergrund,ergebnisse,news
+fußball,bundesliga,dfb-pokal,champions league,f1,basketball,handball,tennis,nba,sportnews,wm

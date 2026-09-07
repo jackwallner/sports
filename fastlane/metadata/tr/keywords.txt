@@ -1,1 +1,1 @@
-haber,futbol,nfl,nba,mlb,nhl,f1,sohbet,bağlam,basketbol,beyzbol,hokey,sonuçlar,gündem
+futbol,basketbol,şampiyonlar ligi,süper lig,voleybol,f1,tenis,nba,spor haberleri,arka plan,manşetler

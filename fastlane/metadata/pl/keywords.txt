@@ -1,1 +1,1 @@
-wiadomości,piłka,nfl,nba,mlb,nhl,f1,rozmowa,kontekst,koszykówka,baseball,hokej,wyniki,wydarzenia
+piłka nożna,siatkówka,liga mistrzów,f1,koszykówka,tenis,nba,wiadomości sportowe,podsumowanie,tło
