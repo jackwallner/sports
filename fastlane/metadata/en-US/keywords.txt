@@ -1,1 +1,1 @@
-football,soccer,nfl,nba,mlb,nhl,f1,wnba,recap,explained,highlights,conversation,casual,headlines
+football,soccer,nfl,nba,mlb,nhl,f1,wnba,recap,explained,briefing,small,talk,headlines,casual,context
