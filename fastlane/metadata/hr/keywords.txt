@@ -1,1 +1,1 @@
-vijesti,nogomet,nfl,nba,mlb,nhl,f1,sažetak,razgovor,kontekst,košarka,bejzbol,hokej,rezultati
+nogomet,košarka,liga prvaka,f1,rukomet,tenis,nba,sportske vijesti,sažetak,pozadina,naslovi

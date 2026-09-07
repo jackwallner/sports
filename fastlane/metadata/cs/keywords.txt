@@ -1,1 +1,1 @@
-zprávy,fotbal,nfl,nba,mlb,nhl,f1,shrnutí,konverzace,souvislosti,basketbal,baseball,hokej,výsledky
+fotbal,hokej,liga mistrů,f1,basketbal,tenis,nba,sportovní zprávy,shrnutí,kontext,titulky

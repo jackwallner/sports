@@ -1,1 +1,1 @@
-berita,bolasepak,nfl,nba,mlb,nhl,f1,perbualan,konteks,bola keranjang,besbol,hoki,perlawanan
+bola sepak,liga super,bola keranjang,liga juara-juara,f1,badminton,tenis,nba,berita sukan,latar

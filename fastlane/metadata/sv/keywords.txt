@@ -1,1 +1,1 @@
-nyheter,fotboll,nfl,nba,mlb,nhl,f1,sammanfattning,samtal,bakgrund,basket,baseboll,ishockey
+fotboll,ishockey,allsvenskan,f1,handboll,tennis,basket,nba,sportnyheter,sammanfattning,bakgrund

@@ -1,1 +1,1 @@
-uutiset,jalkapallo,nfl,nba,mlb,nhl,f1,keskustelu,taustat,koripallo,baseball,jääkiekko,ottelut
+jalkapallo,jääkiekko,liiga,veikkausliiga,f1,koripallo,tennis,nba,urheilu-uutiset,tausta,otsikot

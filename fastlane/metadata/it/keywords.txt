@@ -1,1 +1,1 @@
-notizie,calcio,nfl,nba,mlb,nhl,f1,riassunto,conversazione,contesto,basket,baseball,hockey
+calcio,serie a,champions league,f1,basket,tennis,nba,notizie sportive,riassunto,contesto,titoli
