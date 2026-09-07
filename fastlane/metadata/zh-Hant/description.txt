@@ -1,23 +1,10 @@
-Gist 在你走進房間之前，提供快速的運動與流行文化聊天話題。
+發生了什麼，為什麼重要，又該怎麼聊？每天免費閱讀一份附來源連結的體育簡報，五分鐘了解話題，不必刷無盡的資訊流。
 
-適合不追運動但身邊有運動愛好者的人：同事、伴侶、朋友、孩子、父母，以及派對上突然對四分衛發表意見的人。
+簡報內容以英語提供。
 
-選擇場景，閱讀短簡報：
+免費與PRO
+免費Cocktail Party簡報每天提供一次故事、背景、來源連結和聊天開場問題。Gist Pro增加工作、家庭和約會情境的獨立簡報，每天早、中、晚更新。不提供博彩建議、夢幻體育指導或無盡的比分表。
 
-- 可以大聲說出的 TL;DR
-- 3-6 個面向非球迷的聊天點
-- 流行文化、八卦、好人故事與救贖
-- 每點附來源連結
-- 一個問球迷的好問題
-
-不是比分、博彩、夢幻體育或密集新聞 App。只是足夠加入對話的上下文。
-
-免費：Cocktail Party 場景與每日全國簡報。
-
-Gist Pro 解鎖全部場景、每天最多 3 次更新。
-
-Gist Pro is an auto-renewing subscription (monthly or annual). Your
-subscription renews automatically unless cancelled at least 24 hours before the
-end of the period. Manage or cancel anytime in your Apple ID settings.
-Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-Privacy: https://jackwallner.github.io/sports/privacy-policy.html
+月費方案價格為 US$5.99，年費方案價格為 US$29.99。兩種方案都會自動續訂，符合資格時各提供 7 天免費試用。Apple 會在你確認購買時或符合資格的試用結束後向你的 Apple 帳號收費。不符合資格時會在確認購買時收費。續訂費用會在目前週期結束前 24 小時內收取。請在週期結束至少 24 小時前，前往設定 › Apple 帳號 › 訂閱項目管理或取消。價格因地區而異，購買前會顯示。
+隱私權政策: https://jackwallner.github.io/sports/privacy-policy.html
+使用條款 (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

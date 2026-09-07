@@ -1,1 +1,1 @@
-percakapan,pemecah kebekuan,ringkasan,singkat,musim,perdebatan,berita utama,diskusi bankan,harian
+berita,sepakbola,nfl,nba,mlb,nhl,f1,percakapan,konteks,basket,baseball,hoki,pertandingan

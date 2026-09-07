@@ -1,23 +1,10 @@
-Gist அறைக்குள் நுழைவதற்கு முன் விரைவான விளையாட்டு மற்றும் pop-culture உரையாடல் தலைப்புகளைத் தருகிறது.
+என்ன நடந்தது, ஏன் முக்கியம், என்ன பேசலாம்? ஐந்து நிமிடங்களில் இலவச தினசரி விளையாட்டுச் சுருக்கத்தை வாசியுங்கள். ஆதார இணைப்புகள் உண்டு, முடிவில்லா ஊட்டம் இல்லை.
 
-விளையாட்டைப் பின்தொடராதவர்களுக்கு, ஆனால் வாழ்க்கையில் விளையாட்டு ரசிகர்கள் உள்ளவர்களுக்கு: coworkers, partner, friends, children, parents, party-யில் quarterback opinion.
+சுருக்கங்கள் ஆங்கிலத்தில் உள்ளன.
 
-context தேர்ந்தெடுத்து குறுகிய briefing படியுங்கள்:
+இலவசம் மற்றும் PRO
+இலவச Cocktail Party சுருக்கம் தினம் ஒருமுறை கதைகள், பின்னணி, ஆதாரங்கள், உரையாடல் தொடங்க ஓர் யோசனை வழங்குகிறது. Gist Pro வேலை, குடும்பம், டேட்டிற்கு தனிச் சுருக்கங்களை வழங்குகிறது. அவை காலை, மதியம், மாலையில் புதுப்பிக்கப்படும். பந்தய அல்லது ஃபேன்டசி ஆலோசனைகளும் முடிவில்லா ஸ்கோர் அட்டவணைகளும் இல்லை.
 
-- சத்தமாகச் சொல்லக்கூடிய TL;DR
-- non-fans-க்கு 3-6 points
-- pop-culture, drama, nice stories
-- ஒவ்வொரு point-க்கும் source link
-- fan-க்கு ஒரு question
-
-score, betting, fantasy app அல்ல. conversation-ல் இருக்க போதுமான context.
-
-Free: Cocktail Party + daily briefing.
-
-Gist Pro all contexts, 3 briefing/day.
-
-Gist Pro is an auto-renewing subscription (monthly or annual). Your
-subscription renews automatically unless cancelled at least 24 hours before the
-end of the period. Manage or cancel anytime in your Apple ID settings.
-Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-Privacy: https://jackwallner.github.io/sports/privacy-policy.html
+மாதத் திட்டத்தின் விலை US$5.99, ஆண்டு திட்டத்தின் விலை US$29.99. இரண்டும் தானாகப் புதுப்பிக்கப்படும்; தகுதி இருந்தால் 7 நாள் இலவசச் சோதனை கிடைக்கும். வாங்குதலை உறுதிப்படுத்தும்போது அல்லது தகுதியான சோதனைக்குப் பிறகு Apple உங்கள் Apple கணக்கில் கட்டணம் வசூலிக்கும். தகுதி இல்லையெனில் உறுதிப்படுத்தும்போதே கட்டணம் வசூலிக்கப்படும். தற்போதைய காலம் முடிவதற்கு முன் 24 மணி நேரத்திற்குள் புதுப்பிப்புக் கட்டணம் வசூலிக்கப்படும். காலம் முடிவதற்கு குறைந்தது 24 மணி நேரம் முன்பு அமைப்புகள் › Apple கணக்கு › சந்தாக்கள் பகுதியில் நிர்வகிக்கவும் அல்லது ரத்து செய்யவும். விலைகள் பகுதியைப் பொறுத்து மாறும்; வாங்குவதற்கு முன் காட்டப்படும்.
+தனியுரிமைக் கொள்கை: https://jackwallner.github.io/sports/privacy-policy.html
+பயன்பாட்டு விதிமுறைகள் (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

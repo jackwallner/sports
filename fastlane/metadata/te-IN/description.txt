@@ -1,23 +1,10 @@
-Gist గదిలోకి ప్రవేశించే ముందు వేగవంతమైన క్రీడా మరియు pop-culture సంభాషణ అంశాలను ఇస్తుంది.
+ఏం జరిగింది, ఎందుకు ముఖ్యం, ఏం చెప్పవచ్చు? ఐదు నిమిషాల్లో ఉచిత రోజువారీ క్రీడా సారాంశం చదవండి. మూల లింక్‌లు ఉంటాయి, అంతులేని ఫీడ్ ఉండదు.
 
-క్రీడను follow చేయని వారికి, కానీ జీవితంలో sports fans ఉన్నవారికి: coworkers, partner, friends, children, parents, partyలో quarterback opinion.
+సారాంశాలు ఇంగ్లీష్‌లో ఉంటాయి.
 
-context ఎంచుకుని చిన్న briefing చదవండి:
+ఉచితం మరియు PRO
+ఉచిత Cocktail Party సారాంశం రోజుకు ఒకసారి కథలు, నేపథ్యం, మూలాలు, సంభాషణ ప్రారంభించే ఆలోచన ఇస్తుంది. Gist Pro పని, కుటుంబం, డేట్ కోసం ప్రత్యేక సారాంశాలను జోడిస్తుంది. అవి ఉదయం, మధ్యాహ్నం, సాయంత్రం అప్‌డేట్ అవుతాయి. బెట్టింగ్ లేదా ఫాంటసీ సలహాలు, అంతులేని స్కోర్ పట్టికలు లేవు.
 
-- గట్టిగా చెప్పగల TL;DR
-- non-fans కోసం 3-6 points
-- pop-culture, drama, nice stories
-- ప్రతి pointకు source link
-- fanకు ఒక question
-
-score, betting, fantasy app కాదు. conversationలో ఉండడానికి సరిపడా context.
-
-Free: Cocktail Party + daily briefing.
-
-Gist Pro all contexts, 3 briefing/day.
-
-Gist Pro is an auto-renewing subscription (monthly or annual). Your
-subscription renews automatically unless cancelled at least 24 hours before the
-end of the period. Manage or cancel anytime in your Apple ID settings.
-Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-Privacy: https://jackwallner.github.io/sports/privacy-policy.html
+నెలవారీ ప్లాన్ ధర US$5.99, వార్షిక ప్లాన్ ధర US$29.99. రెండూ ఆటోమేటిక్‌గా పునరుద్ధరించబడతాయి; అర్హత ఉంటే 7 రోజుల ఉచిత ట్రయల్ లభిస్తుంది. కొనుగోలును నిర్ధారించినప్పుడు లేదా అర్హత ఉన్న ట్రయల్ తర్వాత Apple మీ Apple ఖాతాకు ఛార్జ్ చేస్తుంది. అర్హత లేకపోతే నిర్ధారణ సమయంలోనే ఛార్జ్ చేస్తుంది. ప్రస్తుత కాలం ముగియడానికి ముందు 24 గంటల్లోపు పునరుద్ధరణ ఛార్జ్ తీసుకోబడుతుంది. కాలం ముగియడానికి కనీసం 24 గంటల ముందు సెట్టింగ్‌లు › Apple ఖాతా › సబ్‌స్క్రిప్షన్‌లలో నిర్వహించండి లేదా రద్దు చేయండి. ధరలు ప్రాంతాన్ని బట్టి మారతాయి మరియు కొనుగోలు ముందు చూపబడతాయి.
+గోప్యతా విధానం: https://jackwallner.github.io/sports/privacy-policy.html
+వినియోగ నిబంధనలు (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

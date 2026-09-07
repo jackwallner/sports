@@ -1,23 +1,10 @@
-Gist کمرے میں داخل ہونے سے پہلے تیز کھیل اور pop-culture گفتگو کے نکات دیتا ہے۔
+کیا ہوا، کیوں اہم ہے اور کیا کہہ سکتے ہیں؟ پانچ منٹ میں مفت روزانہ کھیلوں کا خلاصہ پڑھیں، ذرائع کے لنکس کے ساتھ اور لامتناہی فیڈ کے بغیر۔
 
-جو کھیل follow نہیں کرتے لیکن زندگی میں sports fans ہیں: coworkers, partner, friends, children, parents, party میں quarterback opinion.
+خلاصے انگریزی میں ہیں۔
 
-context منتخب کریں اور مختصر briefing پڑھیں:
+مفت اور PRO
+مفت Cocktail Party خلاصہ دن میں ایک بار کہانیاں، پس منظر، ذرائع اور گفتگو شروع کرنے کا خیال دیتا ہے۔ Gist Pro کام، خاندان اور ڈیٹ کے لیے الگ خلاصے شامل کرتا ہے، جو صبح، دوپہر اور شام اپ ڈیٹ ہوتے ہیں۔ بیٹنگ یا فینٹسی کے مشورے اور لامتناہی اسکور جدول نہیں۔
 
-- بلند آواز میں کہنے والا TL;DR
-- non-fans کے لیے 3-6 points
-- pop-culture, drama, nice stories
-- ہر point پر source link
-- fan سے ایک question
-
-score, betting, fantasy app نہیں۔ conversation میں رہنے کے لیے کافی context.
-
-Free: Cocktail Party + daily briefing.
-
-Gist Pro all contexts, 3 briefing/day.
-
-Gist Pro is an auto-renewing subscription (monthly or annual). Your
-subscription renews automatically unless cancelled at least 24 hours before the
-end of the period. Manage or cancel anytime in your Apple ID settings.
-Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-Privacy: https://jackwallner.github.io/sports/privacy-policy.html
+ماہانہ پلان کی قیمت US$5.99 اور سالانہ پلان کی قیمت US$29.99 ہے۔ دونوں خودکار طور پر تجدید ہوتے ہیں اور اہل ہونے پر 7 دن کا مفت ٹرائل دیتے ہیں۔ Apple خریداری کی تصدیق پر یا اہل ٹرائل کے بعد آپ کے Apple اکاؤنٹ سے رقم وصول کرتا ہے۔ اہل نہ ہونے کی صورت میں تصدیق کے وقت رقم لی جاتی ہے۔ موجودہ مدت ختم ہونے سے پہلے 24 گھنٹوں کے اندر تجدید کی رقم وصول کی جاتی ہے۔ مدت ختم ہونے سے کم از کم 24 گھنٹے پہلے Settings › Apple Account › Subscriptions میں انتظام یا منسوخی کریں۔ قیمتیں خطے کے مطابق مختلف ہوتی ہیں اور خریداری سے پہلے دکھائی جاتی ہیں۔
+رازداری کی پالیسی: https://jackwallner.github.io/sports/privacy-policy.html
+استعمال کی شرائط (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

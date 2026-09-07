@@ -1,1 +1,1 @@
-mundial,futbol,conversación,resumen,breve,temporada,debate,titulares,plática,diario
+noticias,fútbol,nfl,nba,mlb,nhl,f1,conversación,contexto,baloncesto,béisbol,hockey,actualidad

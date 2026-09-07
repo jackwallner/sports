@@ -1,1 +1,1 @@
-mondiali,calcio,conversazione,rompighiaccio,riepilogo,breve,stagione,dibattito,titoli,discussione
+notizie,calcio,nfl,nba,mlb,nhl,f1,riassunto,conversazione,contesto,basket,baseball,hockey

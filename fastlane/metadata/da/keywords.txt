@@ -1,1 +1,1 @@
-isbryder,resumé,kort,sæson,debat,overskrifter,dikussion,daglig,rundtur,insider,sladder
+nyheder,fodbold,nfl,nba,mlb,nhl,f1,resumé,samtale,baggrund,basketball,baseball,ishockey,resultater

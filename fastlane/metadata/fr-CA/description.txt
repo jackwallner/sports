@@ -1,23 +1,10 @@
-Gist vous donne des sujets de conversation sport et pop culture avant d'entrer dans la pièce.
+Ce qui s'est passé, pourquoi ça compte et quoi en dire. Un résumé sportif quotidien gratuit en cinq minutes, avec des sources, sans fil sans fin.
 
-Pour ceux qui ne suivent pas le sport mais côtoient des fans : collègues, conjoint, amis, enfants, parents, et toute la gang avec une opinion soudaine sur le hockey ou le football.
+Les résumés sont en anglais.
 
-Choisissez le contexte et lisez un briefing court :
+GRATUIT ET PRO
+Le résumé Cocktail Party gratuit propose chaque jour des histoires, du contexte, des sources et une amorce de conversation. Gist Pro ajoute des résumés pour le travail, la famille et les rendez-vous, actualisés matin, midi et soir. Sans conseils de paris, de fantasy ou tableaux de scores sans fin.
 
-- Un résumé TL;DR à dire à voix haute.
-- 3 à 6 points de conversation pour non-fans.
-- Pop culture, drama, belles histoires et retours de flamme.
-- Lien source sur chaque point.
-- Une question à poser à un fan.
-
-Pas une app de scores, paris, fantasy ou fil d'actu sportive dense. Juste assez de contexte pour participer.
-
-Gratuit : contexte Cocktail Party avec briefing national quotidien.
-
-Gist Pro débloque tous les contextes, jusqu'à 3 briefings par jour.
-
-Gist Pro is an auto-renewing subscription (monthly or annual). Your
-subscription renews automatically unless cancelled at least 24 hours before the
-end of the period. Manage or cancel anytime in your Apple ID settings.
-Terms: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-Privacy: https://jackwallner.github.io/sports/privacy-policy.html
+Le forfait mensuel coûte US$5.99 et l’annuel US$29.99. Tous deux se renouvellent automatiquement et proposent un essai gratuit de 7 jours si vous êtes admissible. Apple facture votre compte Apple lors de la confirmation de l’achat ou après un essai admissible. Si vous n’êtes pas admissible, le débit est effectué à la confirmation. Le renouvellement est facturé dans les 24 heures précédant la fin de la période en cours. Gérez ou annulez dans Réglages › Compte Apple › Abonnements, au moins 24 heures avant la fin. Les prix varient selon la région et sont affichés avant l’achat.
+Politique de confidentialité: https://jackwallner.github.io/sports/privacy-policy.html
+Conditions d’utilisation (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

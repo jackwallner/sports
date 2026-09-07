@@ -1,1 +1,1 @@
-copa do mundo,futebol,conversa,resumo,breve,temporada,debate,manchetes,discussão,diário
+notícias,futebol,nfl,nba,mlb,nhl,f1,conversa,contexto,basquete,beisebol,hóquei,atualidades

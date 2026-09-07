@@ -1,1 +1,1 @@
-world cup,football,explained,beginner,casual,fan,recap,rules,briefing,news,highlights,catch up
+football,soccer,nfl,nba,mlb,nhl,f1,wnba,recap,explained,highlights,conversation,casual,headlines
