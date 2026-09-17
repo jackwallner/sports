@@ -1,3 +1,4 @@
+import Foundation
 import Shared
 import StoreKit
 import SwiftUI
@@ -41,6 +42,14 @@ struct TodayBriefingView: View {
     private let entitlement: any EntitlementProviding
     private let store: StoreService
     private let isDemo: Bool
+
+    private var showsDemoBanner: Bool {
+        #if DEBUG
+        return isDemo && !ProcessInfo.processInfo.arguments.contains("-SidelineSafeScreenshot")
+        #else
+        return isDemo
+        #endif
+    }
 
     init(
         service: any BriefingServing,
@@ -229,7 +238,7 @@ struct TodayBriefingView: View {
 
     private func deckArea(_ briefing: Briefing, isOffline: Bool, caughtUp: Bool = false) -> some View {
         VStack(spacing: 12) {
-            if isDemo {
+            if showsDemoBanner {
                 demoBanner.padding(.horizontal, 18)
             } else if caughtUp {
                 caughtUpBanner.padding(.horizontal, 18)
@@ -451,4 +460,3 @@ struct TodayBriefingView: View {
         .background(SidelineTheme.brandAccent.opacity(0.12), in: RoundedRectangle(cornerRadius: 12))
     }
 }
-
