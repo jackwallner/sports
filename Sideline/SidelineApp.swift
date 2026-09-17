@@ -22,6 +22,10 @@ struct SidelineApp: App {
         #if DEBUG
         if ProcessInfo.processInfo.arguments.contains("-SidelineEdgeCases") {
             debugService = EdgeCaseBriefingService()
+        } else if ProcessInfo.processInfo.arguments.contains("-SidelineSafeScreenshot") {
+            debugService = SafeScreenshotBriefingService()
+        } else if ProcessInfo.processInfo.arguments.contains("-SidelineScreenshotDemo") {
+            debugService = SampleBriefingService()
         }
         #endif
 
