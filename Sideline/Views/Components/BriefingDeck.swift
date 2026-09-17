@@ -545,7 +545,7 @@ private struct DeckCardView: View {
                     .overlay(Capsule().stroke(.white.opacity(0.28), lineWidth: 1))
                 }
                 .buttonStyle(.plain)
-                .accessibilityHint("Shows Gist Pro plans")
+                .accessibilityHint("Shows \(SidelineBrand.proName) plans")
 
                 hint(icon: "sparkles", text: "Different stories, written for that crowd.")
             }
