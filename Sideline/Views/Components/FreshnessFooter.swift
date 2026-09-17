@@ -1,13 +1,29 @@
 import Shared
 import SwiftUI
 
+enum SidelineBrand {
+    static let name = "Sports Cheat Sheet"
+    static let proName = "Sports Cheat Sheet Pro"
+}
+
 struct FreshnessFooter: View {
     let briefing: Briefing
     let isOffline: Bool
     var isPro: Bool = false
 
     var body: some View {
-        // Centered under the page dots so the deck column reads as one unit.
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("-SidelineSafeScreenshot") {
+            EmptyView()
+        } else {
+            freshnessContent
+        }
+        #else
+        freshnessContent
+        #endif
+    }
+
+    private var freshnessContent: some View {
         VStack(alignment: .center, spacing: 4) {
             Label(text, systemImage: isOffline ? "wifi.slash" : iconName)
                 .font(.caption)
