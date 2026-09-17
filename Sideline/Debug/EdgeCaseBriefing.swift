@@ -85,4 +85,54 @@ struct EdgeCaseBriefingService: BriefingServing {
         EdgeCaseBriefing.briefing
     }
 }
+
+/// Debug-only, current-safe briefing used to verify the screenshot deck without
+/// synthetic celebrity gossip or claims about real people.
+struct SafeScreenshotBriefingService: BriefingServing {
+    func latestBriefing(persona: Persona, scope: BriefingScope) async throws -> Briefing {
+        Briefing(
+            persona: persona,
+            scope: scope,
+            refreshWindow: .daily,
+            headline: "The small details that change a game",
+            tlDR: "A clear game plan starts with field position, tempo, and the matchup that keeps showing up.",
+            leadBackstory: "Coaches tend to talk about the final score, but repeatable edges appear earlier: where possessions begin, how quickly a team resets, and which matchup creates extra room. Those details are useful because they give you something concrete to watch.",
+            bullets: [
+                BriefingBullet(
+                    talkingPoint: "Field position can quietly shape a close game.",
+                    subject: "Field position",
+                    tieIn: "Watch where each drive begins before looking at the final score.",
+                    backstory: "Starting closer to midfield gives an offense fewer yards to cover. It also changes how a team can use its playbook on the next series.",
+                    tag: .neutral,
+                    tagReason: "A useful detail to track from the opening drive.",
+                    sourceHeadline: "Field position basics",
+                    sourceURL: URL(string: "https://example.com/field-position-basics")!
+                ),
+                BriefingBullet(
+                    talkingPoint: "Tempo is a choice, not just a pace.",
+                    subject: "Tempo",
+                    tieIn: "Notice whether the offense stays patient or pushes the next snap.",
+                    backstory: "A faster tempo can limit defensive substitutions, while a slower sequence can give an offense time to reset its look. The contrast is easy to spot possession by possession.",
+                    tag: .neutral,
+                    tagReason: "A simple way to follow the shape of a possession.",
+                    sourceHeadline: "How tempo changes a possession",
+                    sourceURL: URL(string: "https://example.com/tempo-and-possession")!
+                ),
+                BriefingBullet(
+                    talkingPoint: "A matchup is easier to follow when you name the task.",
+                    subject: "Matchups",
+                    tieIn: "Ask which unit has the clearer assignment this week.",
+                    backstory: "Instead of tracking every player, follow one job: protect the passer, win the first tackle, or create space on the edge. A specific task gives the conversation a useful anchor.",
+                    tag: .neutral,
+                    tagReason: "A concrete question is easier to carry into the game.",
+                    sourceHeadline: "A simple guide to watching matchups",
+                    sourceURL: URL(string: "https://example.com/watching-matchups")!
+                )
+            ],
+            suggestedQuestion: "Which part of this matchup are you watching first?",
+            sourceCount: 3,
+            generatedAt: Date()
+        )
+    }
+}
 #endif
