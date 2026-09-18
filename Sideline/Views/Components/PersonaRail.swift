@@ -42,7 +42,7 @@ struct PersonaRail: View {
     private var chips: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 10) {
-                ForEach(Persona.allCases) { persona in
+                ForEach(visiblePersonas) { persona in
                     Button {
                         onSelect(persona)
                     } label: {
@@ -74,6 +74,15 @@ struct PersonaRail: View {
             .padding(.horizontal)
             .padding(.vertical, 8)
         }
+    }
+
+    private var visiblePersonas: [Persona] {
+        guard isScreenshotMode && !isPro else { return Persona.allCases }
+        return Persona.allCases.filter { $0.isFree }
+    }
+
+    private var isScreenshotMode: Bool {
+        ProcessInfo.processInfo.arguments.contains("-SidelineSafeScreenshot")
     }
 
     private func foreground(for persona: Persona) -> some ShapeStyle {
