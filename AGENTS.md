@@ -1,4 +1,4 @@
-# Gist (The Sideline) — Project Guide
+# Gist (The Sideline) Project Guide
 
 Conversation fuel for people who do not follow sports but have to talk to people
 who do: cached, source-cited daily briefings written for a social context rather
@@ -12,9 +12,9 @@ App Store name **Gist**, App Store ID `6770138156`, repo `~/sports`.
 - RevenueCat, gate is `isPro` on `EntitlementProviding` (`RevenueCatEntitlementStore`, or `LocalEntitlementStore` in tests)
 
 ## Targets / bundle IDs
-- `Sideline` — `com.jackwallner.sports`
-- `Shared` — `.shared` (DTOs, services, caching, entitlements; the tests import it)
-- `SidelineTests` — `.tests`, `SidelineUITests` — `.uitests`
+- `Sideline`: `com.jackwallner.sports`
+- `Shared`: `.shared` (DTOs, services, caching, entitlements; the tests import it)
+- `SidelineTests`: `.tests`, `SidelineUITests` — `.uitests`
 - No App Group, no widget or watch target
 
 ## Architecture
@@ -23,15 +23,15 @@ generate strict JSON briefings, validate them, and store them in Supabase; the
 app only reads the newest cached briefing and falls back to its SwiftData cache
 offline. Keep generation on that side of the line.
 
-- `SupabaseFunctions/` — Edge Functions: `_shared/rss.ts`, `gemini.ts`,
+- `SupabaseFunctions/`: Edge Functions: `_shared/rss.ts`, `gemini.ts`,
   `clustering.ts`, `briefingValidation.ts`, `cardArt.ts`, and the read API in
   `briefings-api/`
-- `supabase/migrations/` — schema and the seed feed list
-- `Shared/Models/` — `Briefing`, `BriefingTag`, `Persona`
-- `Shared/Services/` — `BriefingService` (fetch), `BriefingCache` (SwiftData
+- `supabase/migrations/`: schema and the seed feed list
+- `Shared/Models/`: `Briefing`, `BriefingTag`, `Persona`
+- `Shared/Services/`: `BriefingService` (fetch), `BriefingCache` (SwiftData
   `@Model` offline copy), `TodayBriefingViewModel`, `AppConfig`, `Entitlements` +
   `RevenueCatEntitlementStore`, `StoreService`, `ReviewPromptTracker`
-- `Sideline/Views/` — `TodayBriefingView` with `BriefingDeck`, `PersonaRail`,
+- `Sideline/Views/`: `TodayBriefingView` with `BriefingDeck`, `PersonaRail`,
   `FreshnessFooter`, plus onboarding, paywall and settings
 
 ## Rules that hold everywhere
@@ -60,4 +60,4 @@ offline. Keep generation on that side of the line.
 
 ---
 Shared iOS conventions (build, simulator, release/TestFlight, ASC key, signing,
-review funnel, gotchas): always-loaded global CLAUDE.md + the `ios-dev` skill.
+review funnel, gotchas): the global agent rules + the `ios-dev` skill.
