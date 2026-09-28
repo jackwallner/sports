@@ -472,7 +472,7 @@ Gaps and risks:
 2. A stored outcome can stop future passive prompts permanently for that device, even if the user later becomes highly satisfied after a product improvement.
 3. The app cannot distinguish an online positive moment from a stale cache in a remote funnel.
 4. Direct App Store write-review URLs can fail to open or behave differently by device/storefront. There is no visible fallback or observable open failure.
-5. No current Gist rating count or rating trend was captured in this rerun. Any historical count in `marketing-strategy-2026.md` should be treated as stale until pulled from ASC by storefront and version.
+5. No current Gist rating count or rating trend was captured in this rerun. Any historical count in `../marketing/marketing-strategy-2026.md` should be treated as stale until pulled from ASC by storefront and version.
 
 Recommendations:
 

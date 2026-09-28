@@ -56,7 +56,7 @@ offline. Keep generation on that side of the line.
 - **Review funnel:** `ReviewPromptTracker.recordPositiveMoment()` from
   `TodayBriefingViewModel` after a briefing is read. App Store ID above.
 - The marketing site is this repo's `docs/`, served by GitHub Pages from
-  `jackwallner/sports`. Keyword reasoning is in `aso-plan.md`.
+  `jackwallner/sports`. Keyword reasoning is in `project-docs/marketing/aso-plan.md`.
 
 ---
 Shared iOS conventions (build, simulator, release/TestFlight, ASC key, signing,
