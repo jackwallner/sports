@@ -19,7 +19,7 @@ export async function generateBriefingWithGemini(
     throw new Error("Missing GEMINI_API_KEY");
   }
 
-  const model = Deno.env.get("GEMINI_MODEL") ?? "gemini-flash-latest";
+  const models = geminiModels();
   const prompt = buildPrompt(target, sourceItems);
   const requestPayload = {
     contents: [
@@ -35,25 +35,32 @@ export async function generateBriefingWithGemini(
     },
   };
 
-  logInfo(trace_id, "gemini_request_prepared", {
-    model,
-    persona: target.persona,
-    scope: target.scope,
-    refresh_window: target.refreshWindow,
-    source_count: sourceItems.length,
-    prompt_chars: prompt.length,
-  });
+  let response: Response | undefined;
+  let responseText = "";
+  for (const model of models) {
+    logInfo(trace_id, "gemini_request_prepared", {
+      model,
+      persona: target.persona,
+      scope: target.scope,
+      refresh_window: target.refreshWindow,
+      source_count: sourceItems.length,
+      prompt_chars: prompt.length,
+    });
+    response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(requestPayload),
+      },
+    );
+    responseText = await response.text();
+    if (response.ok || !FALLBACK_STATUSES.has(response.status)) {
+      break;
+    }
+    logInfo(trace_id, "gemini_model_unavailable", { model, status: response.status });
+  }
 
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${apiKey}`,
-    {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(requestPayload),
-    },
-  );
-
-  const responseText = await response.text();
   let responsePayload: GeminiResponse;
   try {
     responsePayload = JSON.parse(responseText);
@@ -61,14 +68,28 @@ export async function generateBriefingWithGemini(
     responsePayload = { candidates: [{ content: { parts: [{ text: responseText }] } }] };
   }
 
-  if (!response.ok) {
-    throw new Error(`Gemini request failed ${response.status}: ${responseText}`);
+  if (!response?.ok) {
+    throw new Error(`Gemini request failed ${response?.status}: ${responseText}`);
   }
 
   const generatedText = responsePayload.candidates?.[0]?.content?.parts?.map((part) => part.text ?? "").join("\n") ?? "";
   const briefing = parseJSON(generatedText) as GeneratedBriefing;
 
   return { briefing, requestPayload, responsePayload };
+}
+
+// Free-tier quota is per model per day, and preview models regularly answer
+// 503 under load. Falling through to the next model on those (and on a model
+// Google has retired, 404) keeps a window's briefings alive at no cost.
+const FALLBACK_STATUSES = new Set([404, 429, 500, 503]);
+
+function geminiModels(): string[] {
+  const primary = Deno.env.get("GEMINI_MODEL") ?? "gemini-flash-latest";
+  const fallbacks = (Deno.env.get("GEMINI_FALLBACK_MODELS") ?? "gemini-3.8-flash,gemini-3.5-flash,gemini-flash-latest")
+    .split(",")
+    .map((model) => model.trim())
+    .filter(Boolean);
+  return [...new Set([primary, ...fallbacks])];
 }
 
 export async function paceGeminiCalls(trace_id: string) {
@@ -114,7 +135,7 @@ function buildPrompt(target: GenerationTarget, sourceItems: SourceItemRow[]): st
     "Each bullet's backstory is the reader's cover for the moment someone replies 'wait, what happened?'. Write 2-3 short sentences for a total outsider, in order: what actually happened in plain words, who the key people are (with identity tags), and why everyone cares, translated into everyday terms. Hard limit 55 words; it has to fit on the back of a card. Stick to facts in the source. It must add real information beyond the talking_point, never restate it, and never lean on context the reader does not have. Every sentence must be specific to THIS story; no generic explainer filler like 'Athletes often use their gear to show personality'. Keep analogies and pop-culture comparisons out of the backstory; that is the tie_in's job, and the two must never make the same point twice.",
     "The briefing's lead_backstory is the same kind of cover for the tl_dr: 2-3 sentences that set up the day's main story for someone who knows nothing, with identity tags and a translated reason it matters. Hard limit 70 words.",
     "Each bullet's tie_in is one full sentence that hooks the story to something a non-fan already knows or has an opinion on (a show, a celebrity, money, workplace life), so the reader can steer the conversation somewhere comfortable. Never a bare label like 'Taylor Swift' or 'Internet culture'. It must bring a genuinely new angle the backstory has not already made; if the only angle available is one the backstory already lands, use null. Use null if there is no genuine angle.",
-    "Each bullet's image_prompt is the literal visual scene for that story's card art. Describe only WHAT is in the picture: concrete objects, setting, action, mascots, and pop-culture imagery (a cartoon great dane in a quarterback jersey, a torn jersey on a locker room floor, a phone glowing with angry posts). Lean into the story's hook, including silly comparisons. Never name or depict a real person, never describe an art style, and never include words, numbers, or signs to render.",
+    "Each bullet's image_prompt is the literal visual scene for that story's card art. Describe only WHAT is in the picture: concrete objects, setting, action, mascots, and pop-culture imagery (a cartoon great dane in a football helmet, a cleat left on an empty locker room bench, a phone glowing face down on a table). Lean into the story's hook, including silly comparisons. Never name or depict a real person, never describe an art style, and never include words, numbers, or signs to render. Image models print gibberish on anything that usually carries lettering, so leave out jerseys, scoreboards, signs, stickers, trophies with plaques, newspapers and screens with content; show people only from behind or in silhouette.",
     "The briefing's lead_image_prompt is the visual scene for the deck's cover card: one image that captures the day's biggest story or overall mood. Same rules as image_prompt, and it must be a clearly different scene from every bullet's image_prompt.",
     "Return strict JSON only. No markdown. No code fences.",
     "Schema:",

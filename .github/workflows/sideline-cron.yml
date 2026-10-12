@@ -2,12 +2,13 @@ name: Sideline content pipeline
 
 on:
   schedule:
-    # UTC times chosen so generate-briefings runs land in the refresh_window
-    # the edge function derives from UTC hour (see generate-briefings/index.ts:210):
-    #   <16 = morning, <22 = midday, >=22 = evening
-    - cron: '0 14 * * *'  # morning  (~7a PT / 10a ET)
-    - cron: '0 19 * * *'  # midday   (~12p PT / 3p ET)
-    - cron: '0 23 * * *'  # evening  (~4p PT / 7p ET)
+    # Off the top of the hour: GitHub queues top-of-hour schedules behind
+    # everyone else's, and these ran 3 to 4 hours late (the evening run landed
+    # at 02:00 UTC and was filed as the next day's "morning"). The window is
+    # passed explicitly below so a late start still files under the right one.
+    - cron: '17 14 * * *'  # morning  (~7a PT / 10a ET)
+    - cron: '17 19 * * *'  # midday   (~12p PT / 3p ET)
+    - cron: '17 23 * * *'  # evening  (~4p PT / 7p ET)
   workflow_dispatch:
     inputs:
       skip_ingest:
@@ -31,13 +32,21 @@ jobs:
             -H "x-cron-secret: $CS"
           echo
 
-      # Gemini free tier allows 20 requests/day. With 4 personas and 3 daily
-      # windows the baseline is 12 requests, leaving headroom for retries, so
-      # every room refreshes in every window.
+      # Gemini free tier allows 20 requests/day per model. With 4 personas and
+      # 3 daily windows the baseline is 12 requests; the function falls back
+      # to other free models (GEMINI_FALLBACK_MODELS) on 503s and quota 429s.
       - name: Generate national briefings (per persona)
+        env:
+          SCHEDULE: ${{ github.event.schedule }}
         run: |
           set -uo pipefail
           PERSONAS="cocktail_party office_watercooler date_night sports_talk_for_moms"
+          case "$SCHEDULE" in
+            "17 14 * * *") WINDOW='"refresh_window":"morning",' ;;
+            "17 19 * * *") WINDOW='"refresh_window":"midday",' ;;
+            "17 23 * * *") WINDOW='"refresh_window":"evening",' ;;
+            *) WINDOW='' ;;
+          esac
           FAILED=0
           for P in $PERSONAS; do
             echo "=== $P ==="
@@ -46,7 +55,7 @@ jobs:
               R=$(curl -fsS -X POST "$URL/generate-briefings" \
                 -H "content-type: application/json" \
                 -H "x-cron-secret: $CS" \
-                -d "{\"personas\":[\"$P\"]}") || R='{"error":"curl failed"}'
+                -d "{$WINDOW\"personas\":[\"$P\"]}") || R='{"error":"curl failed"}'
               echo "$R"
               if echo "$R" | grep -q '"status":"succeeded"'; then OK=1; break; fi
               sleep 5

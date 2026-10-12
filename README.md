@@ -23,7 +23,10 @@ Backend functions:
 - `GEMINI_API_KEY`
 - `CRON_SECRET`
 - `GEMINI_MODEL` optional, use `gemini-3-flash-preview` when available
+- `GEMINI_FALLBACK_MODELS` optional, comma list tried in order when a model returns 404/429/5xx (each has its own free daily quota), defaults to `gemini-3.8-flash,gemini-3.5-flash,gemini-flash-latest`
 - `GEMINI_MIN_INTERVAL_MS` optional, defaults to `4500`
+- `CF_ACCOUNT_ID` + `CF_API_TOKEN` for card art on Cloudflare Workers AI's free tier (FLUX.1 schnell, then SDXL Lightning)
+- `POLLINATIONS_API_KEY` optional, last-resort card art provider
 
 iOS app:
 

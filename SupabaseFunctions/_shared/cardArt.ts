@@ -3,18 +3,18 @@ import type { BriefingTag, GeneratedBriefing, GeneratedBullet } from "./types.ts
 
 // Card art for the briefing deck.
 //
-// Preferred path (POLLINATIONS_API_KEY set): generate each image once via
-// gen.pollinations.ai using the API key, upload it to the public `card-art`
-// storage bucket, and stamp the storage URL on the bullet. Every phone then
-// downloads the same image from our own storage — no third-party rate limits
-// at runtime, fully deterministic. Images are keyed by prompt+seed, so the
-// same story reuses the same file across personas and refresh windows.
+// Preferred path (a provider is configured): generate each image once, upload
+// it to the public `card-art` storage bucket, and stamp the storage URL on the
+// bullet. Every phone then downloads the same image from our own storage, with
+// no third-party rate limits at runtime. Bullet art is keyed by the story's
+// source URL alone, so a story covered by several personas or refresh windows
+// is drawn once and reused, which keeps the daily free quota in reach.
 //
-// Fallback path (no key, or generation/upload fails): stamp the legacy
+// Fallback path (no provider, or generation/upload fails): stamp the legacy
 // pollinations.ai on-demand URL. The app can still fetch that from a
-// residential IP, and its own gradient is the floor below that. This module
-// is the server-side twin of `Sideline/Utilities/CardArt.swift` — keep prompt
-// text, query order, and the FNV-1a seed in sync.
+// residential IP, and its own gradient is the floor below that. The FNV-1a
+// seed matches `Sideline/Utilities/CardArt.swift`; the app's derived fallback
+// still uses the older poster style, which is fine since it is a fallback.
 //
 // Prompts ask for editorial illustration of the sport's scene and the story's
 // mood, never a named player: generated faces of real athletes look uncanny
@@ -33,7 +33,13 @@ export async function stampCardArt(
     stamped.push({
       ...bullet,
       image_url: hasProvider()
-        ? await storedImageURL(supabase, trace_id, promptFor(bullet), fnv1a32(bullet.source_url), imageURLForBullet(bullet))
+        ? await storedImageURL(
+          supabase,
+          trace_id,
+          promptFor(bullet),
+          `story-${fnv1a32(bullet.source_url)}.jpg`,
+          imageURLForBullet(bullet),
+        )
         : imageURLForBullet(bullet),
     });
   }
@@ -58,7 +64,7 @@ export async function stampLeadArt(
   if (!hasProvider()) {
     return fallback;
   }
-  return await storedImageURL(supabase, trace_id, prompt, seed, fallback);
+  return await storedImageURL(supabase, trace_id, prompt, `lead-${seed}-${fnv1a32(prompt)}.jpg`, fallback);
 }
 
 function fallbackBullet(): GeneratedBullet {
@@ -76,10 +82,9 @@ async function storedImageURL(
   supabase: any,
   trace_id: string,
   prompt: string,
-  seed: number,
+  path: string,
   fallback: string,
 ): Promise<string> {
-  const path = `${seed}-${fnv1a32(prompt)}.jpg`;
   const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
   const publicUrl: string = data.publicUrl;
 
@@ -90,7 +95,7 @@ async function storedImageURL(
       return publicUrl;
     }
 
-    const bytes = await generateImage(prompt, seed);
+    const bytes = await generateImage(trace_id, prompt);
 
     // Self-provision the public bucket on first ever use.
     await supabase.storage.createBucket(BUCKET, { public: true }).catch(() => {});
@@ -111,55 +116,76 @@ async function storedImageURL(
   }
 }
 
-// Provider chain, free-first: Cloudflare Workers AI's forever-free tier
-// (10,000 neurons/day, far above the ~30 images a day of briefings needs),
-// then Pollinations if a key with pollen balance is configured. The caller
-// falls back to the legacy on-demand URL if every provider misses.
-async function generateImage(prompt: string, seed: number): Promise<Uint8Array> {
+// Provider chain, all free: Cloudflare Workers AI FLUX.1 schnell (best look,
+// ~173 neurons an image against a 10,000 neuron/day free allocation), then
+// Workers AI SDXL Lightning (0 neurons, so it still works once the FLUX
+// allocation runs out), then Pollinations if a key with pollen balance is
+// configured. The caller falls back to the legacy on-demand URL if all miss.
+async function generateImage(trace_id: string, prompt: string): Promise<Uint8Array> {
   const cfAccount = Deno.env.get("CF_ACCOUNT_ID");
   const cfToken = Deno.env.get("CF_API_TOKEN");
   if (cfAccount && cfToken) {
     try {
-      return await generateWithCloudflare(prompt, seed, cfAccount, cfToken);
-    } catch {
-      // Fall through to Pollinations.
+      return await generateWithFlux(prompt, cfAccount, cfToken);
+    } catch (error) {
+      logError(trace_id, "card_art_flux_failed", error);
+    }
+    try {
+      return await generateWithSDXL(prompt, cfAccount, cfToken);
+    } catch (error) {
+      logError(trace_id, "card_art_sdxl_failed", error);
     }
   }
   const pollinationsKey = Deno.env.get("POLLINATIONS_API_KEY");
   if (pollinationsKey) {
-    return await generateWithPollinations(prompt, seed, pollinationsKey);
+    return await generateWithPollinations(prompt, fnv1a32(prompt), pollinationsKey);
   }
   throw new Error("No image provider configured or available");
 }
 
-/** FLUX.1 schnell on Workers AI. Returns base64 JSON; square 1024px output. */
-async function generateWithCloudflare(
-  prompt: string,
-  seed: number,
-  accountId: string,
-  token: string,
-): Promise<Uint8Array> {
-  const response = await fetch(
-    `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/@cf/black-forest-labs/flux-1-schnell`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({ prompt, seed, steps: 8 }),
-    },
-  );
+function workersAIURL(accountId: string, model: string): string {
+  return `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/${model}`;
+}
+
+/// FLUX.1 schnell on Workers AI. Returns base64 JSON; square 1024px output.
+/// The model now rejects any field besides prompt and steps with a 400, which
+/// is why every card fell back to the legacy URL after a `seed` was sent.
+/// Four steps is the model's default
+/// and costs about half of eight with no visible loss at card size.
+async function generateWithFlux(prompt: string, accountId: string, token: string): Promise<Uint8Array> {
+  const response = await fetch(workersAIURL(accountId, "@cf/black-forest-labs/flux-1-schnell"), {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}`, "content-type": "application/json" },
+    body: JSON.stringify({ prompt, steps: 4 }),
+  });
   if (!response.ok) {
-    await response.body?.cancel();
-    throw new Error(`Cloudflare Workers AI returned ${response.status}`);
+    throw new Error(`Workers AI flux returned ${response.status}: ${(await response.text()).slice(0, 200)}`);
   }
   const payload = await response.json();
   const b64 = payload?.result?.image;
   if (typeof b64 !== "string" || !b64) {
-    throw new Error("Cloudflare Workers AI returned no image");
+    throw new Error("Workers AI flux returned no image");
   }
   return Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+}
+
+/// SDXL Lightning on Workers AI. Returns raw image bytes in the card's
+/// portrait shape. Unlike FLUX it honours a negative prompt, which is where
+/// the no-text rule does the most good.
+async function generateWithSDXL(prompt: string, accountId: string, token: string): Promise<Uint8Array> {
+  const response = await fetch(workersAIURL(accountId, "@cf/bytedance/stable-diffusion-xl-lightning"), {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}`, "content-type": "application/json" },
+    body: JSON.stringify({ prompt, negative_prompt: NEGATIVE, width: 768, height: 960 }),
+  });
+  if (!response.ok) {
+    throw new Error(`Workers AI sdxl returned ${response.status}: ${(await response.text()).slice(0, 200)}`);
+  }
+  const bytes = new Uint8Array(await response.arrayBuffer());
+  if (bytes.length < 1024) {
+    throw new Error("Workers AI sdxl returned no image");
+  }
+  return bytes;
 }
 
 /// Bursts of generations can trip the gateway's rate limit (402/429); those
@@ -195,12 +221,18 @@ function contentType(bytes: Uint8Array): string {
 // reads as one illustrated set, whether the scene is a stadium at night or a
 // cartoon great dane in a quarterback jersey. Gemini supplies only the scene
 // (the WHAT); this supplies the entire look (the HOW).
-const STYLE_PREFIX = "Retro editorial sports poster illustration:";
-const STYLE = "Flat bold graphic shapes, screen print risograph texture, " +
+//
+// "Poster" and "magazine" in the prompt make FLUX paint headlines, mastheads
+// and artist signatures, so the style names neither and describes the image
+// as wordless with blank surfaces instead of listing banned text.
+const STYLE_PREFIX = "Wordless mid-century editorial illustration:";
+const STYLE = "Flat bold graphic shapes, screen print risograph grain, " +
   "limited palette of deep navy, warm cream, forest green and antique gold, " +
-  "dramatic side lighting, grainy shadows, 1960s sports magazine poster aesthetic. " +
-  "No real people's likenesses, no readable faces, no text, no words, no letters, " +
-  "no numbers, no logos, no watermark, no signature, no caption.";
+  "dramatic side lighting, soft grainy shadows, generous empty space. " +
+  "A pure picture with blank surfaces: no lettering, no headline, no banner, " +
+  "no signage, plain unmarked clothing and gear, no logos, no people's faces.";
+const NEGATIVE = "text, letters, words, typography, headline, caption, signature, " +
+  "watermark, logo, numbers, realistic face, photo";
 
 const FALLBACK_SCENE = "packed sports stadium at night under floodlights, " +
   "crowd in silhouette, confetti in the air";
