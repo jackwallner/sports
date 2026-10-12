@@ -95,7 +95,7 @@ async function storedImageURL(
       return publicUrl;
     }
 
-    const bytes = await generateImage(trace_id, prompt);
+    const bytes = await generateImage(supabase, trace_id, prompt);
 
     // Self-provision the public bucket on first ever use.
     await supabase.storage.createBucket(BUCKET, { public: true }).catch(() => {});
@@ -117,15 +117,26 @@ async function storedImageURL(
 }
 
 // Provider chain, all free: Cloudflare Workers AI FLUX.1 schnell (best look,
-// ~173 neurons an image against a 10,000 neuron/day free allocation), then
-// Workers AI SDXL Lightning (0 neurons, so it still works once the FLUX
-// allocation runs out), then Pollinations if a key with pollen balance is
-// configured. The caller falls back to the legacy on-demand URL if all miss.
-async function generateImage(trace_id: string, prompt: string): Promise<Uint8Array> {
+// ~173 neurons an image against the free plan's 10,000 neurons/day), then
+// Workers AI SDXL Lightning (0 neurons), then Pollinations if a key with
+// pollen balance is configured. The caller falls back to the legacy
+// on-demand URL if all miss.
+//
+// Once the daily allocation is spent Cloudflare refuses every model, SDXL
+// included (4006/429 until 00:00 UTC). So FLUX stops at a count of today's
+// stored images, well under the allocation, and SDXL covers the rest of the
+// day instead of the deck dropping to the legacy URL.
+const FLUX_DAILY_IMAGES = 50;
+
+async function generateImage(supabase: any, trace_id: string, prompt: string): Promise<Uint8Array> {
   const cfAccount = Deno.env.get("CF_ACCOUNT_ID");
   const cfToken = Deno.env.get("CF_API_TOKEN");
   if (cfAccount && cfToken) {
     try {
+      const storedToday = await imagesStoredToday(supabase);
+      if (storedToday >= FLUX_DAILY_IMAGES) {
+        throw new Error(`daily FLUX cap reached (${storedToday} images today)`);
+      }
       return await generateWithFlux(prompt, cfAccount, cfToken);
     } catch (error) {
       logError(trace_id, "card_art_flux_failed", error);
@@ -141,6 +152,18 @@ async function generateImage(trace_id: string, prompt: string): Promise<Uint8Arr
     return await generateWithPollinations(prompt, fnv1a32(prompt), pollinationsKey);
   }
   throw new Error("No image provider configured or available");
+}
+
+async function imagesStoredToday(supabase: any): Promise<number> {
+  const { data, error } = await supabase.storage.from(BUCKET).list("", {
+    limit: FLUX_DAILY_IMAGES,
+    sortBy: { column: "created_at", order: "desc" },
+  });
+  if (error) {
+    throw error;
+  }
+  const today = new Date().toISOString().slice(0, 10);
+  return (data ?? []).filter((file: { created_at?: string }) => file.created_at?.startsWith(today)).length;
 }
 
 function workersAIURL(accountId: string, model: string): string {
@@ -219,20 +242,22 @@ function contentType(bytes: Uint8Array): string {
 
 // The house style. Every card runs through this identical wrapper so the deck
 // reads as one illustrated set, whether the scene is a stadium at night or a
-// cartoon great dane in a quarterback jersey. Gemini supplies only the scene
+// cartoon great dane in a football helmet. Gemini supplies only the scene
 // (the WHAT); this supplies the entire look (the HOW).
 //
-// "Poster" and "magazine" in the prompt make FLUX paint headlines, mastheads
-// and artist signatures, so the style names neither and describes the image
-// as wordless with blank surfaces instead of listing banned text.
-const STYLE_PREFIX = "Wordless mid-century editorial illustration:";
-const STYLE = "Flat bold graphic shapes, screen print risograph grain, " +
-  "limited palette of deep navy, warm cream, forest green and antique gold, " +
-  "dramatic side lighting, soft grainy shadows, generous empty space. " +
-  "A pure picture with blank surfaces: no lettering, no headline, no banner, " +
-  "no signage, plain unmarked clothing and gear, no logos, no people's faces.";
+// Words like "poster" and "magazine" make FLUX paint headlines, borders and
+// artist signatures, so the style names neither and asks for a wordless,
+// full-bleed picture. The darker ground at the bottom blends into the card's
+// green text panel, which fades up over the lower third of the art.
+const STYLE_PREFIX = "Mid-century editorial gouache illustration:";
+const STYLE = "Bold simplified shapes, visible brush texture and screen-print grain, " +
+  "rich deep navy and forest green shadows with warm cream and antique gold highlights, " +
+  "cinematic low angle, strong rim light, one hero subject large and centered, " +
+  "darker ground fading toward the bottom edge, full-bleed artwork running edge to edge. " +
+  "Wordless image with blank surfaces: no lettering, no signage, plain unmarked clothing " +
+  "and gear, no logos, no signature, no border, faces turned away or in shadow.";
 const NEGATIVE = "text, letters, words, typography, headline, caption, signature, " +
-  "watermark, logo, numbers, realistic face, photo";
+  "watermark, logo, numbers, border, frame, realistic face, photo";
 
 const FALLBACK_SCENE = "packed sports stadium at night under floodlights, " +
   "crowd in silhouette, confetti in the air";

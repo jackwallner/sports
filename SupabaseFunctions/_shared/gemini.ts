@@ -135,7 +135,7 @@ function buildPrompt(target: GenerationTarget, sourceItems: SourceItemRow[]): st
     "Each bullet's backstory is the reader's cover for the moment someone replies 'wait, what happened?'. Write 2-3 short sentences for a total outsider, in order: what actually happened in plain words, who the key people are (with identity tags), and why everyone cares, translated into everyday terms. Hard limit 55 words; it has to fit on the back of a card. Stick to facts in the source. It must add real information beyond the talking_point, never restate it, and never lean on context the reader does not have. Every sentence must be specific to THIS story; no generic explainer filler like 'Athletes often use their gear to show personality'. Keep analogies and pop-culture comparisons out of the backstory; that is the tie_in's job, and the two must never make the same point twice.",
     "The briefing's lead_backstory is the same kind of cover for the tl_dr: 2-3 sentences that set up the day's main story for someone who knows nothing, with identity tags and a translated reason it matters. Hard limit 70 words.",
     "Each bullet's tie_in is one full sentence that hooks the story to something a non-fan already knows or has an opinion on (a show, a celebrity, money, workplace life), so the reader can steer the conversation somewhere comfortable. Never a bare label like 'Taylor Swift' or 'Internet culture'. It must bring a genuinely new angle the backstory has not already made; if the only angle available is one the backstory already lands, use null. Use null if there is no genuine angle.",
-    "Each bullet's image_prompt is the literal visual scene for that story's card art. Describe only WHAT is in the picture: concrete objects, setting, action, mascots, and pop-culture imagery (a cartoon great dane in a football helmet, a cleat left on an empty locker room bench, a phone glowing face down on a table). Lean into the story's hook, including silly comparisons. Never name or depict a real person, never describe an art style, and never include words, numbers, or signs to render. Image models print gibberish on anything that usually carries lettering, so leave out jerseys, scoreboards, signs, stickers, trophies with plaques, newspapers and screens with content; show people only from behind or in silhouette.",
+    "Each bullet's image_prompt is the literal visual scene for that story's card art, one sentence of 25 to 40 words. Build it like a movie still: one hero subject caught mid-action or at a moment of tension, a specific setting, and the light (floodlights, dusk, a single spotlight). Turn the story's hook into a visual joke or metaphor rather than a still life of objects on a table (BAD: 'a robot next to home plate'; GOOD: 'a boxy silver robot umpire crouched behind home plate under blazing stadium lights, one mechanical arm punching the air to call a strike as a baseball streaks toward it'). Describe only WHAT is in the picture: concrete objects, setting, action, mascots, and pop-culture imagery. Silly comparisons are welcome. Never name or depict a real person, never describe an art style, and never include words, numbers, or signs to render. Image models print gibberish on anything that usually carries lettering, so leave out jerseys, scoreboards, signs, stickers, trophies with plaques, newspapers and screens with content; show people only from behind or in silhouette.",
     "The briefing's lead_image_prompt is the visual scene for the deck's cover card: one image that captures the day's biggest story or overall mood. Same rules as image_prompt, and it must be a clearly different scene from every bullet's image_prompt.",
     "Return strict JSON only. No markdown. No code fences.",
     "Schema:",
@@ -143,7 +143,7 @@ function buildPrompt(target: GenerationTarget, sourceItems: SourceItemRow[]): st
       headline: "string, <= 120 chars",
       tl_dr: "string, one sentence the reader can say out loud",
       lead_backstory: "2-3 sentences: the setup behind the tl_dr for a total outsider, with identity tags",
-      lead_image_prompt: "1-2 sentence literal visual scene for the deck's cover card, distinct from every bullet's",
+      lead_image_prompt: "one 25-40 word movie-still scene for the deck's cover card, distinct from every bullet's",
       bullets: [
         {
           talking_point: "plain-language point, 1-2 sentences",
@@ -152,7 +152,7 @@ function buildPrompt(target: GenerationTarget, sourceItems: SourceItemRow[]): st
           tie_in: "one full sentence pop-culture/social angle to keep talking, or null",
           tag: "nice_guy | jerk | redemption | drama | neutral | null",
           tag_reason: "optional short reason or null",
-          image_prompt: "1-2 sentence literal visual scene for this story's card art",
+          image_prompt: "one 25-40 word movie-still scene for this story's card art",
           source_headline: "headline from one source below",
           source_url: "source URL from one source below",
         },
