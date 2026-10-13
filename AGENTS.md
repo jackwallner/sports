@@ -47,9 +47,12 @@ offline. Keep generation on that side of the line.
   `SIDELINE_SUPABASE_ANON_KEY`, `SIDELINE_REVENUECAT_API_KEY`); `AppConfig` reads
   them from the bundle, or from the environment in tests. A missing file gives a
   build with no backend, not a compile error.
-- **Briefings are refreshed three times a day** by
-  `.github/workflows/sideline-cron.yml` (14:00, 19:00 and 23:00 UTC), which calls
-  the function with `x-cron-secret`. Backend env keys are listed in `README.md`.
+- **Briefings are refreshed three times a day** by pg_cron in Supabase
+  (`supabase/migrations/20261013000000_pg_cron_pipeline.sql`, 14:05, 19:05 and
+  23:05 UTC, one persona every 4 minutes after ingest), which calls the functions
+  with `x-cron-secret` read from Vault. Check runs in `cron.job_run_details` and
+  `net._http_response`. `.github/workflows/sideline-cron.yml` is manual only.
+  Backend env keys are listed in `README.md`.
 - **Every briefing is source-cited and written for a non-fan.** No team, league
   or athlete imagery in the app's own art (`CardArt`), and nothing should read as
   a prediction or a betting angle.
