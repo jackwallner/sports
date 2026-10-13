@@ -14,21 +14,22 @@ struct TodayBriefingView: View {
     @State private var activeSheet: ActiveSheet?
     @State private var pendingPaywallContext: Persona?
     @State private var deckIndex = 0
-    @StateObject private var reviewPromptCoordinator = ReviewPromptCoordinator.shared
     @State private var reviewPromptShownThisSession = false
-    @State private var pendingNativeReviewAfterDismiss = false
+    /// The briefing whose last story card was reached, so finishing one deck
+    /// counts as one positive moment however often the user swipes past it.
+    @State private var finishedBriefingID: UUID?
+    /// A source opened from the deck; its dismissal retries a blocked ask.
+    @State private var isShowingSource = false
 
     private enum ActiveSheet: Identifiable {
         case proPreview(Persona)
         case paywall(Persona, String)
-        case review(ReviewPromptSheet.Step)
         case source(URL)
 
         var id: String {
             switch self {
             case .proPreview(let persona): return "preview-\(persona.rawValue)"
             case .paywall(let persona, let impressionId): return "paywall-\(persona.rawValue)-\(impressionId)"
-            case .review: return "review"
             case .source(let url): return "source-\(url.absoluteString)"
             }
         }
@@ -163,8 +164,6 @@ struct TodayBriefingView: View {
                             context: persona,
                             impressionId: impressionId
                         )
-                    case .review(let step):
-                        ReviewPromptSheet(initialStep: step, onFinish: handleReviewPromptFinish)
                     case .source(let url):
                         #if canImport(SafariServices) && canImport(UIKit)
                         SafariView(url: url)
@@ -187,18 +186,10 @@ struct TodayBriefingView: View {
                     Task { await viewModel.load() }
                 }
                 .onReceive(NotificationCenter.default.publisher(for: .sidelinePositiveMomentForReview)) { _ in
-                    scheduleReviewPromptAfterPositiveMoment()
+                    scheduleReviewRequestAfterPositiveMoment()
                 }
-                .onChange(of: reviewPromptCoordinator.pendingPresentation) { _, presentation in
-                    guard let presentation else { return }
-                    defer { reviewPromptCoordinator.clear() }
-                    guard activeSheet == nil else { return }
-                    switch presentation {
-                    case .enjoymentPrompt:
-                        presentReviewPrompt(step: .enjoyment)
-                    case .feedbackOnly:
-                        presentReviewPrompt(step: .feedback)
-                    }
+                .onChange(of: deckIndex) { _, _ in
+                    recordFinishedBriefingIfNeeded()
                 }
         }
     }
@@ -251,7 +242,10 @@ struct TodayBriefingView: View {
                 index: $deckIndex,
                 isPro: isPro,
                 trialAvailable: trialAvailable,
-                onOpenSource: { url in activeSheet = .source(url) },
+                onOpenSource: { url in
+                    isShowingSource = true
+                    activeSheet = .source(url)
+                },
                 onExploreRooms: {
                     activeSheet = .paywall(viewModel.selectedPersona, "sideline_free_deck_rooms_paywall")
                 }
@@ -291,22 +285,46 @@ struct TodayBriefingView: View {
 
     // MARK: - Review prompt
 
-    private func scheduleReviewPromptAfterPositiveMoment() {
+    /// Reaching the deck's "Your move" card means the briefing was read
+    /// through: the core action done.
+    private func recordFinishedBriefingIfNeeded() {
+        guard !isDemo, let briefing = viewModel.lastBriefing,
+              deckIndex == briefing.bullets.count + 1,
+              finishedBriefingID != briefing.id
+        else { return }
+        finishedBriefingID = briefing.id
+        ReviewPromptTracker.recordPositiveMoment()
+    }
+
+    /// The briefing is on screen with no sheet over it, and the deck is not
+    /// on the free rooms pitch card.
+    private var isBriefingClear: Bool {
+        guard activeSheet == nil else { return false }
+        guard case .populated(let briefing, _) = viewModel.state else { return false }
+        return deckIndex <= briefing.bullets.count + 1
+    }
+
+    /// The rating ask after a positive moment: Apple's own prompt, no question
+    /// in front of it. Waits for the moment to settle, then asks only if the
+    /// briefing is still clear. A blocked ask keeps the moment pending in the
+    /// tracker; a source sheet's dismissal or the next moment asks.
+    private func scheduleReviewRequestAfterPositiveMoment() {
         guard !isDemo,
               hasCompletedOnboarding,
-              ReviewPromptTracker.shouldShowAfterPositiveMoment(hasCompletedSetup: hasCompletedOnboarding),
+              ReviewPromptTracker.shouldRequestAfterPositiveMoment(hasCompletedSetup: hasCompletedOnboarding),
               !reviewPromptShownThisSession,
-              activeSheet == nil
+              isBriefingClear
         else { return }
 
         Task { @MainActor in
             try? await Task.sleep(nanoseconds: 3_500_000_000)
-            guard activeSheet == nil,
-                  ReviewPromptTracker.shouldShowAfterPositiveMoment(hasCompletedSetup: hasCompletedOnboarding)
+            guard isBriefingClear,
+                  !reviewPromptShownThisSession,
+                  ReviewPromptTracker.shouldRequestAfterPositiveMoment(hasCompletedSetup: hasCompletedOnboarding)
             else { return }
             reviewPromptShownThisSession = true
-            ReviewPromptTracker.consumePendingPositiveMoment()
-            presentReviewPrompt(step: .enjoyment)
+            ReviewPromptTracker.markShown()
+            requestReview()
         }
     }
 
@@ -316,17 +334,12 @@ struct TodayBriefingView: View {
             activeSheet = .paywall(persona, "sideline_locked_room_paywall_\(persona.rawValue)")
             return
         }
-        if pendingNativeReviewAfterDismiss {
-            pendingNativeReviewAfterDismiss = false
-            requestReview()
+        // Only a source sheet retries a blocked ask. A paywall or Pro preview
+        // dismissal never leads into a rating request.
+        if isShowingSource {
+            isShowingSource = false
+            scheduleReviewRequestAfterPositiveMoment()
         }
-    }
-
-    private func handleReviewPromptFinish(_ outcome: ReviewPromptDismissOutcome) {
-        if outcome == .enjoyedMaybeLater {
-            pendingNativeReviewAfterDismiss = true
-        }
-        activeSheet = nil
     }
 
     #if DEBUG
@@ -338,11 +351,6 @@ struct TodayBriefingView: View {
         return Int(args[i + 1])
     }
     #endif
-
-    private func presentReviewPrompt(step: ReviewPromptSheet.Step) {
-        reviewPromptShownThisSession = true
-        activeSheet = .review(step)
-    }
 
     // MARK: - States
 

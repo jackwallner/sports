@@ -56,11 +56,16 @@ offline. Keep generation on that side of the line.
 - **Every briefing is source-cited and written for a non-fan.** No team, league
   or athlete imagery in the app's own art (`CardArt`), and nothing should read as
   a prediction or a betting angle.
-- **Review funnel:** `ReviewPromptTracker.recordPositiveMoment()` from
-  `TodayBriefingViewModel` after a briefing is read. App Store ID above.
+- **Ratings:** no in-app rating question (App Review 5.6.1). After a
+  briefing loads from a refresh or room switch, or the deck reaches its
+  "Your move" card, `TodayBriefingView` calls the system `requestReview()`
+  about 3.5s later if no sheet is up and the deck is not on the rooms pitch
+  card (from the 2nd launch, 30-day cooldown). A source sheet's dismissal
+  retries a blocked ask; a paywall or Pro preview never does. Settings has
+  separate "Send Feedback" and "Rate Gist" rows. App Store ID above.
 - The marketing site is this repo's `docs/`, served by GitHub Pages from
   `jackwallner/sports`. Keyword reasoning is in `project-docs/marketing/aso-plan.md`.
 
 ---
 Shared iOS conventions (build, simulator, release/TestFlight, ASC key, signing,
-review funnel, gotchas): the global agent rules + the `ios-dev` skill.
+ratings, gotchas): the global agent rules + the `ios-dev` skill.

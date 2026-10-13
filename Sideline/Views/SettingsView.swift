@@ -10,6 +10,7 @@ import RevenueCat
 
 struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.openURL) private var openURL
     @State private var showingPaywall = false
     @State private var isRestoring = false
     @State private var restoreResultMessage: String?
@@ -93,11 +94,19 @@ struct SettingsView: View {
                 Text("Already subscribed? Restore to unlock Pro on this device.")
             }
 
+            // Two separate rows with no question in front of either
+            // (App Review 5.6.1).
             Section("Help") {
                 Button {
-                    ReviewPromptCoordinator.shared.requestEnjoymentPrompt()
+                    openURL(Self.feedbackMailURL)
                 } label: {
-                    Label("Rate or Send Feedback", systemImage: "star.bubble")
+                    Label("Send Feedback", systemImage: "envelope")
+                }
+                Button {
+                    ReviewPromptTracker.markOpenedWriteReview()
+                    openURL(AppStoreReviewLinks.writeReviewURL)
+                } label: {
+                    Label("Rate Gist", systemImage: "star")
                 }
             }
 
@@ -126,6 +135,14 @@ struct SettingsView: View {
             )
         }
     }
+
+    private static let feedbackMailURL: URL = {
+        var components = URLComponents()
+        components.scheme = "mailto"
+        components.path = "jack@jackwallner.com"
+        components.queryItems = [URLQueryItem(name: "subject", value: "Gist feedback")]
+        return components.url!
+    }()
 
     private func runRestore() async {
         isRestoring = true
