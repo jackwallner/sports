@@ -1,0 +1,7 @@
+<resources>
+    <!-- LaunchBackground (sidelineBackground), so launch never flashes white. -->
+    <color name="launch_canvas">#FAF6EE</color>
+    <color name="accent">#1F5C45</color>
+    <!-- The iOS icon's green felt, behind the adaptive icon's disc. -->
+    <color name="ic_launcher_background">#266C46</color>
+</resources>
