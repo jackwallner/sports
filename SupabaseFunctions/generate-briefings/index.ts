@@ -20,7 +20,13 @@ Deno.serve(async (request) => {
     requireCronSecret(request);
     const body = request.method === "POST" ? await safeJSON(request) : {};
     const supabase = serviceClient();
-    const targets = resolveTargets(body);
+    const targets = body.missing_only === true
+      ? await firstMissingTarget(supabase, resolveTargets(body))
+      : resolveTargets(body);
+    if (targets.length === 0) {
+      logInfo(trace_id, "generation_skipped_all_fresh", {});
+      return json({ trace_id, results: [], skipped: "all_fresh" });
+    }
 
     logInfo(trace_id, "generation_started", {
       targets,
@@ -227,6 +233,25 @@ function resolveTargets(body: Record<string, unknown>): GenerationTarget[] {
       return { persona, scope: requestedScope ?? "national", refreshWindow, team: null };
     });
 }
+
+// Retry pass for pg_cron. Gemini's free tier 503s often enough that a window
+// loses a room or two; each retry call fills at most one gap, so a call stays
+// within one persona's compute budget and costs nothing once all are fresh.
+async function firstMissingTarget(supabase: any, targets: GenerationTarget[]): Promise<GenerationTarget[]> {
+  const since = new Date(Date.now() - FRESH_HOURS * 60 * 60 * 1000).toISOString();
+  const { data, error } = await supabase
+    .from("briefings")
+    .select("persona")
+    .gte("created_at", since);
+  if (error) {
+    throw error;
+  }
+  const fresh = new Set((data ?? []).map((row: { persona: string }) => row.persona));
+  const missing = targets.find((target) => !fresh.has(target.persona));
+  return missing ? [missing] : [];
+}
+
+const FRESH_HOURS = 3;
 
 function defaultPersonas(refreshWindow: RefreshWindow): Persona[] {
   if (refreshWindow === "daily") {

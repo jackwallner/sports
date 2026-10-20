@@ -4,7 +4,7 @@ import type { GeneratedBriefing, GenerationTarget, SourceItemRow } from "./types
 interface GeminiResponse {
   candidates?: Array<{
     content?: {
-      parts?: Array<{ text?: string }>;
+      parts?: Array<{ text?: string; thought?: boolean }>;
     };
   }>;
 }
@@ -37,7 +37,12 @@ export async function generateBriefingWithGemini(
 
   let response: Response | undefined;
   let responseText = "";
+  const started = Date.now();
   for (const model of models) {
+    if (response && Date.now() - started > MODEL_CHAIN_BUDGET_MS) {
+      logInfo(trace_id, "gemini_model_chain_budget_spent", { elapsed_ms: Date.now() - started });
+      break;
+    }
     logInfo(trace_id, "gemini_request_prepared", {
       model,
       persona: target.persona,
@@ -72,20 +77,29 @@ export async function generateBriefingWithGemini(
     throw new Error(`Gemini request failed ${response?.status}: ${responseText}`);
   }
 
-  const generatedText = responsePayload.candidates?.[0]?.content?.parts?.map((part) => part.text ?? "").join("\n") ?? "";
+  // Gemma returns its reasoning as text parts flagged `thought`; only the
+  // answer parts are the JSON.
+  const generatedText = responsePayload.candidates?.[0]?.content?.parts
+    ?.filter((part) => !part.thought)
+    .map((part) => part.text ?? "")
+    .join("\n") ?? "";
   const briefing = parseJSON(generatedText) as GeneratedBriefing;
 
   return { briefing, requestPayload, responsePayload };
 }
 
-// Free-tier quota is per model per day, and preview models regularly answer
-// 503 under load. Falling through to the next model on those (and on a model
-// Google has retired, 404) keeps a window's briefings alive at no cost.
+// Free-tier quota is per model per day, and every Gemini Flash model answers
+// 503 under load, sometimes all at once. Falling through the chain (ending on
+// Gemma, which is slower but on separate capacity) keeps a window's briefings
+// alive at no cost. The chain stops starting new models after a minute so the
+// whole call, art included, stays inside the edge function's wall-clock
+// limit; the pg_cron retry pass picks up anything left missing.
 const FALLBACK_STATUSES = new Set([404, 429, 500, 503]);
+const MODEL_CHAIN_BUDGET_MS = 60_000;
 
 function geminiModels(): string[] {
   const primary = Deno.env.get("GEMINI_MODEL") ?? "gemini-flash-latest";
-  const fallbacks = (Deno.env.get("GEMINI_FALLBACK_MODELS") ?? "gemini-3.8-flash,gemini-3.5-flash,gemini-flash-latest")
+  const fallbacks = (Deno.env.get("GEMINI_FALLBACK_MODELS") ?? "gemini-3.5-flash,gemini-3.8-flash,gemini-flash-latest,gemma-4-31b-it")
     .split(",")
     .map((model) => model.trim())
     .filter(Boolean);
