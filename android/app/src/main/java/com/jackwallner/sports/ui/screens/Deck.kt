@@ -220,16 +220,20 @@ fun BriefingDeck(
                     // The gestures live on the still container: the card itself moves under the finger.
                     .pointerInput(count) {
                         val tracker = VelocityTracker()
+                        // Tracked here, not read back from `drag`: its snaps run in launched
+                        // coroutines, so under load `drag.value` lags and loses move deltas.
+                        var offset = Offset.Zero
                         detectDragGestures(
                             onDragStart = {
                                 tracker.resetTracking()
+                                offset = drag.value
                                 copyAt = null
                             },
                             onDragEnd = {
                                 if (isFlinging) return@detectDragGestures
                                 crossedThreshold = false
                                 val velocity = tracker.calculateVelocity()
-                                val dx = drag.value.x
+                                val dx = offset.x
                                 val predicted = dx + velocity.x * 0.2f
                                 scope.launch {
                                     if (abs(dx) > dismissDistance || abs(predicted) > width * 0.75f) {
@@ -247,7 +251,8 @@ fun BriefingDeck(
                             if (isFlinging) return@detectDragGestures
                             change.consume()
                             tracker.addPosition(change.uptimeMillis, change.position)
-                            val next = drag.value + amount
+                            val next = offset + amount
+                            offset = next
                             scope.launch { drag.snapTo(next) }
                             val past = abs(next.x) > dismissDistance
                             if (past != crossedThreshold) {
