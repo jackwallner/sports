@@ -66,6 +66,10 @@ offline. Keep generation on that side of the line.
 - The marketing site is this repo's `docs/`, served by GitHub Pages from
   `jackwallner/sports`. Keyword reasoning is in `project-docs/marketing/aso-plan.md`.
 
+## Path rules
+- `.claude/rules/android.md` (`android/**`): the Kotlin/Compose port, its
+  build and emulator commands, keys, and Play state.
+
 ---
 Shared iOS conventions (build, simulator, release/TestFlight, ASC key, signing,
 ratings, gotchas): the global agent rules + the `ios-dev` skill.

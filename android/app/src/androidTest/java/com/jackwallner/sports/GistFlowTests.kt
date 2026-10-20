@@ -65,6 +65,9 @@ class GistFlowTests {
         compose.waitForIdle()
     }
 
+    private fun deckCount(): Int = compose.onNodeWithTag("deck").fetchSemanticsNode()
+        .config[SemanticsProperties.StateDescription].substringAfter(" of ").toInt()
+
     private fun pitch(persona: Persona) = compose.onNodeWithTag("persona.pitch").assert(hasText(persona.shortPitch))
 
     @Test fun firstRunShowsProRoomsLockedAndLandsOnTheFreeBriefing() {
@@ -170,6 +173,15 @@ class GistFlowTests {
         assertTrue(compose.onAllNodes(hasTestTag("deck.rooms")).fetchSemanticsNodes().isEmpty())
     }
 
+    @Test fun longPressOffersCopyAndReportOnACard() {
+        launch("demo", "onboarded")
+        waitFor("deck.card")
+        compose.onNodeWithTag("deck").performTouchInput { longClick() }
+        waitFor("deck.report")
+        compose.onNodeWithTag("deck.copy").assertIsDisplayed()
+        compose.onNodeWithText("Report this card").assertIsDisplayed()
+    }
+
     @Test fun wrongReviewerCodeNeverOpensPro() {
         launch("demo", "onboarded")
         waitFor("settings.open")
@@ -201,9 +213,11 @@ class GistFlowTests {
         val cited = compose.onAllNodes(hasText("sources", substring = true)).fetchSemanticsNodes().isNotEmpty() ||
             compose.onAllNodes(hasText("Double-check before quoting", substring = true)).fetchSemanticsNodes().isNotEmpty()
         assertTrue("freshness footer names its sources or flags staleness", cited)
-        // The first story card carries a tappable source link on its back.
-        deckAction("Next card")
-        deckAction("Show the backstory")
+        // The first story card carries a tappable source link on its back: swipe, then tap to flip.
+        compose.onNodeWithTag("deck").performTouchInput { swipeLeft() }
+        compose.waitForIdle()
+        compose.onNodeWithTag("deck").assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, "Card 2 of ${deckCount()}"))
+        compose.onNodeWithTag("deck").performClick()
         waitFor("deck.source")
     }
 }

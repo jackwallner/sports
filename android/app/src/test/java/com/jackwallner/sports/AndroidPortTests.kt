@@ -261,3 +261,23 @@ class ReviewAccessTests {
         assertFalse(ReviewAccess(store, sha256("new")).isGranted)
     }
 }
+
+/** Play's AI-generated content policy: every generated card can be reported from the app. */
+class ReportCardTests {
+    @Test fun everyContentCardCanBeReportedButNotTheRoomsPitch() {
+        val cards = DeckCard.cards(Briefing.sample, isPro = false)
+        val reportable = cards.filter { DeckCard.reportSummary(it) != null }
+        assertEquals(cards.size - 1, reportable.size)
+        assertNull(DeckCard.reportSummary(DeckCard.Rooms))
+    }
+
+    @Test fun reportQuotesTheCardAndItsSource() {
+        val bullet = Briefing.sample.bullets.first()
+        val summary = DeckCard.reportSummary(DeckCard.Point(bullet))!!
+        assertTrue(bullet.sourceURL in summary)
+        val uri = com.jackwallner.sports.data.StoreLinks.reportCardMailURI(summary)
+        assertTrue(uri.startsWith("mailto:jack@jackwallner.com?subject=Gist%3A%20report%20a%20card&body="))
+        assertFalse(" " in uri)
+        assertTrue(java.net.URLDecoder.decode(uri.substringAfter("&body="), "UTF-8").endsWith(summary))
+    }
+}

@@ -12,3 +12,7 @@ Developer notes and historical audits for this repository. The published site re
 
 - [aso-plan.md](marketing/aso-plan.md): aso-plan.md: Gist (Sports Small Talk) ASO Plan
 - [marketing-strategy-2026.md](marketing/marketing-strategy-2026.md): Gist: New Marketing / ASO Strategy (July 2026)
+
+## Android
+
+- [play-release-prep.md](android/play-release-prep.md): Gist on Google Play: listing, Data Safety, products and remaining Console steps
