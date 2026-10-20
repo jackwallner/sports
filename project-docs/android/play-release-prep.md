@@ -27,8 +27,13 @@ Still needed:
 - A 1024 x 500 feature graphic. It needs the same art direction as the iOS
   marketing art, without league, team or athlete imagery.
 - Four phone screenshots composited to 1080 x 1920 from the debug captures
-  (`safeScreenshot` launch extra, status bar demo mode). Raw captures from this
-  run are listed in the run report.
+  (`safeScreenshot` launch extra, status bar demo mode). Raw 1080 x 2400
+  captures exceed Play's 2:1 limit, so they must be composited, not uploaded
+  raw. On 2026-10-20 the Pollinations art generated for the `safeScreenshot`
+  lead card rendered a jumbotron with garbled lettering; check every card's art
+  before using a capture, and regenerate (new seed) or pick another card if it
+  shows text. Live-feed captures name real people, so keep them out of the
+  listing.
 
 ## Data Safety answers
 
