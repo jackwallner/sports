@@ -61,11 +61,10 @@ import kotlinx.coroutines.launch
 fun OnboardingScreen() {
     val graph = LocalGraph.current
     val colors = Sideline.colors
-    val isPro = graph.store.isPro
     val pager = rememberPagerState { 2 }
     val scope = rememberCoroutineScope()
     var picked by remember { mutableStateOf(Persona.from(graph.settings.lastPersonaRaw) ?: Persona.COCKTAIL_PARTY) }
-    fun isLocked(persona: Persona) = !persona.isFree && !isPro
+    fun isLocked(persona: Persona) = !graph.store.canUse(persona)
 
     fun finish() {
         graph.settings.updateLastPersona(if (isLocked(picked)) Persona.COCKTAIL_PARTY.raw else picked.raw)

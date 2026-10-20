@@ -192,7 +192,7 @@ fun TodayScreen(isCovered: Boolean, onOpenSettings: () -> Unit) {
                 }
             },
         )
-        PersonaRail(vm.selectedPersona, isPro, graph.safeScreenshot) { persona ->
+        PersonaRail(vm.selectedPersona, store::canUse, graph.safeScreenshot) { persona ->
             scope.launch {
                 if (!vm.select(persona)) {
                     sheets.presentProPreview(persona, trialAvailable) { presentPaywall("sideline_locked_room_paywall_${persona.raw}") }
@@ -264,9 +264,9 @@ fun TodayScreen(isCovered: Boolean, onOpenSettings: () -> Unit) {
 
 /** `PersonaRail`: framed as who you'll be talking to, not as filters. */
 @Composable
-private fun PersonaRail(selected: Persona, isPro: Boolean, screenshotMode: Boolean, onSelect: (Persona) -> Unit) {
+private fun PersonaRail(selected: Persona, canUse: (Persona) -> Boolean, screenshotMode: Boolean, onSelect: (Persona) -> Unit) {
     val colors = Sideline.colors
-    val visible = if (screenshotMode && !isPro) Persona.entries.filter { it.isFree } else Persona.entries
+    val visible = if (screenshotMode) Persona.entries.filter(canUse) else Persona.entries
     Column(Modifier.fillMaxWidth()) {
         Row(
             Modifier.padding(horizontal = 16.dp).padding(top = 8.dp).semantics(mergeDescendants = true) { heading() },
@@ -282,7 +282,7 @@ private fun PersonaRail(selected: Persona, isPro: Boolean, screenshotMode: Boole
         ) {
             visible.forEach { persona ->
                 val isSelected = persona == selected
-                val locked = !persona.isFree && !isPro
+                val locked = !canUse(persona)
                 val foreground = if (isSelected) Color.White else colors.inkPrimary
                 Row(
                     Modifier.clip(CircleShape)

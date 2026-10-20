@@ -77,9 +77,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.style.TextOverflow
@@ -200,7 +202,18 @@ fun BriefingDeck(
             Box(
                 Modifier.fillMaxSize().padding(start = 18.dp, end = 18.dp, top = 4.dp, bottom = 30.dp)
                     .testTag("deck")
-                    .semantics { stateDescription = "Card ${current + 1} of $count" }
+                    .semantics {
+                        stateDescription = "Card ${current + 1} of $count"
+                        // `accessibilityAdjustableAction` and the flip button: TalkBack can't swipe the deck.
+                        customActions = buildList {
+                            add(CustomAccessibilityAction("Next card") { onIndexChange((currentIndex + 1) % count); true })
+                            add(CustomAccessibilityAction("Previous card") { onIndexChange((currentIndex - 1 + count) % count); true })
+                            if (cards[current].hasBack) {
+                                val label = if (flippedPosition == current) "Show the talking point" else "Show the backstory"
+                                add(CustomAccessibilityAction(label) { flip(currentIndex); true })
+                            }
+                        }
+                    }
                     // The gestures live on the still container: the card itself moves under the finger.
                     .pointerInput(count) {
                         val tracker = VelocityTracker()
@@ -592,11 +605,11 @@ private fun FlipBackHint() {
 @Composable
 private fun LearnMore(bullet: BriefingBullet, onOpenSource: (String) -> Unit) {
     Row(
-        Modifier.fillMaxWidth().clip(CircleShape).background(Color.White.copy(alpha = 0.18f))
+        // The tag sits outside the cleared semantics, or clearing would erase it too.
+        Modifier.testTag("deck.source").fillMaxWidth().clip(CircleShape).background(Color.White.copy(alpha = 0.18f))
             .border(1.dp, Color.White.copy(alpha = 0.28f), CircleShape)
             .clickable(role = Role.Button) { onOpenSource(bullet.sourceURL) }
             .clearAndSetSemantics { contentDescription = "Learn more. Source: ${bullet.sourceHeadline}" }
-            .testTag("deck.source")
             .padding(horizontal = 12.dp, vertical = 13.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
