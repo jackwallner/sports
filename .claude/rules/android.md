@@ -42,9 +42,15 @@ conventions live in the `android-dev` skill.
   (written by Swift itself via `scripts/sync-android-fixtures.sh`; rerun it
   after changing `CardArt.swift` or `Shared/Models`), the deck boundary,
   paywall copy and the reviewer code.
-- Connected tests (`GistFlowTests`) cover first run, locked rooms, the Test
-  Store paywall, Pro, the deck to the rooms card, TalkBack deck actions, the
-  reviewer code and the live Supabase feed.
+- Connected tests (`GistFlowTests`, 9) cover first run, locked rooms, the Test
+  Store paywall prices, Pro, the deck to the rooms card, TalkBack deck actions,
+  long-press copy and report, the reviewer code and the live Supabase feed.
+  The run uninstalls the app; reinstall the debug APK before screenshots.
+- jmbp2 cannot measure frame cadence: its emulator renders with SwiftShader
+  on a 2015 dual-core i5 (median frame 1.25 s, even static Settings frames take
+  over 100 ms), and while scrcpy records, `adb input swipe` arrives as a few
+  sparse moves, so swipes fall short of the threshold. Record motion on jmbp or
+  the Air.
 
 ## Keys and boundaries
 - `android/local.properties` (ignored) holds `REVENUECAT_TEST_KEY` (debug, Test
@@ -57,7 +63,9 @@ conventions live in the `android-dev` skill.
   key in release. The `qa` build type is release code with no RevenueCat key.
 - Debug launch extras (`DebugLaunchOptions.kt`, debug source set only):
   `uiTest`, `onboarded`, `demo`, `safeScreenshot`, `edgeCases`, `forcePro`,
-  `persona`, `deckStart`, `appearance`. Release ignores all of them.
+  `persona`, `deckStart`, `appearance`. Release ignores all of them. `persona`
+  takes the raw value (`date_night`, not `dateNight`); `deckStart` stops at the
+  "Ask this" card, so reach the free rooms card with one more swipe.
 - Play reviewer access: long-press the Settings Version row, enter the code
   from the review notes. Only its SHA-256 ships. The plain code lives with
   Jack, not in the repo.
