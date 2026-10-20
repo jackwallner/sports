@@ -1,5 +1,6 @@
 package com.jackwallner.sports.data
 
+import java.net.URLEncoder
 import java.time.Instant
 
 object StoreLinks {
@@ -11,6 +12,17 @@ object StoreLinks {
 
     /** `SettingsView.feedbackMailURL`. */
     const val FEEDBACK_MAIL_URI = "mailto:jack@jackwallner.com?subject=Gist%20feedback"
+
+    /**
+     * Play's AI-generated content policy: a way to flag a generated card from
+     * inside the app. Opens a mail draft quoting the card.
+     */
+    fun reportCardMailURI(summary: String): String {
+        val body = "What's wrong with this card?\n\n\n---\n$summary"
+        return "mailto:jack@jackwallner.com?subject=" + mailEncode("Gist: report a card") + "&body=" + mailEncode(body)
+    }
+
+    private fun mailEncode(text: String): String = URLEncoder.encode(text, "UTF-8").replace("+", "%20")
 
     fun manageSubscriptionURL(productId: String?): String =
         if (productId == null) "https://play.google.com/store/account/subscriptions"

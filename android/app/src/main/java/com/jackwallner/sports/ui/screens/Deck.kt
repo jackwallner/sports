@@ -37,6 +37,7 @@ import androidx.compose.material.icons.rounded.SubdirectoryArrowRight
 import androidx.compose.material.icons.rounded.AutoAwesome
 import androidx.compose.material.icons.rounded.ChatBubble
 import androidx.compose.material.icons.rounded.ContentCopy
+import androidx.compose.material.icons.rounded.OutlinedFlag
 import androidx.compose.material.icons.rounded.Layers
 import androidx.compose.material.icons.rounded.Link
 import androidx.compose.material.icons.rounded.Lock
@@ -90,6 +91,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import com.jackwallner.sports.data.StoreLinks
 import com.jackwallner.sports.model.Briefing
 import com.jackwallner.sports.model.BriefingBullet
 import com.jackwallner.sports.model.BriefingTag
@@ -98,6 +100,7 @@ import com.jackwallner.sports.model.DeckCard
 import com.jackwallner.sports.model.Persona
 import com.jackwallner.sports.ui.LocalGraph
 import com.jackwallner.sports.ui.Symbols
+import com.jackwallner.sports.ui.openLink
 import com.jackwallner.sports.ui.components.CardArtImage
 import com.jackwallner.sports.ui.components.CardArtStore
 import com.jackwallner.sports.ui.components.FitByScale
@@ -308,6 +311,17 @@ fun BriefingDeck(
                                 },
                                 modifier = Modifier.testTag("deck.copy"),
                             )
+                            DeckCard.reportSummary(cards[current])?.let { summary ->
+                                DropdownMenuItem(
+                                    text = { T("Report this card", Type.body) },
+                                    leadingIcon = { Icon(Icons.Rounded.OutlinedFlag, null) },
+                                    onClick = {
+                                        copyAt = null
+                                        openLink(context, StoreLinks.reportCardMailURI(summary))
+                                    },
+                                    modifier = Modifier.testTag("deck.report"),
+                                )
+                            }
                         }
                     }
                 }

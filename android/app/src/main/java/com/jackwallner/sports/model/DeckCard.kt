@@ -38,6 +38,14 @@ sealed interface DeckCard {
             return name.ifEmpty { "Worth mentioning" }
         }
 
+        /** What a report about this card quotes, so the problem can be found in the pipeline. */
+        fun reportSummary(card: DeckCard): String? = when (card) {
+            is Lead -> "Brief: ${card.briefing.tlDR}"
+            is Point -> "Card: ${card.bullet.talkingPoint}\nSource: ${card.bullet.sourceHeadline}\n${card.bullet.sourceURL}"
+            is Question -> "Question: ${card.text}"
+            Rooms -> null
+        }
+
         /** Scale steps the card backs try, largest first (`fitScales`). */
         val fitScales = listOf(1.0f, 0.92f, 0.84f, 0.76f, 0.68f, 0.6f, 0.52f, 0.44f)
     }
