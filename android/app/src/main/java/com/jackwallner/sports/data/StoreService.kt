@@ -475,13 +475,20 @@ class StoreService(
         if (BuildConfig.DEBUG && key.startsWith("goog_")) return false
         if (!BuildConfig.DEBUG && !key.startsWith("goog_")) return false
         Purchases.logLevel = if (BuildConfig.DEBUG) LogLevel.DEBUG else LogLevel.ERROR
-        Purchases.configure(PurchasesConfiguration.Builder(context, key).build())
+        val builder = PurchasesConfiguration.Builder(context, key)
+        // Test Store runs share one tester instead of a fresh anonymous customer
+        // per install, so test runs don't inflate the live project's New and
+        // Active Customers. Never with the Play key: real buyers would share one
+        // identity.
+        if (key.startsWith("test_")) builder.appUserID(QA_APP_USER_ID)
+        Purchases.configure(builder.build())
         Purchases.sharedInstance.updatedCustomerInfoListener = UpdatedCustomerInfoListener { apply(it) }
         isConfigured = true
         return true
     }
 
     private companion object {
+        const val QA_APP_USER_ID = "qa-android"
         const val DEFAULT_OFFERING = "default"
         const val UNAVAILABLE = "Google Play isn't reachable right now. Check your connection and try again."
     }
