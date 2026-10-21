@@ -1,0 +1,22 @@
+Biri dün akşamki maçı açıyor. Skordan fazlasını bilmek istiyorsun ama bir saat ekran kaydırmak istemiyorsun.
+
+Gist, sporu takip etmeyen ama sohbete katılmak isteyenler için kısa bir spor özetidir. Her kart ne olduğunu, insanların neden önemsediğini ve kaçırdığın arka planı anlatır, ayrıca orijinal habere bağlantı verir. Hikayeler çoğunlukla NFL, NBA, MLB ve NHL gibi büyük Amerikan liglerine odaklanır.
+
+ÜCRETSİZ GÜNLÜK ÖZETİN
+Cocktail Party özetini aç ve beş dakikada oku. Hikayeler arasında kaydır, arka plan ve kaynak için bir karta dokun, sonunda da sorabileceğin bir soruyla bitir. Her gün bir genel özet ücretsizdir.
+
+HER SOHBET İÇİN BİR ODA
+Gist Pro, her biri kendi hikayeleriyle üç oda daha ekler: iş arkadaşların için Office Watercooler, spora tutkun bir çocuğun ebeveynleri için Sports Talk for Moms ve hoş bir hikaye ile sohbeti sürdürecek bir soru için Date Night. Pro özetleri günde üç kereye kadar yenilenir.
+
+NASIL ÇALIŞIR
+Özetler, seçilmiş herkese açık spor kaynaklarından önceden yazılır ve her kart kaynağını gösterir. Hesap yok, reklam yok, sonsuz akış yok. En son açtığın özet çevrimdışı da okunabilir.
+
+GIST NE DEĞİLDİR
+Gist, editoryal bağlam ve sohbet hazırlığı sunar. Canlı skor, bahis tahmini, fantezi lig tavsiyesi ya da her maçın eksiksiz raporu değildir ve hiçbir lig veya takımla bağlantılı değildir.
+
+Gist Pro, Google Play üzerinden satılan, otomatik yenilenen bir aboneliktir. Fiyat, faturalandırma dönemi ve varsa ücretsiz deneme, satın almadan önce gösterilir. İstediğin zaman Google Play'de Ödemeler ve abonelikler bölümünden iptal edebilirsin.
+
+Uygulama İngilizcedir: özetler, kartlar ve menüler İngilizce olarak sunulur.
+
+Gizlilik Politikası: https://jackwallner.github.io/sports/privacy-policy.html
+Kullanım Koşulları: https://jackwallner.github.io/sports/terms.html
