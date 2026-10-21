@@ -38,13 +38,19 @@ jobs:
           for P in $PERSONAS; do
             echo "=== $P ==="
             OK=0
-            for i in 1 2 3; do
+            for attempt in 1 2 3; do
+              echo "Attempt $attempt"
               R=$(curl -fsS -X POST "$URL/generate-briefings" \
                 -H "content-type: application/json" \
                 -H "x-cron-secret: $CS" \
-                -d "{\"personas\":[\"$P\"]}") || R='{"error":"curl failed"}'
+                -d "{\"personas\":[\"$P\"],\"missing_only\":true}") || R='{"error":"curl failed"}'
               echo "$R"
               if echo "$R" | grep -q '"status":"succeeded"'; then OK=1; break; fi
+              if echo "$R" | grep -q '"skipped":"all_fresh"'; then OK=1; break; fi
+              if echo "$R" | grep -Eqi 'Gemini request failed 429|RESOURCE_EXHAUSTED|quota exceeded'; then
+                echo "Gemini quota exhausted for $P; not retrying immediately."
+                break
+              fi
               sleep 5
             done
             if [ "$OK" -ne 1 ]; then FAILED=1; fi

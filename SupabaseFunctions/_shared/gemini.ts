@@ -4,7 +4,7 @@ import type { GeneratedBriefing, GenerationTarget, SourceItemRow } from "./types
 interface GeminiResponse {
   candidates?: Array<{
     content?: {
-      parts?: Array<{ text?: string }>;
+      parts?: Array<{ text?: string; thought?: boolean }>;
     };
   }>;
 }
@@ -37,7 +37,15 @@ export async function generateBriefingWithGemini(
 
   let response: Response | undefined;
   let responseText = "";
+  let lastRequestError: unknown;
+  const started = Date.now();
   for (const model of models) {
+    const remainingMs = MODEL_CHAIN_BUDGET_MS - (Date.now() - started);
+    if (remainingMs <= 0) {
+      logInfo(trace_id, "gemini_model_chain_budget_spent", { elapsed_ms: Date.now() - started });
+      break;
+    }
+    const requestTimeoutMs = model.startsWith("gemma-") ? GEMMA_REQUEST_TIMEOUT_MS : MODEL_REQUEST_TIMEOUT_MS;
     logInfo(trace_id, "gemini_request_prepared", {
       model,
       persona: target.persona,
@@ -46,15 +54,27 @@ export async function generateBriefingWithGemini(
       source_count: sourceItems.length,
       prompt_chars: prompt.length,
     });
-    response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${apiKey}`,
-      {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(requestPayload),
-      },
-    );
-    responseText = await response.text();
+    try {
+      response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${apiKey}`,
+        {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(requestPayload),
+          signal: AbortSignal.timeout(Math.min(requestTimeoutMs, remainingMs)),
+        },
+      );
+      responseText = await response.text();
+    } catch (error) {
+      response = undefined;
+      responseText = "";
+      lastRequestError = error;
+      logInfo(trace_id, "gemini_model_request_failed", {
+        model,
+        error_name: error instanceof Error ? error.name : "UnknownError",
+      });
+      continue;
+    }
     if (response.ok || !FALLBACK_STATUSES.has(response.status)) {
       break;
     }
@@ -69,23 +89,38 @@ export async function generateBriefingWithGemini(
   }
 
   if (!response?.ok) {
-    throw new Error(`Gemini request failed ${response?.status}: ${responseText}`);
+    if (response) {
+      throw new Error(`Gemini request failed ${response.status}: ${responseText}`);
+    }
+    const message = lastRequestError instanceof Error ? lastRequestError.message : String(lastRequestError ?? "unknown error");
+    throw new Error(`Gemini requests failed before receiving a response: ${message}`);
   }
 
-  const generatedText = responsePayload.candidates?.[0]?.content?.parts?.map((part) => part.text ?? "").join("\n") ?? "";
+  // Gemma returns its reasoning as text parts flagged `thought`; only the
+  // answer parts are the JSON.
+  const generatedText = responsePayload.candidates?.[0]?.content?.parts
+    ?.filter((part) => !part.thought)
+    .map((part) => part.text ?? "")
+    .join("\n") ?? "";
   const briefing = parseJSON(generatedText) as GeneratedBriefing;
 
   return { briefing, requestPayload, responsePayload };
 }
 
-// Free-tier quota is per model per day, and preview models regularly answer
-// 503 under load. Falling through to the next model on those (and on a model
-// Google has retired, 404) keeps a window's briefings alive at no cost.
+// Free-tier quota is per model per day, and every Gemini Flash model answers
+// 503 under load, sometimes all at once. Falling through the chain (ending on
+// Gemma, which is slower but on separate capacity) keeps a window's briefings
+// alive at no cost. The chain stops starting new models after a minute so the
+// whole call, art included, stays inside the edge function's wall-clock
+// limit; the pg_cron retry pass picks up anything left missing.
 const FALLBACK_STATUSES = new Set([404, 429, 500, 503]);
+const MODEL_CHAIN_BUDGET_MS = 60_000;
+const MODEL_REQUEST_TIMEOUT_MS = 15_000;
+const GEMMA_REQUEST_TIMEOUT_MS = 30_000;
 
 function geminiModels(): string[] {
   const primary = Deno.env.get("GEMINI_MODEL") ?? "gemini-flash-latest";
-  const fallbacks = (Deno.env.get("GEMINI_FALLBACK_MODELS") ?? "gemini-3.8-flash,gemini-3.5-flash,gemini-flash-latest")
+  const fallbacks = (Deno.env.get("GEMINI_FALLBACK_MODELS") ?? "gemini-3.5-flash,gemini-3.8-flash,gemini-flash-latest,gemma-4-31b-it")
     .split(",")
     .map((model) => model.trim())
     .filter(Boolean);
