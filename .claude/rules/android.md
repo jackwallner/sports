@@ -85,3 +85,14 @@ conventions live in the `android-dev` skill.
   Console app record from the Air before creating one. Listing copy is in `android/play-assets/listing/`; release prep and the
   remaining Console steps are in
   `project-docs/android/play-release-prep.md`.
+
+## Play staging, 2026-10-21
+
+Supersedes the "not live" note above. Play app 4972340675120223837 (Draft).
+vc1 1.1.4 drafts on internal and production; products
+`com.jackwallner.gist.{monthly,yearly,lifetime}` active and mapped in
+RevenueCat (`proj56682a14`, app `app8292024846`; lifetime non-consumable). All
+App content saved: sign-in details (code not pasted yet), 18+, IARC, Sports,
+data safety (purchase history and device ID for App functionality, other
+actions for Analytics). Left: store listing and graphics, the reviewer code
+paste, Send for review in its pacing slot.
