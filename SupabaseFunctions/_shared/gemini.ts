@@ -20,24 +20,16 @@ export async function generateBriefingWithGemini(
   }
 
   const models = geminiModels();
-  const prompt = buildPrompt(target, sourceItems);
-  const requestPayload = {
-    contents: [
-      {
-        role: "user",
-        parts: [{ text: prompt }],
-      },
-    ],
-    generationConfig: {
-      temperature: 0.7,
-      topP: 0.9,
-      responseMimeType: "application/json",
-    },
-  };
+  const fullPayload = payloadFor(buildPrompt(target, sourceItems));
+  // Gemma's free tier allows 16k input tokens a minute and the full 40-source
+  // prompt is about 8k, so it gets the top half: room for a second try within
+  // the minute, and a shorter read for a slower model.
+  const gemmaPayload = payloadFor(buildPrompt(target, sourceItems.slice(0, GEMMA_SOURCE_LIMIT)), GEMMA_THINKING);
+  let requestPayload = fullPayload;
 
   let response: Response | undefined;
   let responseText = "";
-  let lastRequestError: unknown;
+  const attempts: string[] = [];
   const started = Date.now();
   for (const model of models) {
     const remainingMs = MODEL_CHAIN_BUDGET_MS - (Date.now() - started);
@@ -45,15 +37,15 @@ export async function generateBriefingWithGemini(
       logInfo(trace_id, "gemini_model_chain_budget_spent", { elapsed_ms: Date.now() - started });
       break;
     }
-    const requestTimeoutMs = model.startsWith("gemma-") ? GEMMA_REQUEST_TIMEOUT_MS : MODEL_REQUEST_TIMEOUT_MS;
+    requestPayload = model.startsWith("gemma-") ? gemmaPayload : fullPayload;
     logInfo(trace_id, "gemini_request_prepared", {
       model,
       persona: target.persona,
       scope: target.scope,
       refresh_window: target.refreshWindow,
-      source_count: sourceItems.length,
-      prompt_chars: prompt.length,
+      prompt_chars: requestPayload.contents[0].parts[0].text.length,
     });
+    const requestStarted = Date.now();
     try {
       response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${apiKey}`,
@@ -61,14 +53,14 @@ export async function generateBriefingWithGemini(
           method: "POST",
           headers: { "content-type": "application/json" },
           body: JSON.stringify(requestPayload),
-          signal: AbortSignal.timeout(Math.min(requestTimeoutMs, remainingMs)),
+          signal: AbortSignal.timeout(remainingMs),
         },
       );
       responseText = await response.text();
     } catch (error) {
       response = undefined;
       responseText = "";
-      lastRequestError = error;
+      attempts.push(`${model}: ${error instanceof Error ? error.message : String(error)} after ${Date.now() - requestStarted}ms`);
       logInfo(trace_id, "gemini_model_request_failed", {
         model,
         error_name: error instanceof Error ? error.name : "UnknownError",
@@ -78,6 +70,7 @@ export async function generateBriefingWithGemini(
     if (response.ok || !FALLBACK_STATUSES.has(response.status)) {
       break;
     }
+    attempts.push(`${model}: ${response.status} after ${Date.now() - requestStarted}ms`);
     logInfo(trace_id, "gemini_model_unavailable", { model, status: response.status });
   }
 
@@ -89,11 +82,11 @@ export async function generateBriefingWithGemini(
   }
 
   if (!response?.ok) {
+    const tried = `Models tried: ${attempts.join("; ")}`;
     if (response) {
-      throw new Error(`Gemini request failed ${response.status}: ${responseText}`);
+      throw new Error(`Gemini request failed ${response.status}: ${responseText}\n${tried}`);
     }
-    const message = lastRequestError instanceof Error ? lastRequestError.message : String(lastRequestError ?? "unknown error");
-    throw new Error(`Gemini requests failed before receiving a response: ${message}`);
+    throw new Error(`Gemini requests failed before receiving a response. ${tried}`);
   }
 
   // Gemma returns its reasoning as text parts flagged `thought`; only the
@@ -102,7 +95,9 @@ export async function generateBriefingWithGemini(
     ?.filter((part) => !part.thought)
     .map((part) => part.text ?? "")
     .join("\n") ?? "";
-  const briefing = parseJSON(generatedText) as GeneratedBriefing;
+  // Gemma sometimes wraps the briefing in a one-item array.
+  const parsed = parseJSON(generatedText);
+  const briefing = (Array.isArray(parsed) && parsed.length === 1 ? parsed[0] : parsed) as GeneratedBriefing;
 
   return { briefing, requestPayload, responsePayload };
 }
@@ -110,17 +105,34 @@ export async function generateBriefingWithGemini(
 // Free-tier quota is per model per day, and every Gemini Flash model answers
 // 503 under load, sometimes all at once. Falling through the chain (ending on
 // Gemma, which is slower but on separate capacity) keeps a window's briefings
-// alive at no cost. The chain stops starting new models after a minute so the
-// whole call, art included, stays inside the edge function's wall-clock
-// limit; the pg_cron retry pass picks up anything left missing.
+// alive at no cost. Busy or exhausted models answer within a second or two,
+// while a working Flash call takes 20-60s, so each request gets whatever is
+// left of one shared budget rather than its own short cap (a 15s cap cut off
+// every healthy response). The budget keeps the whole call, art included,
+// inside the edge function's wall-clock limit; the pg_cron retry pass picks
+// up anything left missing.
 const FALLBACK_STATUSES = new Set([404, 429, 500, 503]);
-const MODEL_CHAIN_BUDGET_MS = 60_000;
-const MODEL_REQUEST_TIMEOUT_MS = 15_000;
-const GEMMA_REQUEST_TIMEOUT_MS = 30_000;
+const MODEL_CHAIN_BUDGET_MS = 90_000;
+const GEMMA_SOURCE_LIMIT = 20;
+
+// Gemma thinks at length by default, which alone outruns the chain budget.
+const GEMMA_THINKING = { thinkingConfig: { thinkingLevel: "MINIMAL" } };
+
+function payloadFor(prompt: string, extraConfig: Record<string, unknown> = {}) {
+  return {
+    contents: [{ role: "user", parts: [{ text: prompt }] }],
+    generationConfig: {
+      temperature: 0.7,
+      topP: 0.9,
+      responseMimeType: "application/json",
+      ...extraConfig,
+    },
+  };
+}
 
 function geminiModels(): string[] {
   const primary = Deno.env.get("GEMINI_MODEL") ?? "gemini-flash-latest";
-  const fallbacks = (Deno.env.get("GEMINI_FALLBACK_MODELS") ?? "gemini-3.5-flash,gemini-3.8-flash,gemini-flash-latest,gemma-4-31b-it")
+  const fallbacks = (Deno.env.get("GEMINI_FALLBACK_MODELS") ?? "gemini-3.5-flash,gemini-3.8-flash,gemini-flash-latest,gemma-4-26b-a4b-it,gemma-4-31b-it")
     .split(",")
     .map((model) => model.trim())
     .filter(Boolean);
