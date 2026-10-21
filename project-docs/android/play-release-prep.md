@@ -23,17 +23,15 @@ In `android/play-assets/listing/`: `title.txt` (23 of 30 characters),
 4,000), `release-notes.txt`. No prices, no em dashes, no league or team claims.
 Icon: `android/play-assets/icon-512.png` (512 x 512, no alpha).
 
-Still needed:
-- A 1024 x 500 feature graphic. It needs the same art direction as the iOS
-  marketing art, without league, team or athlete imagery.
-- Four phone screenshots composited to 1080 x 1920 from the debug captures
-  (`safeScreenshot` launch extra, status bar demo mode). Raw 1080 x 2400
-  captures exceed Play's 2:1 limit, so they must be composited, not uploaded
-  raw. On 2026-10-20 the Pollinations art generated for the `safeScreenshot`
-  lead card rendered a jumbotron with garbled lettering; check every card's art
-  before using a capture, and regenerate (new seed) or pick another card if it
-  shows text. Live-feed captures name real people, so keep them out of the
-  listing.
+Store graphics (done 2026-10-21, see `android/play-assets/README.md`):
+`feature-graphic.png` (1024 x 500, from `feature-graphic.svg`), four 1080 x 1920
+screenshots in `screenshots/` composited from `safeScreenshot` debug captures
+with status bar demo mode, and fastlane-layout copy in `metadata/android/en-US/`.
+Raw 1080 x 2400 captures exceed Play's 2:1 limit, so they are composited, not
+uploaded raw. The fixture's lead card and second story card get Pollinations
+art with garbled lettering, so the set avoids them; recheck every card's art
+before recapturing. Live-feed captures name real people, so keep them out of
+the listing.
 
 ## Data Safety answers
 

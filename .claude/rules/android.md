@@ -82,7 +82,7 @@ conventions live in the `android-dev` skill.
 ## Play Console state (2026-10-20)
 - Not live on Play (absent from the fleet's 16 live packages on 2026-10-20).
   No upload, Play products or RevenueCat Play app are recorded; confirm the
-  Console app record from the Air before creating one. Listing copy is in `android/play-assets/listing/`; release prep and the
+  Console app record from the Air before creating one. Listing copy, feature graphic and screenshots are in `android/play-assets/` (its README says how they were made); release prep and the
   remaining Console steps are in
   `project-docs/android/play-release-prep.md`.
 
