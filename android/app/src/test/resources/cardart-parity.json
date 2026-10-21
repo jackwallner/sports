@@ -1,0 +1,242 @@
+{
+  "bullets" : [
+    {
+      "imageURL" : null,
+      "name" : "NFL",
+      "sourceHeadline" : "Veteran QB benched amid playoff push - The Athletic",
+      "sourceURL" : "https:\/\/example.com\/veteran-qb-benched",
+      "subject" : "Cowboys",
+      "symbol" : "football.fill",
+      "tag" : "drama",
+      "urls" : [
+        "https:\/\/image.pollinations.ai\/prompt\/Retro%20editorial%20sports%20poster%20illustration:%20american%20football%20stadium%20at%20night,%20floodlights,%20players%20in%20silhouette%20on%20the%20field,%20tense%20dramatic%20mood,%20stormy%20sky,%20deep%20red%20and%20charcoal%20palette.%20Flat%20bold%20graphic%20shapes,%20screen%20print%20risograph%20texture,%20limited%20palette%20of%20deep%20navy,%20warm%20cream,%20forest%20green%20and%20antique%20gold,%20dramatic%20side%20lighting,%20grainy%20shadows,%201960s%20sports%20magazine%20poster%20aesthetic.%20No%20real%20people's%20likenesses,%20no%20readable%20faces,%20no%20text,%20no%20words,%20no%20letters,%20no%20numbers,%20no%20logos,%20no%20watermark,%20no%20signature,%20no%20caption.?width=768&height=960&nologo=true&safe=true&seed=815808267"
+      ]
+    },
+    {
+      "imageURL" : null,
+      "name" : "NBA",
+      "sourceHeadline" : "Lakers rally late in the fourth",
+      "sourceURL" : "https:\/\/example.com\/lakers",
+      "subject" : null,
+      "symbol" : "basketball.fill",
+      "tag" : "nice_guy",
+      "urls" : [
+        "https:\/\/image.pollinations.ai\/prompt\/Retro%20editorial%20sports%20poster%20illustration:%20basketball%20arena,%20single%20spotlight%20on%20the%20hardwood%20court,%20hoop%20in%20silhouette,%20uplifting%20hopeful%20mood,%20warm%20golden%20light,%20green%20and%20gold%20palette.%20Flat%20bold%20graphic%20shapes,%20screen%20print%20risograph%20texture,%20limited%20palette%20of%20deep%20navy,%20warm%20cream,%20forest%20green%20and%20antique%20gold,%20dramatic%20side%20lighting,%20grainy%20shadows,%201960s%20sports%20magazine%20poster%20aesthetic.%20No%20real%20people's%20likenesses,%20no%20readable%20faces,%20no%20text,%20no%20words,%20no%20letters,%20no%20numbers,%20no%20logos,%20no%20watermark,%20no%20signature,%20no%20caption.?width=768&height=960&nologo=true&safe=true&seed=1163654828"
+      ]
+    },
+    {
+      "imageURL" : null,
+      "name" : "WNBA",
+      "sourceHeadline" : "WNBA finals set after a wild semifinal",
+      "sourceURL" : "https:\/\/example.com\/wnba",
+      "subject" : "Liberty",
+      "symbol" : "basketball.fill",
+      "tag" : "redemption",
+      "urls" : [
+        "https:\/\/image.pollinations.ai\/prompt\/Retro%20editorial%20sports%20poster%20illustration:%20basketball%20arena,%20single%20spotlight%20on%20the%20hardwood%20court,%20hoop%20in%20silhouette,%20uplifting%20hopeful%20mood,%20warm%20golden%20light,%20green%20and%20gold%20palette.%20Flat%20bold%20graphic%20shapes,%20screen%20print%20risograph%20texture,%20limited%20palette%20of%20deep%20navy,%20warm%20cream,%20forest%20green%20and%20antique%20gold,%20dramatic%20side%20lighting,%20grainy%20shadows,%201960s%20sports%20magazine%20poster%20aesthetic.%20No%20real%20people's%20likenesses,%20no%20readable%20faces,%20no%20text,%20no%20words,%20no%20letters,%20no%20numbers,%20no%20logos,%20no%20watermark,%20no%20signature,%20no%20caption.?width=768&height=960&nologo=true&safe=true&seed=865626236"
+      ]
+    },
+    {
+      "imageURL" : null,
+      "name" : "MLB",
+      "sourceHeadline" : "World Series Game 3 recap",
+      "sourceURL" : "https:\/\/example.com\/ws",
+      "subject" : "Dodgers",
+      "symbol" : "baseball.fill",
+      "tag" : null,
+      "urls" : [
+        "https:\/\/image.pollinations.ai\/prompt\/Retro%20editorial%20sports%20poster%20illustration:%20baseball%20stadium%20at%20dusk,%20batter%20in%20silhouette%20at%20home%20plate,%20stadium%20lights%20glowing,%20energetic%20night-game%20mood,%20deep%20navy%20and%20teal%20palette.%20Flat%20bold%20graphic%20shapes,%20screen%20print%20risograph%20texture,%20limited%20palette%20of%20deep%20navy,%20warm%20cream,%20forest%20green%20and%20antique%20gold,%20dramatic%20side%20lighting,%20grainy%20shadows,%201960s%20sports%20magazine%20poster%20aesthetic.%20No%20real%20people's%20likenesses,%20no%20readable%20faces,%20no%20text,%20no%20words,%20no%20letters,%20no%20numbers,%20no%20logos,%20no%20watermark,%20no%20signature,%20no%20caption.?width=768&height=960&nologo=true&safe=true&seed=18753342"
+      ]
+    },
+    {
+      "imageURL" : null,
+      "name" : "SOCCER",
+      "sourceHeadline" : "Messi scores twice for Inter Miami",
+      "sourceURL" : "https:\/\/example.com\/messi",
+      "subject" : null,
+      "symbol" : "soccerball",
+      "tag" : "jerk",
+      "urls" : [
+        "https:\/\/image.pollinations.ai\/prompt\/Retro%20editorial%20sports%20poster%20illustration:%20soccer%20stadium,%20vivid%20green%20pitch%20under%20lights,%20ball%20in%20the%20foreground,%20tense%20dramatic%20mood,%20stormy%20sky,%20deep%20red%20and%20charcoal%20palette.%20Flat%20bold%20graphic%20shapes,%20screen%20print%20risograph%20texture,%20limited%20palette%20of%20deep%20navy,%20warm%20cream,%20forest%20green%20and%20antique%20gold,%20dramatic%20side%20lighting,%20grainy%20shadows,%201960s%20sports%20magazine%20poster%20aesthetic.%20No%20real%20people's%20likenesses,%20no%20readable%20faces,%20no%20text,%20no%20words,%20no%20letters,%20no%20numbers,%20no%20logos,%20no%20watermark,%20no%20signature,%20no%20caption.?width=768&height=960&nologo=true&safe=true&seed=1133177619"
+      ]
+    },
+    {
+      "imageURL" : null,
+      "name" : "TENNIS",
+      "sourceHeadline" : "Alcaraz wins in five sets at Wimbledon",
+      "sourceURL" : "https:\/\/example.com\/tennis",
+      "subject" : null,
+      "symbol" : "tennis.racket",
+      "tag" : "neutral",
+      "urls" : [
+        "https:\/\/image.pollinations.ai\/prompt\/Retro%20editorial%20sports%20poster%20illustration:%20tennis%20court%20at%20golden%20hour,%20long%20shadows,%20racket%20and%20ball,%20energetic%20night-game%20mood,%20deep%20navy%20and%20teal%20palette.%20Flat%20bold%20graphic%20shapes,%20screen%20print%20risograph%20texture,%20limited%20palette%20of%20deep%20navy,%20warm%20cream,%20forest%20green%20and%20antique%20gold,%20dramatic%20side%20lighting,%20grainy%20shadows,%201960s%20sports%20magazine%20poster%20aesthetic.%20No%20real%20people's%20likenesses,%20no%20readable%20faces,%20no%20text,%20no%20words,%20no%20letters,%20no%20numbers,%20no%20logos,%20no%20watermark,%20no%20signature,%20no%20caption.?width=768&height=960&nologo=true&safe=true&seed=533995659"
+      ]
+    },
+    {
+      "imageURL" : null,
+      "name" : "NHL",
+      "sourceHeadline" : "Stanley Cup rematch tonight",
+      "sourceURL" : "https:\/\/example.com\/nhl",
+      "subject" : "Oilers",
+      "symbol" : "figure.hockey",
+      "tag" : "drama",
+      "urls" : [
+        "https:\/\/image.pollinations.ai\/prompt\/Retro%20editorial%20sports%20poster%20illustration:%20ice%20hockey%20rink,%20skater%20in%20silhouette,%20ice%20spray%20frozen%20mid-stop,%20cold%20arena%20light,%20tense%20dramatic%20mood,%20stormy%20sky,%20deep%20red%20and%20charcoal%20palette.%20Flat%20bold%20graphic%20shapes,%20screen%20print%20risograph%20texture,%20limited%20palette%20of%20deep%20navy,%20warm%20cream,%20forest%20green%20and%20antique%20gold,%20dramatic%20side%20lighting,%20grainy%20shadows,%201960s%20sports%20magazine%20poster%20aesthetic.%20No%20real%20people's%20likenesses,%20no%20readable%20faces,%20no%20text,%20no%20words,%20no%20letters,%20no%20numbers,%20no%20logos,%20no%20watermark,%20no%20signature,%20no%20caption.?width=768&height=960&nologo=true&safe=true&seed=1585493242"
+      ]
+    },
+    {
+      "imageURL" : null,
+      "name" : "GOLF",
+      "sourceHeadline" : "McIlroy leads after round one at the Masters",
+      "sourceURL" : "https:\/\/example.com\/golf",
+      "subject" : null,
+      "symbol" : "figure.golf",
+      "tag" : null,
+      "urls" : [
+        "https:\/\/image.pollinations.ai\/prompt\/Retro%20editorial%20sports%20poster%20illustration:%20golf%20course%20at%20sunrise,%20rolling%20fairway,%20lone%20flag%20on%20the%20green,%20energetic%20night-game%20mood,%20deep%20navy%20and%20teal%20palette.%20Flat%20bold%20graphic%20shapes,%20screen%20print%20risograph%20texture,%20limited%20palette%20of%20deep%20navy,%20warm%20cream,%20forest%20green%20and%20antique%20gold,%20dramatic%20side%20lighting,%20grainy%20shadows,%201960s%20sports%20magazine%20poster%20aesthetic.%20No%20real%20people's%20likenesses,%20no%20readable%20faces,%20no%20text,%20no%20words,%20no%20letters,%20no%20numbers,%20no%20logos,%20no%20watermark,%20no%20signature,%20no%20caption.?width=768&height=960&nologo=true&safe=true&seed=1776818324"
+      ]
+    },
+    {
+      "imageURL" : null,
+      "name" : "OLYMPICS",
+      "sourceHeadline" : "Olympic committee picks a host city",
+      "sourceURL" : "https:\/\/example.com\/olympics",
+      "subject" : null,
+      "symbol" : "trophy.fill",
+      "tag" : "nice_guy",
+      "urls" : [
+        "https:\/\/image.pollinations.ai\/prompt\/Retro%20editorial%20sports%20poster%20illustration:%20olympic%20stadium%20at%20night,%20torch%20flame%20burning,%20fireworks%20above,%20uplifting%20hopeful%20mood,%20warm%20golden%20light,%20green%20and%20gold%20palette.%20Flat%20bold%20graphic%20shapes,%20screen%20print%20risograph%20texture,%20limited%20palette%20of%20deep%20navy,%20warm%20cream,%20forest%20green%20and%20antique%20gold,%20dramatic%20side%20lighting,%20grainy%20shadows,%201960s%20sports%20magazine%20poster%20aesthetic.%20No%20real%20people's%20likenesses,%20no%20readable%20faces,%20no%20text,%20no%20words,%20no%20letters,%20no%20numbers,%20no%20logos,%20no%20watermark,%20no%20signature,%20no%20caption.?width=768&height=960&nologo=true&safe=true&seed=506310608"
+      ]
+    },
+    {
+      "imageURL" : null,
+      "name" : "",
+      "sourceHeadline" : "Big 12 admits error in Notre Dame-BYU ending, says Irish had 1 second left",
+      "sourceURL" : "https:\/\/www.espn.com\/college-football\/story\/_\/id\/50208529\/big-12-admits-error-says-notre-dame-had-one-more-play",
+      "subject" : "Notre Dame",
+      "symbol" : "flame.fill",
+      "tag" : "drama",
+      "urls" : [
+        "https:\/\/image.pollinations.ai\/prompt\/Retro%20editorial%20sports%20poster%20illustration:%20packed%20sports%20stadium%20at%20night%20under%20floodlights,%20crowd%20in%20silhouette,%20confetti%20in%20the%20air,%20tense%20dramatic%20mood,%20stormy%20sky,%20deep%20red%20and%20charcoal%20palette.%20Flat%20bold%20graphic%20shapes,%20screen%20print%20risograph%20texture,%20limited%20palette%20of%20deep%20navy,%20warm%20cream,%20forest%20green%20and%20antique%20gold,%20dramatic%20side%20lighting,%20grainy%20shadows,%201960s%20sports%20magazine%20poster%20aesthetic.%20No%20real%20people's%20likenesses,%20no%20readable%20faces,%20no%20text,%20no%20words,%20no%20letters,%20no%20numbers,%20no%20logos,%20no%20watermark,%20no%20signature,%20no%20caption.?width=768&height=960&nologo=true&safe=true&seed=122089833"
+      ]
+    },
+    {
+      "imageURL" : null,
+      "name" : "",
+      "sourceHeadline" : "A quiet night across the league",
+      "sourceURL" : "https:\/\/example.com\/quiet",
+      "subject" : null,
+      "symbol" : "flame.fill",
+      "tag" : "jerk",
+      "urls" : [
+        "https:\/\/image.pollinations.ai\/prompt\/Retro%20editorial%20sports%20poster%20illustration:%20packed%20sports%20stadium%20at%20night%20under%20floodlights,%20crowd%20in%20silhouette,%20confetti%20in%20the%20air,%20tense%20dramatic%20mood,%20stormy%20sky,%20deep%20red%20and%20charcoal%20palette.%20Flat%20bold%20graphic%20shapes,%20screen%20print%20risograph%20texture,%20limited%20palette%20of%20deep%20navy,%20warm%20cream,%20forest%20green%20and%20antique%20gold,%20dramatic%20side%20lighting,%20grainy%20shadows,%201960s%20sports%20magazine%20poster%20aesthetic.%20No%20real%20people's%20likenesses,%20no%20readable%20faces,%20no%20text,%20no%20words,%20no%20letters,%20no%20numbers,%20no%20logos,%20no%20watermark,%20no%20signature,%20no%20caption.?width=768&height=960&nologo=true&safe=true&seed=1042950316"
+      ]
+    },
+    {
+      "imageURL" : null,
+      "name" : "",
+      "sourceHeadline" : "Something heartwarming happened",
+      "sourceURL" : "https:\/\/example.com\/warm",
+      "subject" : null,
+      "symbol" : "star.fill",
+      "tag" : "redemption",
+      "urls" : [
+        "https:\/\/image.pollinations.ai\/prompt\/Retro%20editorial%20sports%20poster%20illustration:%20packed%20sports%20stadium%20at%20night%20under%20floodlights,%20crowd%20in%20silhouette,%20confetti%20in%20the%20air,%20uplifting%20hopeful%20mood,%20warm%20golden%20light,%20green%20and%20gold%20palette.%20Flat%20bold%20graphic%20shapes,%20screen%20print%20risograph%20texture,%20limited%20palette%20of%20deep%20navy,%20warm%20cream,%20forest%20green%20and%20antique%20gold,%20dramatic%20side%20lighting,%20grainy%20shadows,%201960s%20sports%20magazine%20poster%20aesthetic.%20No%20real%20people's%20likenesses,%20no%20readable%20faces,%20no%20text,%20no%20words,%20no%20letters,%20no%20numbers,%20no%20logos,%20no%20watermark,%20no%20signature,%20no%20caption.?width=768&height=960&nologo=true&safe=true&seed=134774041"
+      ]
+    },
+    {
+      "imageURL" : null,
+      "name" : "",
+      "sourceHeadline" : "Something happened",
+      "sourceURL" : "https:\/\/example.com\/plain",
+      "subject" : null,
+      "symbol" : "sportscourt.fill",
+      "tag" : null,
+      "urls" : [
+        "https:\/\/image.pollinations.ai\/prompt\/Retro%20editorial%20sports%20poster%20illustration:%20packed%20sports%20stadium%20at%20night%20under%20floodlights,%20crowd%20in%20silhouette,%20confetti%20in%20the%20air,%20energetic%20night-game%20mood,%20deep%20navy%20and%20teal%20palette.%20Flat%20bold%20graphic%20shapes,%20screen%20print%20risograph%20texture,%20limited%20palette%20of%20deep%20navy,%20warm%20cream,%20forest%20green%20and%20antique%20gold,%20dramatic%20side%20lighting,%20grainy%20shadows,%201960s%20sports%20magazine%20poster%20aesthetic.%20No%20real%20people's%20likenesses,%20no%20readable%20faces,%20no%20text,%20no%20words,%20no%20letters,%20no%20numbers,%20no%20logos,%20no%20watermark,%20no%20signature,%20no%20caption.?width=768&height=960&nologo=true&safe=true&seed=1054083808"
+      ]
+    },
+    {
+      "imageURL" : null,
+      "name" : "NFL",
+      "sourceHeadline" : "Café owner's ünïcode story, 49ers fan",
+      "sourceURL" : "https:\/\/example.com\/caf%C3%A9",
+      "subject" : null,
+      "symbol" : "football.fill",
+      "tag" : "neutral",
+      "urls" : [
+        "https:\/\/image.pollinations.ai\/prompt\/Retro%20editorial%20sports%20poster%20illustration:%20american%20football%20stadium%20at%20night,%20floodlights,%20players%20in%20silhouette%20on%20the%20field,%20energetic%20night-game%20mood,%20deep%20navy%20and%20teal%20palette.%20Flat%20bold%20graphic%20shapes,%20screen%20print%20risograph%20texture,%20limited%20palette%20of%20deep%20navy,%20warm%20cream,%20forest%20green%20and%20antique%20gold,%20dramatic%20side%20lighting,%20grainy%20shadows,%201960s%20sports%20magazine%20poster%20aesthetic.%20No%20real%20people's%20likenesses,%20no%20readable%20faces,%20no%20text,%20no%20words,%20no%20letters,%20no%20numbers,%20no%20logos,%20no%20watermark,%20no%20signature,%20no%20caption.?width=768&height=960&nologo=true&safe=true&seed=854659212"
+      ]
+    },
+    {
+      "imageURL" : "https:\/\/example.supabase.co\/storage\/v1\/object\/public\/card-art\/story-1.jpg",
+      "name" : "NFL",
+      "sourceHeadline" : "With stamped art",
+      "sourceURL" : "https:\/\/example.com\/stamped",
+      "subject" : "NFL",
+      "symbol" : "football.fill",
+      "tag" : "nice_guy",
+      "urls" : [
+        "https:\/\/example.supabase.co\/storage\/v1\/object\/public\/card-art\/story-1.jpg",
+        "https:\/\/image.pollinations.ai\/prompt\/Retro%20editorial%20sports%20poster%20illustration:%20american%20football%20stadium%20at%20night,%20floodlights,%20players%20in%20silhouette%20on%20the%20field,%20uplifting%20hopeful%20mood,%20warm%20golden%20light,%20green%20and%20gold%20palette.%20Flat%20bold%20graphic%20shapes,%20screen%20print%20risograph%20texture,%20limited%20palette%20of%20deep%20navy,%20warm%20cream,%20forest%20green%20and%20antique%20gold,%20dramatic%20side%20lighting,%20grainy%20shadows,%201960s%20sports%20magazine%20poster%20aesthetic.%20No%20real%20people's%20likenesses,%20no%20readable%20faces,%20no%20text,%20no%20words,%20no%20letters,%20no%20numbers,%20no%20logos,%20no%20watermark,%20no%20signature,%20no%20caption.?width=768&height=960&nologo=true&safe=true&seed=1620055986"
+      ]
+    }
+  ],
+  "leads" : [
+    {
+      "bulletIndexes" : [
+        14,
+        0
+      ],
+      "leadImageURL" : "https:\/\/example.supabase.co\/storage\/v1\/object\/public\/card-art\/lead.jpg",
+      "tlDR" : "A lead line to seed the cover art.",
+      "urls" : [
+        "https:\/\/example.supabase.co\/storage\/v1\/object\/public\/card-art\/lead.jpg",
+        "https:\/\/example.supabase.co\/storage\/v1\/object\/public\/card-art\/story-1.jpg",
+        "https:\/\/image.pollinations.ai\/prompt\/Retro%20editorial%20sports%20poster%20illustration:%20american%20football%20stadium%20at%20night,%20floodlights,%20players%20in%20silhouette%20on%20the%20field,%20grand%20cinematic%20atmosphere.%20Flat%20bold%20graphic%20shapes,%20screen%20print%20risograph%20texture,%20limited%20palette%20of%20deep%20navy,%20warm%20cream,%20forest%20green%20and%20antique%20gold,%20dramatic%20side%20lighting,%20grainy%20shadows,%201960s%20sports%20magazine%20poster%20aesthetic.%20No%20real%20people's%20likenesses,%20no%20readable%20faces,%20no%20text,%20no%20words,%20no%20letters,%20no%20numbers,%20no%20logos,%20no%20watermark,%20no%20signature,%20no%20caption.?width=768&height=960&nologo=true&safe=true&seed=730503635"
+      ]
+    },
+    {
+      "bulletIndexes" : [
+        3
+      ],
+      "leadImageURL" : null,
+      "tlDR" : "No stamped art anywhere.",
+      "urls" : [
+        "https:\/\/image.pollinations.ai\/prompt\/Retro%20editorial%20sports%20poster%20illustration:%20baseball%20stadium%20at%20dusk,%20batter%20in%20silhouette%20at%20home%20plate,%20stadium%20lights%20glowing,%20grand%20cinematic%20atmosphere.%20Flat%20bold%20graphic%20shapes,%20screen%20print%20risograph%20texture,%20limited%20palette%20of%20deep%20navy,%20warm%20cream,%20forest%20green%20and%20antique%20gold,%20dramatic%20side%20lighting,%20grainy%20shadows,%201960s%20sports%20magazine%20poster%20aesthetic.%20No%20real%20people's%20likenesses,%20no%20readable%20faces,%20no%20text,%20no%20words,%20no%20letters,%20no%20numbers,%20no%20logos,%20no%20watermark,%20no%20signature,%20no%20caption.?width=768&height=960&nologo=true&safe=true&seed=1160789388"
+      ]
+    },
+    {
+      "bulletIndexes" : [
+
+      ],
+      "leadImageURL" : null,
+      "tlDR" : "Empty deck.",
+      "urls" : [
+        "https:\/\/image.pollinations.ai\/prompt\/Retro%20editorial%20sports%20poster%20illustration:%20packed%20sports%20stadium%20at%20night%20under%20floodlights,%20crowd%20in%20silhouette,%20confetti%20in%20the%20air,%20grand%20cinematic%20atmosphere.%20Flat%20bold%20graphic%20shapes,%20screen%20print%20risograph%20texture,%20limited%20palette%20of%20deep%20navy,%20warm%20cream,%20forest%20green%20and%20antique%20gold,%20dramatic%20side%20lighting,%20grainy%20shadows,%201960s%20sports%20magazine%20poster%20aesthetic.%20No%20real%20people's%20likenesses,%20no%20readable%20faces,%20no%20text,%20no%20words,%20no%20letters,%20no%20numbers,%20no%20logos,%20no%20watermark,%20no%20signature,%20no%20caption.?width=768&height=960&nologo=true&safe=true&seed=1713697687"
+      ]
+    }
+  ],
+  "seeds" : [
+    {
+      "seed" : 18652613,
+      "text" : ""
+    },
+    {
+      "seed" : 1678518572,
+      "text" : "a"
+    },
+    {
+      "seed" : 370615439,
+      "text" : "Cowboys"
+    },
+    {
+      "seed" : 815808267,
+      "text" : "https:\/\/example.com\/veteran-qb-benched"
+    },
+    {
+      "seed" : 643267781,
+      "text" : "café 🏈"
+    }
+  ]
+}
