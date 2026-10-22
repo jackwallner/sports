@@ -241,14 +241,42 @@ async function firstMissingTarget(supabase: any, targets: GenerationTarget[]): P
   const since = new Date(Date.now() - FRESH_HOURS * 60 * 60 * 1000).toISOString();
   const { data, error } = await supabase
     .from("briefings")
-    .select("persona")
+    .select("persona,scope,team,refresh_window")
     .gte("created_at", since);
   if (error) {
     throw error;
   }
-  const fresh = new Set((data ?? []).map((row: { persona: string }) => row.persona));
-  const missing = targets.find((target) => !fresh.has(target.persona));
+  const fresh = new Set(
+    (data ?? []).map((row: {
+      persona: Persona;
+      scope: BriefingScope;
+      team: string | null;
+      refresh_window: RefreshWindow;
+    }) =>
+      targetKey({
+        persona: row.persona,
+        scope: row.scope,
+        team: row.team,
+        refreshWindow: row.refresh_window,
+      })
+    ),
+  );
+  const missing = targets.find((target) => !fresh.has(targetKey(target)));
   return missing ? [missing] : [];
+}
+
+function targetKey(
+  target: Pick<
+    GenerationTarget,
+    "persona" | "scope" | "team" | "refreshWindow"
+  >,
+): string {
+  return JSON.stringify([
+    target.persona,
+    target.scope,
+    target.team ?? null,
+    target.refreshWindow,
+  ]);
 }
 
 const FRESH_HOURS = 3;
