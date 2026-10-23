@@ -208,7 +208,10 @@ class PaywallCopyTests {
         assertEquals("Subscribe", PaywallCopy.ctaTitle(annual, eligible = false))
         assertEquals("7 days free, then $19.99 / year", PaywallCopy.trialBannerText(annual, eligible = true))
         assertNull(PaywallCopy.trialBannerText(annual, eligible = false))
-        assertEquals("No payment today · Reminder day 5 · Billing day 7", PaywallCopy.trialReassuranceLine(annual, true))
+        assertEquals("No payment today · Billing day 7", PaywallCopy.trialReassuranceLine(annual, true))
+        assertNull(PaywallCopy.trialReassuranceLine(annual, false))
+        assertNull(PaywallCopy.trialReassuranceLine(monthly, true))
+        assertNull(PaywallCopy.trialReassuranceLine(lifetime, true))
     }
 
     @Test fun disclosureNamesGooglePlayAndRenewal() {

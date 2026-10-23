@@ -209,7 +209,7 @@ object PaywallCopy {
         plan ?: return null
         val days = plan.trialDays ?: return null
         if (!eligible) return null
-        return "No payment today · Reminder day ${maxOf(1, days - 2)} · Billing day $days"
+        return "No payment today · Billing day $days"
     }
 
     /** iOS names Apple's 24-hour rule; Play has none, so this names Google Play instead. */

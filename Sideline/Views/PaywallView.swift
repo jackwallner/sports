@@ -375,14 +375,12 @@ struct PaywallView: View {
         return "\(days) days free, then \(package.sidelinePriceLabel)"
     }
 
-    // Blinkist-style timeline transparency under the CTA: when the reminder
-    // arrives and when billing starts. Lifts trial conversion, cuts complaints.
+    // Show when billing starts under the CTA, using the intro offer's length.
     private var trialReassuranceLine: String? {
         guard let package = selectedPackage,
               store.isEligibleForIntroOffer(package),
               let days = trialDays else { return nil }
-        let reminderDay = max(1, days - 2)
-        return "No payment today · Reminder day \(reminderDay) · Billing day \(days)"
+        return "No payment today · Billing day \(days)"
     }
 
     private var disclosureText: String? {
