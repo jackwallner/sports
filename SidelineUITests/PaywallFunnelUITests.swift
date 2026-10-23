@@ -132,7 +132,7 @@ final class ExperiencedUserAuditUITests: XCTestCase {
         frameNote("Locked Date Night row", locked)
         locked.tap(); settle(0.8)
         shot("A3-after-tap-locked-row")
-        note("After tapping locked onboarding row, sheet/paywall present=\(app.sheets.count + app.otherElements["PopoverDismissRegion"].count)")
+        note("After tapping locked onboarding row, sheet/paywall present=\(app.sheets.count + (app.otherElements["PopoverDismissRegion"].exists ? 1 : 0))")
         app.buttons["See today's briefing"].tap()
         settle(2.0)
         shot("A4-first-deck-with-hint")
@@ -206,7 +206,7 @@ final class ExperiencedUserAuditUITests: XCTestCase {
         settle(2.0)
         shot("D2-after-unlock-tap")
         note("Preview -> paywall chain took ~\(Date().timeIntervalSince(t0))s incl. sleeps; paywall visible via Restore=\(app.buttons["Restore Purchases"].exists)")
-        let close = app.buttons["Close"]
+        let close = app.buttons["Not now"]
         note("Paywall close button exists=\(close.exists)")
         shot("D3-paywall")
         if close.exists { close.tap() } else { app.swipeDown() }
