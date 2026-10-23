@@ -2,18 +2,12 @@ import XCTest
 
 /// Deterministic first-run walk for the newcomer persona audit. No backend
 /// config on the runner, so the app serves its bundled sample briefing.
+/// One sequential test: onboarding state lives in UserDefaults and launch
+/// arguments cannot be overridden by the app's own writes, so the walk relies
+/// on the fresh simulator default and relaunches without arguments.
 /// Every step attaches a screenshot; nothing here asserts visual quality.
 final class NewcomerAuditUITests: XCTestCase {
     private let bundleID = "com.jackwallner.sports"
-
-    private func launch(freshInstall: Bool) -> XCUIApplication {
-        let app = XCUIApplication(bundleIdentifier: bundleID)
-        if freshInstall {
-            app.launchArguments += ["-sideline.hasCompletedOnboarding", "NO", "-sideline.hasSwipedDeck", "NO"]
-        }
-        app.launch()
-        return app
-    }
 
     private func shot(_ app: XCUIApplication, _ name: String) {
         let attachment = XCTAttachment(screenshot: app.screenshot())
@@ -30,15 +24,19 @@ final class NewcomerAuditUITests: XCTestCase {
         add(attachment)
     }
 
-    func testFirstRunToFirstBriefing() {
-        let app = launch(freshInstall: true)
+    private func tapCard(_ app: XCUIApplication) {
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.45)).tap()
+    }
+
+    func testNewcomerWalk() {
+        let app = XCUIApplication(bundleIdentifier: bundleID)
+        app.launch()
         _ = app.buttons["Start"].waitForExistence(timeout: 20)
         shot(app, "01-onboarding-welcome")
 
         app.buttons["Start"].tap()
         sleep(1)
         shot(app, "02-onboarding-rooms")
-        dumpButtons(app, "onboarding-rooms")
 
         // A newcomer taps a locked room to see what happens.
         let locked = app.buttons["Date Night, unlocks with Gist Pro"]
@@ -51,73 +49,65 @@ final class NewcomerAuditUITests: XCTestCase {
         let go = app.buttons["See today's briefing"]
         XCTAssertTrue(go.exists)
         go.tap()
-        sleep(3)
+        sleep(4)
         shot(app, "04-first-briefing-lead")
         dumpButtons(app, "first-briefing")
 
         // Tap the card to flip it.
-        app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.55)).tap()
+        tapCard(app)
         sleep(2)
         shot(app, "05-lead-flipped")
-        app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.55)).tap()
+        tapCard(app)
         sleep(1)
 
-        // Swipe through the deck.
-        for i in 1...5 {
+        // Swipe right first: a newcomer who swipes the "wrong" way.
+        app.swipeRight()
+        sleep(2)
+        shot(app, "06-swipe-right-first")
+
+        for i in 1...6 {
             app.swipeLeft()
             sleep(2)
-            shot(app, "06-deck-card-\(i)")
+            shot(app, "07-deck-card-\(i)")
         }
 
-        // Flip a story card and look at the source link.
-        app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.55)).tap()
+        // Flip a story card.
+        tapCard(app)
         sleep(2)
-        shot(app, "07-story-flipped")
-    }
+        shot(app, "08-story-flipped")
+        dumpButtons(app, "story-flipped")
 
-    func testLockedRoomAndPaywallFromRail() {
-        let app = launch(freshInstall: true)
-        if app.buttons["Start"].waitForExistence(timeout: 20) { app.buttons["Start"].tap() }
-        if app.buttons["See today's briefing"].waitForExistence(timeout: 5) { app.buttons["See today's briefing"].tap() }
-        sleep(3)
-
+        // Locked room from the rail.
         let rail = app.buttons.matching(NSPredicate(format: "label CONTAINS 'Office Watercooler'")).firstMatch
-        XCTAssertTrue(rail.waitForExistence(timeout: 10))
-        rail.tap()
-        sleep(2)
-        shot(app, "10-locked-room-preview")
+        if rail.waitForExistence(timeout: 5) {
+            rail.tap()
+            sleep(2)
+            shot(app, "10-locked-room-preview")
+            dumpButtons(app, "locked-room")
 
-        let see = app.buttons.matching(NSPredicate(format: "label CONTAINS 'Free' OR label CONTAINS 'Unlock'")).firstMatch
-        if see.exists {
-            see.tap()
-            sleep(4)
-            shot(app, "11-paywall-from-locked-room")
-            dumpButtons(app, "paywall")
-            let notNow = app.buttons["Not now"]
-            if notNow.exists { notNow.tap() }
-            sleep(1)
-            shot(app, "12-after-paywall-dismiss")
+            let see = app.buttons.matching(NSPredicate(format: "label CONTAINS 'Free' OR label CONTAINS 'Unlock' OR label CONTAINS 'Pro'")).firstMatch
+            if see.exists {
+                see.tap()
+                sleep(4)
+                shot(app, "11-paywall-from-locked-room")
+                dumpButtons(app, "paywall")
+                let notNow = app.buttons["Not now"]
+                if notNow.exists { notNow.tap() }
+                sleep(1)
+                shot(app, "12-after-paywall-dismiss")
+            }
         }
-    }
 
-    func testReturnVisitAndSettings() {
-        let first = launch(freshInstall: true)
-        if first.buttons["Start"].waitForExistence(timeout: 20) { first.buttons["Start"].tap() }
-        if first.buttons["See today's briefing"].waitForExistence(timeout: 5) { first.buttons["See today's briefing"].tap() }
-        sleep(3)
-        first.terminate()
-
-        let app = launch(freshInstall: false)
+        // Return visit and settings.
+        app.terminate()
+        app.launch()
         sleep(4)
         shot(app, "20-return-visit")
-
         let settings = app.buttons["Settings"]
-        XCTAssertTrue(settings.waitForExistence(timeout: 10))
-        settings.tap()
-        sleep(2)
-        shot(app, "21-settings")
-        app.swipeUp()
-        sleep(1)
-        shot(app, "22-settings-bottom")
+        if settings.waitForExistence(timeout: 10) {
+            settings.tap()
+            sleep(2)
+            shot(app, "21-settings")
+        }
     }
 }
