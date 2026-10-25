@@ -40,6 +40,17 @@ struct PersonaRail: View {
     }
 
     private var chips: some View {
+        ScrollViewReader { proxy in
+            rail
+                // Keep the selected room in view: a restored or linked room
+                // past the first two otherwise sat off the edge.
+                .task(id: selected) {
+                    withAnimation(.snappy) { proxy.scrollTo(selected, anchor: .center) }
+                }
+        }
+    }
+
+    private var rail: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 10) {
                 ForEach(visiblePersonas) { persona in
@@ -69,10 +80,22 @@ struct PersonaRail: View {
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel(accessibilityLabel(for: persona))
+                    .id(persona)
                 }
             }
             .padding(.horizontal)
             .padding(.vertical, 8)
+        }
+        // A horizontal scroll view draws past its frame into the safe area,
+        // which put the chips under the status bar in the outer display's
+        // vertical bar and against the fold. Stop them at the frame, fading
+        // over the trailing padding so a partly scrolled chip reads as more.
+        .mask {
+            HStack(spacing: 0) {
+                Color.black
+                LinearGradient(colors: [.black, .clear], startPoint: .leading, endPoint: .trailing)
+                    .frame(width: 16)
+            }
         }
     }
 

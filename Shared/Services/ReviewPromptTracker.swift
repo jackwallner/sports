@@ -89,6 +89,7 @@ public enum ReviewPromptTracker {
     private static var isScreenshotOrUITest: Bool {
         let args = ProcessInfo.processInfo.arguments
         return args.contains("-SidelineScreenshot")
+            || args.contains("-SidelineSafeScreenshot")
             || args.contains("-FASTLANE_SNAPSHOT")
             || args.contains("FASTLANE_SNAPSHOT")
     }

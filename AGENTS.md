@@ -42,7 +42,8 @@ offline. Keep generation on that side of the line.
   still inline the same `!persona.isFree && !isPro` test; prefer `canUse`. Paywall
   wording lives in `Sideline/copy/PAYWALL.md`: one room free, Pro is all four
   contexts and fresher briefings.
-- **Config comes from `Config/Secrets.xcconfig`, which is not committed.**
+- **Config comes from `Config/Secrets.xcconfig`, which is not committed;**
+  `project.yml` uses `Config/Base.xcconfig`, which optionally includes it.
   `Config/Secrets.example.xcconfig` lists the keys (`SIDELINE_SUPABASE_URL`,
   `SIDELINE_SUPABASE_ANON_KEY`, `SIDELINE_REVENUECAT_API_KEY`); `AppConfig` reads
   them from the bundle, or from the environment in tests. A missing file gives a
@@ -69,6 +70,8 @@ offline. Keep generation on that side of the line.
 ## Path rules
 - `.claude/rules/android.md` (`android/**`): the Kotlin/Compose port, its
   build and emulator commands, keys, and Play state.
+- `.claude/rules/iphone-duo.md` (Today view, rundown, split): the unfolded
+  Duo's deck-beside-rundown panes, the `sideline://room` link, Duo captures.
 
 ---
 Shared iOS conventions (build, simulator, release/TestFlight, ASC key, signing,

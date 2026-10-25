@@ -1,0 +1,4 @@
+// Committed so XcodeGen and CI can build without secrets. The keys live in
+// Secrets.xcconfig (not committed, see Secrets.example.xcconfig); without it
+// the build has no backend and the app serves its sample briefing.
+#include? "Secrets.xcconfig"

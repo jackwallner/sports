@@ -20,6 +20,12 @@ struct TodayBriefingView: View {
     @State private var finishedBriefingID: UUID?
     /// A source opened from the deck; its dismissal retries a blocked ask.
     @State private var isShowingSource = false
+    /// The container's width and fold, measured so the unfolded iPhone Duo can
+    /// put the deck and the rundown on opposite sides of the fold.
+    @State private var paneGeometry = PaneGeometry(width: 0, fold: nil)
+    /// The card a room link asked for, applied once that room's briefing lands.
+    @State private var pendingDeckCard: Int?
+    @State private var isShowingSettings = false
 
     private enum ActiveSheet: Identifiable {
         case proPreview(Persona)
@@ -36,6 +42,7 @@ struct TodayBriefingView: View {
     }
 
     @Environment(\.requestReview) private var requestReview
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @AppStorage("sideline.hasCompletedOnboarding") private var hasCompletedOnboarding = false
     @AppStorage("sideline.lastPersona") private var lastPersonaRaw = Persona.cocktailParty.rawValue
@@ -105,7 +112,63 @@ struct TodayBriefingView: View {
         }
     }
 
+    /// Unfolded, the rundown gets its own pane beside the deck.
+    private var split: UnfoldedSplit? {
+        UnfoldedSplit.make(
+            width: paneGeometry.width,
+            isRegularWidth: horizontalSizeClass == .regular,
+            fold: paneGeometry.fold
+        )
+    }
+
+    /// The briefing the deck is showing, which the rundown lists.
+    private var shownBriefing: Briefing? {
+        switch viewModel.state {
+        case .populated(let briefing, _): return briefing
+        case .refreshLimit: return viewModel.lastBriefing
+        case .idle, .loading, .failed: return nil
+        }
+    }
+
     private var briefingRoot: some View {
+        // Opening or closing the Duo only moves these frames, so neither pane
+        // is rebuilt and the deck keeps its card, flip and navigation.
+        ZStack(alignment: .topLeading) {
+            briefingStack
+                .environment(\.horizontalSizeClass, split == nil ? horizontalSizeClass : .compact)
+                .horizontalToolbarInPane(split != nil)
+                .frame(maxWidth: split?.primaryWidth ?? .infinity, maxHeight: .infinity)
+            rundownPane
+                .environment(\.horizontalSizeClass, .compact)
+                .frame(maxWidth: split?.secondaryWidth ?? .infinity, maxHeight: .infinity)
+                .padding(.leading, split?.secondaryX ?? 0)
+                .opacity(split == nil ? 0 : 1)
+                .allowsHitTesting(split != nil)
+                .accessibilityHidden(split == nil)
+        }
+        // Fill the proposal first: unfolded, the background otherwise stopped
+        // at the safe area and left the inner display's side insets white.
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.sidelineBackground.ignoresSafeArea())
+        .onGeometryChange(for: PaneGeometry.self) { proxy in
+            PaneGeometry(width: proxy.size.width, fold: proxy.verticalFold())
+        } action: { paneGeometry = $0 }
+        .onOpenURL(perform: handleRoute)
+    }
+
+    @ViewBuilder
+    private var rundownPane: some View {
+        if let briefing = shownBriefing {
+            BriefingRundown(briefing: briefing, index: $deckIndex) { url in
+                isShowingSource = true
+                activeSheet = .source(url)
+            }
+        } else {
+            Color.clear
+        }
+    }
+
+    private var briefingStack: some View {
         NavigationStack {
             mainContent
                 .background(Color.sidelineBackground)
@@ -122,26 +185,30 @@ struct TodayBriefingView: View {
                             .accessibilityAddTraits(.isHeader)
                     }
                     ToolbarItem(placement: .primaryAction) {
-                        NavigationLink {
-                            SettingsView(
-                                entitlement: entitlement,
-                                store: store,
-                                onManualRefresh: { Task { await viewModel.refresh() } }
-                            )
-                        } label: {
-                            Image(systemName: "gearshape")
+                        Button("Settings", systemImage: "gearshape") {
+                            isShowingSettings = true
                         }
-                        .accessibilityLabel("Settings")
+                        .labelStyle(.iconOnly)
                     }
+                }
+                .navigationDestination(isPresented: $isShowingSettings) {
+                    SettingsView(
+                        entitlement: entitlement,
+                        store: store,
+                        onManualRefresh: { Task { await viewModel.refresh() } }
+                    )
                 }
                 .task {
                     if case .idle = viewModel.state {
                         applyUsablePersonaFromStorage()
                         await viewModel.load()
                         #if DEBUG
-                        if let start = Self.debugDeckStart() {
+                        if let start = Self.debugDeckStart() ?? DuoScreen.current?.deckCard {
                             // Deck order: 0 = lead TL;DR, 1..n = stories, n+1 = "Your move".
                             deckIndex = min(start, (viewModel.lastBriefing?.bullets.count ?? 0) + 1)
+                        }
+                        if DuoScreen.current == .settings {
+                            isShowingSettings = true
                         }
                         #endif
                     }
@@ -256,8 +323,12 @@ struct TodayBriefingView: View {
                 .padding(.bottom, 6)
         }
         .padding(.top, 4)
+        // A room switch passes through loading, which rebuilds this view, so
+        // a linked card is picked up on appear as well as on a change.
+        .onAppear { applyPendingDeckCard(briefing) }
         .onChange(of: briefing.id) { _, _ in
             deckIndex = 0
+            applyPendingDeckCard(briefing)
         }
     }
 
@@ -268,6 +339,40 @@ struct TodayBriefingView: View {
         } else {
             caughtUpEmptyState
         }
+    }
+
+    // MARK: - Routes
+
+    /// `sideline://room/<room>` switches rooms the way a rail tap does (a
+    /// locked room opens its preview), and `?card=N` opens the deck on card N:
+    /// 0 is the brief, 1...n the stories, n+1 the question.
+    private func handleRoute(_ url: URL) {
+        guard url.scheme == "sideline", url.host == "room",
+              let persona = Persona(rawValue: url.lastPathComponent)
+        else { return }
+        let card = URLComponents(url: url, resolvingAgainstBaseURL: false)?
+            .queryItems?.first { $0.name == "card" }?.value.flatMap(Int.init)
+        activeSheet = nil
+        Task {
+            let previous = shownBriefing?.id
+            pendingDeckCard = card
+            guard await viewModel.select(persona) else {
+                pendingDeckCard = nil
+                activeSheet = .proPreview(persona)
+                return
+            }
+            // Same briefing back and the deck never left: nothing else will
+            // pick the card up.
+            if let briefing = shownBriefing, briefing.id == previous {
+                applyPendingDeckCard(briefing)
+            }
+        }
+    }
+
+    private func applyPendingDeckCard(_ briefing: Briefing) {
+        guard let card = pendingDeckCard else { return }
+        pendingDeckCard = nil
+        deckIndex = min(max(card, 0), briefing.bullets.count + 1)
     }
 
     // MARK: - Persona restore

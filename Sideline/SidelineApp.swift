@@ -20,6 +20,7 @@ struct SidelineApp: App {
     init() {
         var debugService: (any BriefingServing)?
         #if DEBUG
+        DuoScreen.current?.seedDefaults()
         if ProcessInfo.processInfo.arguments.contains("-SidelineEdgeCases") {
             debugService = EdgeCaseBriefingService()
         } else if ProcessInfo.processInfo.arguments.contains("-SidelineSafeScreenshot") {
