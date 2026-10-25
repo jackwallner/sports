@@ -39,14 +39,28 @@ struct PersonaRail: View {
         }
     }
 
+    /// Every room in one row when it fits, the selected one named and the
+    /// rest as icons, so no chip is ever cut by the screen edge or the fold.
+    /// Narrower screens scroll the full chips.
     private var chips: some View {
-        ScrollViewReader { proxy in
-            rail
-                // Keep the selected room in view: a restored or linked room
-                // past the first two otherwise sat off the edge.
-                .task(id: selected) {
-                    withAnimation(.snappy) { proxy.scrollTo(selected, anchor: .center) }
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 8) {
+                ForEach(visiblePersonas) { persona in
+                    chip(persona, showsName: persona == selected)
                 }
+            }
+            .padding(.horizontal)
+            .padding(.vertical, 8)
+            .animation(.snappy, value: selected)
+
+            ScrollViewReader { proxy in
+                rail
+                    // Keep the selected room in view: a restored or linked room
+                    // past the first two otherwise sat off the edge.
+                    .task(id: selected) {
+                        withAnimation(.snappy) { proxy.scrollTo(selected, anchor: .center) }
+                    }
+            }
         }
     }
 
@@ -54,33 +68,7 @@ struct PersonaRail: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 10) {
                 ForEach(visiblePersonas) { persona in
-                    Button {
-                        onSelect(persona)
-                    } label: {
-                        HStack(spacing: 7) {
-                            Image(systemName: persona.symbolName)
-                            Text(persona.displayName)
-                                .lineLimit(1)
-                            if !persona.isFree && !isPro {
-                                Image(systemName: "lock.fill")
-                                    .font(.caption2)
-                                    .accessibilityLabel("Pro")
-                            }
-                        }
-                        .font(.subheadline.weight(.semibold))
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 9)
-                        .foregroundStyle(foreground(for: persona))
-                        .background(
-                            Capsule().fill(persona == selected ? SidelineTheme.brandPrimary : Color.clear)
-                        )
-                        .overlay(
-                            Capsule().stroke(persona == selected ? Color.clear : SidelineTheme.rule, lineWidth: 1)
-                        )
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(accessibilityLabel(for: persona))
-                    .id(persona)
+                    chip(persona, showsName: true)
                 }
             }
             .padding(.horizontal)
@@ -97,6 +85,39 @@ struct PersonaRail: View {
                     .frame(width: 16)
             }
         }
+    }
+
+    private func chip(_ persona: Persona, showsName: Bool) -> some View {
+        Button {
+            onSelect(persona)
+        } label: {
+            HStack(spacing: 7) {
+                Image(systemName: persona.symbolName)
+                if showsName {
+                    Text(persona.displayName)
+                        .lineLimit(1)
+                        .fixedSize()
+                }
+                if !persona.isFree && !isPro {
+                    Image(systemName: "lock.fill")
+                        .font(.caption2)
+                        .accessibilityLabel("Pro")
+                }
+            }
+            .font(.subheadline.weight(.semibold))
+            .padding(.horizontal, showsName ? 14 : 12)
+            .padding(.vertical, 9)
+            .foregroundStyle(foreground(for: persona))
+            .background(
+                Capsule().fill(persona == selected ? SidelineTheme.brandPrimary : Color.clear)
+            )
+            .overlay(
+                Capsule().stroke(persona == selected ? Color.clear : SidelineTheme.rule, lineWidth: 1)
+            )
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(accessibilityLabel(for: persona))
+        .id(persona)
     }
 
     private var visiblePersonas: [Persona] {

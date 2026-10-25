@@ -190,7 +190,6 @@ struct BriefingRundown: View {
                     Text(row.line)
                         .font(.system(.body, design: .serif).weight(isOpen ? .semibold : .regular))
                         .foregroundStyle(SidelineTheme.inkPrimary)
-                        .lineLimit(isOpen ? nil : 2)
                         .fixedSize(horizontal: false, vertical: true)
                     if isOpen, let detail = row.detail, !detail.isEmpty {
                         Text(detail)
