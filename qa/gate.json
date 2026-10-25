@@ -1,0 +1,17 @@
+{
+  "project": "Sideline.xcodeproj",
+  "scheme": "SidelineUITests",
+  "uitests_dir": "SidelineUITests",
+  "journeys": [
+    "SidelineUITests/ReleaseJourneysUITests"
+  ],
+  "personas": [
+    "newcomer",
+    "accessibility",
+    "reduce-motion",
+    "german"
+  ],
+  "persona_overrides": {},
+  "slot": null,
+  "bundle_id": "com.jackwallner.sports"
+}
