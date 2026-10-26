@@ -6,7 +6,8 @@ import XCTest
 /// `QA.checkpoint`, which runs the fleet oracles on the screen. Assert
 /// reachability only.
 ///
-/// `-SidelineSafeScreenshot` serves the seeded offline briefings. Simulator
+/// `-SidelineSafeScreenshot` serves the seeded offline briefings and hides
+/// the locked rooms, so the Pro room journey uses `-SidelineScreenshotDemo`. Simulator
 /// runs never configure the production RevenueCat key, so journeys that show
 /// prices add `-rcfunnelprobe`: the Test Store, a separate RevenueCat app,
 /// supplies them. Its customer never buys.
@@ -38,7 +39,7 @@ final class ReleaseJourneysUITests: XCTestCase {
     func test02ProRoomPreviewAndPaywall() {
         continueAfterFailure = false
         let app = XCUIApplication(bundleIdentifier: Self.bundle)
-        QA.launch(app, environment: Self.probe, arguments: Self.freeArgs + ["-DuoScreen", "brief"])
+        QA.launch(app, environment: Self.probe, arguments: ["-SidelineScreenshotDemo", "-rcfunnelprobe", "-DuoScreen", "brief"])
         let proRoom = app.buttons.containing(NSPredicate(format: "label CONTAINS %@", "Pro context")).firstMatch
         XCTAssertTrue(proRoom.waitForExistence(timeout: 20), "no Pro room on the rail for a free user")
         QA.checkpoint(app, "briefing-free")
