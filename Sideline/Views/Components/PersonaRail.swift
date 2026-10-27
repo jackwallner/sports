@@ -30,8 +30,8 @@ struct PersonaRail: View {
             // what the briefing below is for.
             Text(selected.shortPitch)
                 .font(.caption)
-                .foregroundStyle(SidelineTheme.inkTertiary)
-                .lineLimit(1)
+                .foregroundStyle(SidelineTheme.inkSecondary)
+                .fixedSize(horizontal: false, vertical: true)
                 .padding(.horizontal)
                 .padding(.bottom, 6)
                 .animation(nil, value: selected)

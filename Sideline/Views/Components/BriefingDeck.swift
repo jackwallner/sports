@@ -503,7 +503,7 @@ private struct DeckCardView: View {
                 startPoint: .top,
                 endPoint: .bottom
             )
-            VStack(alignment: .leading, spacing: 14) {
+            VStack(alignment: .leading, spacing: 16) {
                 eyebrow(icon: "rectangle.stack.fill", text: "That was one room")
                 line("\(proRooms.count) more rooms got their own stories today.", size: 24, limit: 3)
 
@@ -515,12 +515,13 @@ private struct DeckCardView: View {
                                 .frame(width: 24)
                             Text(room.displayName)
                                 .font(.subheadline.weight(.semibold))
+                                .fixedSize(horizontal: false, vertical: true)
                             Spacer(minLength: 4)
                             Image(systemName: "lock.fill")
                                 .font(.caption2)
-                                .opacity(0.55)
+                                .opacity(0.8)
                         }
-                        .foregroundStyle(.white.opacity(0.92))
+                        .foregroundStyle(.white)
                     }
                 }
                 .padding(.top, 2)
@@ -533,6 +534,7 @@ private struct DeckCardView: View {
                             .font(.caption.weight(.bold))
                         Text(trialAvailable ? "Try every room free" : "Unlock every room")
                             .font(.subheadline.weight(.semibold))
+                            .fixedSize(horizontal: false, vertical: true)
                         Spacer(minLength: 4)
                         Image(systemName: "arrow.up.right")
                             .font(.caption.weight(.bold))
@@ -540,7 +542,7 @@ private struct DeckCardView: View {
                     .foregroundStyle(.white)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 12)
-                    .frame(maxWidth: .infinity)
+                    .frame(maxWidth: .infinity, minHeight: 44)
                     .background(.white.opacity(0.18), in: Capsule())
                     .overlay(Capsule().stroke(.white.opacity(0.28), lineWidth: 1))
                 }
@@ -644,7 +646,7 @@ private struct DeckCardView: View {
             Text(text.uppercased())
                 .font(SidelineTheme.eyebrow)
                 .tracking(1.4)
-                .lineLimit(1)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .foregroundStyle(color)
     }
@@ -670,8 +672,9 @@ private struct DeckCardView: View {
                 .font(.caption2.weight(.semibold))
             Text(text)
                 .font(.footnote.weight(.medium))
+                .fixedSize(horizontal: false, vertical: true)
         }
-        .foregroundStyle(.white.opacity(0.65))
+        .foregroundStyle(.white.opacity(0.88))
         .padding(.top, 2)
         .accessibilityHidden(true)
     }
@@ -793,9 +796,11 @@ private struct DeckCardView: View {
                 .font(.caption2)
             Text("Tap to flip back")
                 .font(.footnote.weight(.medium))
+                .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity)
-        .foregroundStyle(.white.opacity(0.7))
+        .foregroundStyle(.white.opacity(0.88))
+        .padding(.top, 2)
         .accessibilityHidden(true)
     }
 
@@ -854,16 +859,16 @@ private struct DeckCardView: View {
                     .font(.caption2.weight(.bold))
                 Text(bullet.sourceHeadline)
                     .font(.caption)
-                    .lineLimit(1)
-                    .truncationMode(.tail)
+                    .lineLimit(3)
+                    .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 4)
                 Image(systemName: "arrow.up.right")
                     .font(.caption2.weight(.bold))
             }
             .foregroundStyle(.white)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 13)
-            .frame(maxWidth: .infinity)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 12)
+            .frame(maxWidth: .infinity, minHeight: 44)
             .contentShape(Capsule())
             .background(.white.opacity(0.18), in: Capsule())
             .overlay(Capsule().stroke(.white.opacity(0.28), lineWidth: 1))

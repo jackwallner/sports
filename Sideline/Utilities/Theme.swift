@@ -62,12 +62,12 @@ enum SidelineTheme {
         return Color(red: 0.102, green: 0.086, blue: 0.071)
         #endif
     }()
-    /// 62% ink — secondary text (headlines under TL;DR, source links).
-    static let inkSecondary = inkPrimary.opacity(0.70)
-    /// 64% ink — tertiary (counts, captions, freshness footer). Bumped from
+    /// 80% ink — secondary text (headlines under TL;DR, source links).
+    static let inkSecondary = inkPrimary.opacity(0.80)
+    /// 76% ink — tertiary (counts, captions, freshness footer). Bumped from
     /// 48% so small text clears WCAG AA contrast on both the cream surface
     /// and the elevated card surface (source links on cards).
-    static let inkTertiary  = inkPrimary.opacity(0.64)
+    static let inkTertiary  = inkPrimary.opacity(0.76)
     /// 10% ink — rules and dividers. Prefer a real `Divider()` when you can.
     static let rule         = inkPrimary.opacity(0.14)
 
