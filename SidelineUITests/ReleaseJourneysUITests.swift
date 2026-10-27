@@ -21,7 +21,7 @@ final class ReleaseJourneysUITests: XCTestCase {
     func test01OnboardingToFirstBriefing() {
         continueAfterFailure = false
         let app = XCUIApplication(bundleIdentifier: Self.bundle)
-        QA.launch(app, environment: Self.probe, arguments: Self.freeArgs)
+        QA.launch(app, environment: Self.probe, arguments: Self.freeArgs + ["-SidelineFreshOnboarding"])
         let start = app.buttons["Start"]
         XCTAssertTrue(start.waitForExistence(timeout: 20), "welcome never rendered")
         QA.checkpoint(app, "welcome")

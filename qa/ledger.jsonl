@@ -1,0 +1,8 @@
+{"created": "2026-10-27T01:30:01+00:00", "id": "Q001", "match": "cta-jump|*|pro-preview|*", "reason": "the Pro preview sheet's docked button, a different surface from the briefing deck", "status": "accepted"}
+{"created": "2026-10-27T01:30:01+00:00", "id": "Q002", "match": "cta-jump|*|pro-paywall|*", "reason": "the paywall sheet's Subscribe button, a different surface from the Pro preview", "status": "accepted"}
+{"created": "2026-10-27T01:30:02+00:00", "id": "Q003", "match": "cta-jump|*|briefing-after-paywall|*", "reason": "back on the briefing deck after the paywall sheet closes", "status": "accepted"}
+{"created": "2026-10-27T01:30:02+00:00", "id": "Q004", "match": "motion-jump|*|briefing-free|*", "reason": "the demo deck drawing in after launch", "status": "accepted"}
+{"created": "2026-10-27T01:30:02+00:00", "id": "Q005", "match": "motion-jump|*|pro-paywall|*", "reason": "the paywall sheet presenting, and the DEBUG -DuoScreen settings launch pushing Settings", "status": "accepted"}
+{"created": "2026-10-27T01:30:02+00:00", "id": "Q006", "match": "motion-jump|*|briefing-after-paywall|*", "reason": "the paywall sheet sliding away", "status": "accepted"}
+{"created": "2026-10-27T01:30:02+00:00", "id": "Q007", "match": "motion-jump|*|settings|*", "reason": "the app going to the background for the interruption", "status": "accepted"}
+{"created": "2026-10-27T01:30:02+00:00", "id": "Q008", "match": "motion-jump|*|after-relaunch|*", "reason": "the app terminating for the relaunch", "status": "accepted"}

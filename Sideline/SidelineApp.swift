@@ -21,6 +21,13 @@ struct SidelineApp: App {
         var debugService: (any BriefingServing)?
         #if DEBUG
         DuoScreen.current?.seedDefaults()
+        // Release journeys start from onboarding even when the simulator kept
+        // the previous install's defaults.
+        if ProcessInfo.processInfo.arguments.contains("-SidelineFreshOnboarding") {
+            for key in ["sideline.hasCompletedOnboarding", "sideline.hasSwipedDeck", "sideline.lastPersona"] {
+                UserDefaults.standard.removeObject(forKey: key)
+            }
+        }
         if ProcessInfo.processInfo.arguments.contains("-SidelineEdgeCases") {
             debugService = EdgeCaseBriefingService()
         } else if ProcessInfo.processInfo.arguments.contains("-SidelineSafeScreenshot") {
