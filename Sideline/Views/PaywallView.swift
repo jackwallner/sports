@@ -81,6 +81,7 @@ struct PaywallView: View {
                 if displayCloseButton {
                     ToolbarItem(placement: .cancellationAction) {
                         Button("Not now") { dismiss() }
+                            .foregroundStyle(SidelineTheme.inkPrimary)
                     }
                 }
             }
@@ -306,11 +307,11 @@ struct PaywallView: View {
                 .disabled(isRestoring || isPurchasing)
                 Text("·").foregroundStyle(SidelineTheme.inkTertiary)
                 Link(destination: PaywallLinks.standardEULA) {
-                    Text("Terms").frame(minHeight: 44).contentShape(Rectangle())
+                    Text("Terms").frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
                 }
                 Text("·").foregroundStyle(SidelineTheme.inkTertiary)
                 Link(destination: PaywallLinks.privacyPolicy) {
-                    Text("Privacy").frame(minHeight: 44).contentShape(Rectangle())
+                    Text("Privacy").frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
                 }
             }
             .font(.caption2)
@@ -520,13 +521,18 @@ struct PaywallView: View {
                 Button("Restore Purchases") {
                     Task { await entitlement.refresh() }
                 }
-                .frame(maxWidth: .infinity)
+                .frame(maxWidth: .infinity, minHeight: 44)
+                .contentShape(Rectangle())
                 .font(.footnote)
 
                 HStack(spacing: 4) {
-                    Link("Terms", destination: PaywallLinks.standardEULA)
+                    Link(destination: PaywallLinks.standardEULA) {
+                        Text("Terms").frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
+                    }
                     Text("·")
-                    Link("Privacy Policy", destination: PaywallLinks.privacyPolicy)
+                    Link(destination: PaywallLinks.privacyPolicy) {
+                        Text("Privacy Policy").frame(minHeight: 44).contentShape(Rectangle())
+                    }
                 }
                 .font(.caption2)
                 .foregroundStyle(SidelineTheme.inkTertiary)
@@ -543,6 +549,7 @@ struct PaywallView: View {
                 if displayCloseButton {
                     ToolbarItem(placement: .cancellationAction) {
                         Button("Not now") { dismiss() }
+                            .foregroundStyle(SidelineTheme.inkPrimary)
                     }
                 }
             }

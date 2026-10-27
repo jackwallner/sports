@@ -272,7 +272,7 @@ struct TodayBriefingView: View {
                 ScrollView {
                     VStack(spacing: 0) {
                         rail
-                        stateContent.frame(height: 640)
+                        stateContent.frame(height: 720)
                     }
                 }
             } else {

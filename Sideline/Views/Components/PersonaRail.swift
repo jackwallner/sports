@@ -6,6 +6,8 @@ struct PersonaRail: View {
     let isPro: Bool
     let onSelect: (Persona) -> Void
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             // The chips alone read as ambiguous filters. Frame the choice the
@@ -51,14 +53,14 @@ struct PersonaRail: View {
             }
             .padding(.horizontal)
             .padding(.vertical, 8)
-            .animation(.snappy, value: selected)
+            .animation(reduceMotion ? nil : .snappy, value: selected)
 
             ScrollViewReader { proxy in
                 rail
                     // Keep the selected room in view: a restored or linked room
                     // past the first two otherwise sat off the edge.
                     .task(id: selected) {
-                        withAnimation(.snappy) { proxy.scrollTo(selected, anchor: .center) }
+                        withAnimation(reduceMotion ? nil : .snappy) { proxy.scrollTo(selected, anchor: .center) }
                     }
             }
         }

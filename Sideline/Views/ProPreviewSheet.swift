@@ -17,6 +17,15 @@ struct ProPreviewSheet: View {
             // sizes never push the button off the sheet.
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
+                    // A large title truncates at accessibility sizes; the
+                    // hook wraps here instead.
+                    if dynamicTypeSize.isAccessibilitySize {
+                        Text(persona.paywallHook)
+                            .font(.title.weight(.bold))
+                            .foregroundStyle(SidelineTheme.inkPrimary)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .accessibilityAddTraits(.isHeader)
+                    }
                     VStack(alignment: .leading, spacing: 10) {
                         HStack(spacing: 8) {
                             Image(systemName: persona.symbolName)
@@ -80,14 +89,14 @@ struct ProPreviewSheet: View {
                 .padding(.bottom, 24)
                 .background(.background)
             }
-            .navigationTitle(persona.paywallHook)
+            .navigationTitle(dynamicTypeSize.isAccessibilitySize ? "" : persona.paywallHook)
             #if os(iOS)
-            // Inline titles truncate; the large title wraps at big sizes.
-            .navigationBarTitleDisplayMode(dynamicTypeSize.isAccessibilitySize ? .large : .inline)
+            .navigationBarTitleDisplayMode(.inline)
             #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Not now") { onDismiss() }
+                        .foregroundStyle(SidelineTheme.inkPrimary)
                 }
             }
         }

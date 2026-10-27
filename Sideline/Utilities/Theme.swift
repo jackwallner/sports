@@ -66,14 +66,35 @@ enum SidelineTheme {
         return Color(red: 0.102, green: 0.086, blue: 0.071)
         #endif
     }()
-    /// 80% ink — secondary text (headlines under TL;DR, source links).
-    static let inkSecondary = inkPrimary.opacity(0.80)
-    /// 76% ink — tertiary (counts, captions, freshness footer). Bumped from
-    /// 48% so small text clears WCAG AA contrast on both the cream surface
-    /// and the elevated card surface (source links on cards).
-    static let inkTertiary  = inkPrimary.opacity(0.76)
+    /// Secondary text (headlines under TL;DR, source links). Opaque: the ink
+    /// blended 80% into the page, because translucent text fails the contrast
+    /// audit however dark it looks.
+    static let inkSecondary = inkBlend(
+        light: (0.278, 0.262, 0.243),  // 80% #1A1612 on #FAF6EE
+        dark: (0.776, 0.761, 0.737)    // 80% #F3EFE8 on deep paper
+    )
+    /// Tertiary (counts, captions, freshness footer): 76% ink blended into the
+    /// page. Clears WCAG AA on the cream surface and the elevated card surface.
+    static let inkTertiary = inkBlend(
+        light: (0.313, 0.297, 0.278),
+        dark: (0.740, 0.726, 0.703)
+    )
     /// 10% ink — rules and dividers. Prefer a real `Divider()` when you can.
     static let rule         = inkPrimary.opacity(0.14)
+
+    private static func inkBlend(
+        light: (CGFloat, CGFloat, CGFloat),
+        dark: (CGFloat, CGFloat, CGFloat)
+    ) -> Color {
+        #if canImport(UIKit)
+        return Color(uiColor: UIColor { trait in
+            let c = trait.userInterfaceStyle == .dark ? dark : light
+            return UIColor(red: c.0, green: c.1, blue: c.2, alpha: 1)
+        })
+        #else
+        return Color(red: light.0, green: light.1, blue: light.2)
+        #endif
+    }
 
     // MARK: - Tags (retuned for legibility on cream AND deep paper)
     /// Green tag (nice-guy / redemption). Lifts in dark mode so it stays readable
@@ -163,6 +184,9 @@ enum SidelineTheme {
                                          Color(red: 0.502, green: 0.341, blue: 0.071)]
     /// Eyebrows / kickers on the dark panel.
     static let goldOnDark = Color(red: 0.937, green: 0.788, blue: 0.439)  // #EFC970
+    /// Secondary text on the dark panels: opaque, so contrast does not depend
+    /// on what the translucent white lands on.
+    static let onPanelSecondary = Color(red: 0.929, green: 0.949, blue: 0.937)
     /// Art-zone floor while generated art loads; darkens toward the panel.
     static let artPlaceholder: [Color] = [Color(red: 0.165, green: 0.420, blue: 0.318),
                                           Color(red: 0.106, green: 0.282, blue: 0.212)]

@@ -63,6 +63,8 @@ struct BriefingRundown: View {
     private static let rowSpacing: CGFloat = 6
     private static let minimumBottom: CGFloat = 24
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     @State private var rowHeights: [Int: CGFloat] = [:]
     @State private var listHeight: CGFloat = 0
 
@@ -128,12 +130,12 @@ struct BriefingRundown: View {
                 // before the rundown exists, which no index change reports.
                 .onAppear { reveal(with: proxy) }
                 .onChange(of: index) {
-                    withAnimation(.snappy) { reveal(with: proxy) }
+                    withAnimation(reduceMotion ? nil : .snappy) { reveal(with: proxy) }
                 }
                 // Opening a row changes its height, and with it where the
                 // list should rest.
                 .onChange(of: rowHeights) {
-                    withAnimation(.snappy) { reveal(with: proxy) }
+                    withAnimation(reduceMotion ? nil : .snappy) { reveal(with: proxy) }
                 }
                 .onChange(of: listHeight) { reveal(with: proxy) }
             }
@@ -172,7 +174,7 @@ struct BriefingRundown: View {
         let accent = row.isQuestion ? SidelineTheme.amberText : SidelineTheme.brandPrimary
         return VStack(alignment: .leading, spacing: 10) {
             Button {
-                withAnimation(.snappy) { index = row.id }
+                withAnimation(reduceMotion ? nil : .snappy) { index = row.id }
             } label: {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack(spacing: 8) {
@@ -202,6 +204,7 @@ struct BriefingRundown: View {
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+            .accessibilityElement(children: .combine)
             .accessibilityAddTraits(isOpen ? .isSelected : [])
 
             if isOpen, let bullet = row.source {
@@ -236,6 +239,8 @@ struct BriefingRundown: View {
             }
             .font(.footnote.weight(.semibold))
             .foregroundStyle(SidelineTheme.brandPrimary)
+            .frame(minHeight: 44, alignment: .leading)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         .accessibilityLabel("Read the source: \(bullet.sourceHeadline)")

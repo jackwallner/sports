@@ -74,6 +74,7 @@ struct BriefingDeck: View {
                         let slot = (position - index + count) % count
                         DeckCardView(
                             card: cards[position],
+                            isFront: slot == 0,
                             isFlipped: flippedPosition == position,
                             trialAvailable: trialAvailable,
                             onOpenSource: onOpenSource,
@@ -383,10 +384,13 @@ private struct FlipCard<Front: View, Back: View>: View, Animatable {
 
 private struct DeckCardView: View {
     let card: DeckCard
+    let isFront: Bool
     let isFlipped: Bool
     let trialAvailable: Bool
     let onOpenSource: (URL) -> Void
     let onExploreRooms: () -> Void
+
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
         // The whole card rotates as one object — surface, corner clip and
@@ -403,9 +407,12 @@ private struct DeckCardView: View {
         }
         // A card is a fixed box. Cap how far the text can grow so the largest
         // Dynamic Type settings can't blow a single card past the screen; the
-        // back face steps its type down to fit, so nothing is clipped.
-        .dynamicTypeSize(...DynamicTypeSize.accessibility3)
+        // back face steps its type down to fit, so nothing is clipped. At
+        // accessibility sizes the card stops at xxxLarge: its text no longer
+        // fits a fixed box there, and the page around it still scrolls larger.
+        .dynamicTypeSize(...(dynamicTypeSize.isAccessibilitySize ? DynamicTypeSize.xxxLarge : .accessibility3))
         .accessibilityElement(children: .contain)
+        .accessibilityHidden(!isFront)
     }
 
     /// One physical side of the card: content on an opaque surface, clipped to
@@ -503,6 +510,7 @@ private struct DeckCardView: View {
                 endPoint: .bottom
             )
             VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: 16) {
                 eyebrow(icon: "rectangle.stack.fill", text: "That was one room")
                 line("\(proRooms.count) more rooms got their own stories today.", size: 24, limit: 3)
 
@@ -518,41 +526,54 @@ private struct DeckCardView: View {
                             Spacer(minLength: 4)
                             Image(systemName: "lock.fill")
                                 .font(.caption2)
-                                .opacity(0.8)
                         }
                         .foregroundStyle(.white)
                     }
                 }
                 .padding(.top, 2)
+                }
+                .accessibilityElement(children: .combine)
 
                 Spacer(minLength: 8)
 
-                Button(action: onExploreRooms) {
-                    HStack(spacing: 8) {
-                        Image(systemName: "lock.open.fill")
-                            .font(.caption.weight(.bold))
-                        Text(trialAvailable ? "Try every room free" : "Unlock every room")
-                            .font(.subheadline.weight(.semibold))
-                            .fixedSize(horizontal: false, vertical: true)
-                        Spacer(minLength: 4)
-                        Image(systemName: "arrow.up.right")
-                            .font(.caption.weight(.bold))
+                // Only the front card's button exists. The cards peeking behind
+                // draw the same pill, but a second button would be reported
+                // at the peeking card's scale and offset.
+                Group {
+                    if isFront {
+                        Button(action: onExploreRooms) { exploreLabel }
+                            .buttonStyle(.plain)
+                            .accessibilityHint("Shows \(SidelineBrand.proName) plans")
+                    } else {
+                        exploreLabel
                     }
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 12)
-                    .frame(maxWidth: .infinity, minHeight: 44)
-                    .background(.white.opacity(0.18), in: Capsule())
-                    .overlay(Capsule().stroke(.white.opacity(0.28), lineWidth: 1))
                 }
-                .buttonStyle(.plain)
-                .accessibilityHint("Shows \(SidelineBrand.proName) plans")
 
                 hint(icon: "sparkles", text: "Different stories, written for that crowd.")
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .padding(22)
         }
+    }
+
+    private var exploreLabel: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "lock.open.fill")
+                .font(.caption.weight(.bold))
+            Text(trialAvailable ? "Try every room free" : "Unlock every room")
+                .font(.subheadline.weight(.semibold))
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 4)
+            Image(systemName: "arrow.up.right")
+                .font(.caption.weight(.bold))
+        }
+        .foregroundStyle(.white)
+        .padding(.horizontal, 14)
+        .padding(.vertical, 12)
+        .frame(maxWidth: .infinity, minHeight: 44)
+        .background(.white.opacity(0.12), in: Capsule())
+        .overlay(Capsule().stroke(.white.opacity(0.28), lineWidth: 1))
+        .contentShape(Capsule())
     }
 
     // MARK: Card anatomy
@@ -619,6 +640,9 @@ private struct DeckCardView: View {
         @ViewBuilder content: () -> Content
     ) -> some View {
         VStack(alignment: .leading, spacing: 12, content: content)
+            // Eyebrow, line and hint read as one block, not as separate small
+            // elements sitting under the card's flip tap.
+            .accessibilityElement(children: .combine)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(22)
             .background(
@@ -673,7 +697,7 @@ private struct DeckCardView: View {
                 .font(.footnote.weight(.medium))
                 .fixedSize(horizontal: false, vertical: true)
         }
-        .foregroundStyle(.white.opacity(0.88))
+        .foregroundStyle(SidelineTheme.onPanelSecondary)
         .padding(.top, 2)
         .accessibilityHidden(true)
     }
@@ -748,6 +772,7 @@ private struct DeckCardView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
+        .accessibilityElement(children: .combine)
     }
 
     private func back(_ bullet: BriefingBullet) -> some View {
@@ -798,7 +823,7 @@ private struct DeckCardView: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity)
-        .foregroundStyle(.white.opacity(0.88))
+        .foregroundStyle(SidelineTheme.onPanelSecondary)
         .padding(.top, 2)
         .accessibilityHidden(true)
     }
@@ -838,10 +863,11 @@ private struct DeckCardView: View {
                         .font(SidelineTheme.scaledBody(17 * scale))
                         .lineSpacing(3 * scale)
                 }
-                .foregroundStyle(.white.opacity(0.88))
+                .foregroundStyle(SidelineTheme.onPanelSecondary)
             }
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
+        .accessibilityElement(children: .combine)
     }
 
     private func nonEmpty(_ text: String?) -> String? {
@@ -869,7 +895,7 @@ private struct DeckCardView: View {
             .padding(.vertical, 12)
             .frame(maxWidth: .infinity, minHeight: 44)
             .contentShape(Capsule())
-            .background(.white.opacity(0.18), in: Capsule())
+            .background(.white.opacity(0.12), in: Capsule())
             .overlay(Capsule().stroke(.white.opacity(0.28), lineWidth: 1))
         }
         .buttonStyle(.plain)
@@ -917,6 +943,7 @@ private struct DeckCardView: View {
         .foregroundStyle(.white)
         .background(tagPillColor(tag).opacity(0.92), in: Capsule())
         .overlay(Capsule().stroke(.white.opacity(0.25), lineWidth: 1))
+        .accessibilityHidden(true)
     }
 
     private func tagPillColor(_ tag: BriefingTag) -> Color {
