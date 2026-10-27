@@ -134,9 +134,10 @@ struct BriefingRundown: View {
                 }
                 // Opening a row changes its height, and with it where the
                 // list should rest.
-                .onChange(of: rowHeights) {
-                    withAnimation(reduceMotion ? nil : .snappy) { reveal(with: proxy) }
-                }
+                // Settled in the same frame, not animated: measured heights
+                // arrive row by row, and animating each one left the rows
+                // mid-slide, drawn over each other, until the last landed.
+                .onChange(of: rowHeights) { reveal(with: proxy) }
                 .onChange(of: listHeight) { reveal(with: proxy) }
             }
         }

@@ -288,6 +288,13 @@ struct CardArtImage: View {
     #if canImport(UIKit)
     @State private var image: UIImage?
 
+    /// A cached image is there on the first frame; setting it from `.task`
+    /// popped the art in over the placeholder a frame later.
+    init(urls: [URL]) {
+        self.urls = urls
+        _image = State(initialValue: urls.lazy.compactMap { CardArtStore.cached($0) }.first)
+    }
+
     var body: some View {
         GeometryReader { geo in
             ZStack {

@@ -9,6 +9,8 @@ struct OnboardingView: View {
     @Binding var lastPersona: String
     var isPro: Bool = false
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     @State private var page = 0
     @State private var pickedPersona: Persona = .cocktailParty
 
@@ -71,6 +73,7 @@ struct OnboardingView: View {
             Spacer()
         }
         .padding(.horizontal, 28)
+        .padding(.bottom, 36)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
@@ -81,10 +84,14 @@ struct OnboardingView: View {
                 .font(SidelineTheme.title)
                 .foregroundStyle(SidelineTheme.inkPrimary)
                 .fixedSize(horizontal: false, vertical: true)
-            Text("Cocktail Party gives you today's essential stories. Gist Pro adds briefings made for work, family, and date night.")
-                .font(.callout)
-                .foregroundStyle(SidelineTheme.inkSecondary)
-                .fixedSize(horizontal: false, vertical: true)
+            // At accessibility sizes this paragraph alone fills the screen and
+            // pushes every room under the action bar.
+            if !dynamicTypeSize.isAccessibilitySize {
+                Text("Cocktail Party gives you today's essential stories. Gist Pro adds briefings made for work, family, and date night.")
+                    .font(.callout)
+                    .foregroundStyle(SidelineTheme.inkSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
 
             ScrollView {
                 VStack(spacing: 10) {
@@ -96,6 +103,8 @@ struct OnboardingView: View {
             }
         }
         .padding(.horizontal, 28)
+        // Clear of the page dots, which draw over the bottom of the page.
+        .padding(.bottom, 36)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
@@ -153,20 +162,41 @@ struct OnboardingView: View {
         .accessibilityAddTraits(isSelected ? [.isSelected, .isButton] : .isButton)
     }
 
+    @ViewBuilder
     private var actionBar: some View {
-        HStack {
-            if page > 0 {
-                Button("Back") { withAnimation { page -= 1 } }
-                    .buttonStyle(.plain)
-                    .foregroundStyle(SidelineTheme.inkSecondary)
+        // Stacked at accessibility sizes: side by side, the wrapped label
+        // balloons into a circle that sits over Back.
+        if dynamicTypeSize.isAccessibilitySize {
+            VStack(spacing: 8) {
+                primaryButton
+                    .frame(maxWidth: .infinity)
+                backButton
             }
-            Spacer()
-            Button(primaryLabel) {
-                advance()
+        } else {
+            HStack {
+                backButton
+                Spacer()
+                primaryButton
             }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            .tint(SidelineTheme.brandFill)
+        }
+    }
+
+    private var primaryButton: some View {
+        Button(primaryLabel) {
+            advance()
+        }
+        .buttonStyle(.borderedProminent)
+        .controlSize(.large)
+        .tint(SidelineTheme.brandFill)
+    }
+
+    @ViewBuilder
+    private var backButton: some View {
+        if page > 0 {
+            Button("Back") { withAnimation { page -= 1 } }
+                .buttonStyle(.plain)
+                .foregroundStyle(SidelineTheme.inkSecondary)
+                .frame(minHeight: 44)
         }
     }
 
