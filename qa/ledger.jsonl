@@ -6,3 +6,8 @@
 {"created": "2026-10-27T01:30:02+00:00", "id": "Q006", "match": "motion-jump|*|briefing-after-paywall|*", "reason": "the paywall sheet sliding away", "status": "accepted"}
 {"created": "2026-10-27T01:30:02+00:00", "id": "Q007", "match": "motion-jump|*|settings|*", "reason": "the app going to the background for the interruption", "status": "accepted"}
 {"created": "2026-10-27T01:30:02+00:00", "id": "Q008", "match": "motion-jump|*|after-relaunch|*", "reason": "the app terminating for the relaunch", "status": "accepted"}
+{"created": "2026-10-27T01:52:45+00:00", "id": "Q009", "match": "overlap|*|first-briefing|*", "reason": "the flip card's hidden back face (accessibilityHidden) caught in one accessibility snapshot as the deck settled; the screen shows only the front", "status": "accepted"}
+{"created": "2026-10-27T01:52:45+00:00", "id": "Q010", "match": "motion-jump|*|pro-preview|*", "reason": "the paywall sheet sliding away back to the briefing", "status": "accepted"}
+{"created": "2026-10-27T01:52:45+00:00", "id": "Q011", "match": "motion-flicker|*|pro-preview|*", "reason": "the paywall sheet sliding away back to the briefing", "status": "accepted"}
+{"created": "2026-10-27T01:52:45+00:00", "id": "Q012", "match": "motion-jump|*|first-briefing|*", "reason": "the app terminating at the end of the journey", "status": "accepted"}
+{"created": "2026-10-27T01:52:45+00:00", "id": "Q013", "match": "motion-jump|*|settings-after-interruption|*", "reason": "the app going to the background for the interruption", "status": "accepted"}
