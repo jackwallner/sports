@@ -109,7 +109,7 @@ struct PersonaRail: View {
             .padding(.vertical, 9)
             .foregroundStyle(foreground(for: persona))
             .background(
-                Capsule().fill(persona == selected ? SidelineTheme.brandPrimary : Color.clear)
+                Capsule().fill(persona == selected ? SidelineTheme.brandFill : Color.clear)
             )
             .overlay(
                 Capsule().stroke(persona == selected ? Color.clear : SidelineTheme.rule, lineWidth: 1)

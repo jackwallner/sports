@@ -166,7 +166,7 @@ struct OnboardingView: View {
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
-            .tint(SidelineTheme.brandPrimary)
+            .tint(SidelineTheme.brandFill)
         }
     }
 

@@ -46,7 +46,7 @@ struct SettingsView: View {
                 }
             }
 
-            Section("Appearance") {
+            Section {
                 Picker(selection: appearanceBinding) {
                     ForEach(AppearanceMode.allCases) { mode in
                         Text(mode.label).tag(mode)
@@ -55,9 +55,11 @@ struct SettingsView: View {
                     Label("Theme", systemImage: "circle.lefthalf.filled")
                 }
                 .pickerStyle(.menu)
+            } header: {
+                Text("Appearance").foregroundStyle(SidelineTheme.inkSecondary)
             }
 
-            Section("Briefing") {
+            Section {
                 Button {
                     if isPro {
                         dismiss()
@@ -70,9 +72,11 @@ struct SettingsView: View {
                         Label("Manual refresh", systemImage: "arrow.clockwise")
                         Spacer()
                         Text(isPro ? "Refresh now" : "Pro")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(SidelineTheme.inkSecondary)
                     }
                 }
+            } header: {
+                Text("Briefing").foregroundStyle(SidelineTheme.inkSecondary)
             }
 
             if isPro, store.hasActiveSubscription {
@@ -82,6 +86,7 @@ struct SettingsView: View {
                     }
                 } footer: {
                     Text("Change or cancel your subscription in your Apple ID settings.")
+                        .foregroundStyle(SidelineTheme.inkSecondary)
                 }
             }
 
@@ -92,11 +97,12 @@ struct SettingsView: View {
                 .disabled(isRestoring)
             } footer: {
                 Text("Already subscribed? Restore to unlock Pro on this device.")
+                    .foregroundStyle(SidelineTheme.inkSecondary)
             }
 
             // Two separate rows with no question in front of either
             // (App Review 5.6.1).
-            Section("Help") {
+            Section {
                 Button {
                     openURL(Self.feedbackMailURL)
                 } label: {
@@ -108,15 +114,20 @@ struct SettingsView: View {
                 } label: {
                     Label("Rate Gist", systemImage: "star")
                 }
+            } header: {
+                Text("Help").foregroundStyle(SidelineTheme.inkSecondary)
             }
 
-            Section("About") {
+            Section {
                 Link("Privacy Policy", destination: URL(string: "https://jackwallner.github.io/sports/privacy-policy.html")!)
                 Link("Terms of Use", destination: URL(string: "https://jackwallner.github.io/sports/terms.html")!)
                 LabeledContent("Version", value: versionString)
+            } header: {
+                Text("About").foregroundStyle(SidelineTheme.inkSecondary)
             }
         }
         .navigationTitle("Settings")
+        .tint(SidelineTheme.brandPrimary)
         .alert(
             "Restore Purchases",
             isPresented: Binding(
@@ -192,12 +203,12 @@ private struct SettingsProRow: View {
                 Spacer()
                 Text(isPro ? "Active" : "See Pro")
                     .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(isPro ? .secondary : SidelineTheme.brandPrimary)
+                    .foregroundStyle(isPro ? SidelineTheme.inkSecondary : SidelineTheme.brandPrimary)
             }
 
             Text(isPro ? "All contexts and fresher briefings are on." : "All contexts, fresh 3\u{00D7}/day.")
                 .font(.callout)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(SidelineTheme.inkSecondary)
         }
         .padding(.vertical, 4)
     }

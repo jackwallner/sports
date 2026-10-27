@@ -2,6 +2,8 @@ import Shared
 import SwiftUI
 
 struct ProPreviewSheet: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     let persona: Persona
     /// When the user still has an unused free trial, every door into Pro
     /// should say "try free", not "unlock". Free beats locked.
@@ -72,7 +74,7 @@ struct ProPreviewSheet: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
-                .tint(SidelineTheme.brandPrimary)
+                .tint(SidelineTheme.brandFill)
                 .padding(.horizontal, 24)
                 .padding(.top, 12)
                 .padding(.bottom, 24)
@@ -80,7 +82,8 @@ struct ProPreviewSheet: View {
             }
             .navigationTitle(persona.paywallHook)
             #if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
+            // Inline titles truncate; the large title wraps at big sizes.
+            .navigationBarTitleDisplayMode(dynamicTypeSize.isAccessibilitySize ? .large : .inline)
             #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -88,5 +91,6 @@ struct ProPreviewSheet: View {
                 }
             }
         }
+        .tint(SidelineTheme.brandPrimary)
     }
 }

@@ -29,6 +29,8 @@ struct BriefingDeck: View {
     let onOpenSource: (URL) -> Void
     let onExploreRooms: () -> Void
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     @State private var drag: CGSize = .zero
     @State private var isFlinging = false
     @State private var crossedThreshold = false
@@ -138,7 +140,7 @@ struct BriefingDeck: View {
     private func flip(position: Int, card: DeckCard) {
         guard card.hasBack, !isFlinging else { return }
         impact(.soft, intensity: 0.5)
-        withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
+        withAnimation(reduceMotion ? nil : .spring(response: 0.5, dampingFraction: 0.8)) {
             flippedPosition = flippedPosition == position ? nil : position
         }
     }
@@ -232,7 +234,7 @@ struct BriefingDeck: View {
             width: direction * size.width * 1.5,
             height: drag.height * 1.1
         )
-        withAnimation(.easeIn(duration: 0.26)) {
+        withAnimation(reduceMotion ? nil : .easeIn(duration: 0.26)) {
             drag = exit
         } completion: {
             var t = Transaction()
@@ -250,7 +252,7 @@ struct BriefingDeck: View {
     /// and springs back, which both shows the gesture and previews the card
     /// rising behind it. Never fires again once the user has actually swiped.
     private func maybeHintSwipe() {
-        guard !hasSwipedDeck, !didHint, cards.count > 1 else { return }
+        guard !hasSwipedDeck, !didHint, !reduceMotion, cards.count > 1 else { return }
         didHint = true
         Task { @MainActor in
             try? await Task.sleep(nanoseconds: 750_000_000)
@@ -281,7 +283,7 @@ struct BriefingDeck: View {
                 Capsule()
                     .fill(i == index ? SidelineTheme.brandPrimary : SidelineTheme.rule)
                     .frame(width: i == index ? activeDotWidth : dotSize, height: dotSize)
-                    .animation(.snappy(duration: 0.22), value: index)
+                    .animation(reduceMotion ? nil : .snappy(duration: 0.22), value: index)
             }
         }
         .frame(maxWidth: .infinity)
@@ -359,20 +361,17 @@ private struct FlipCard<Front: View, Back: View>: View, Animatable {
 
     var body: some View {
         let showingBack = angle >= 90
+        // Only the face that is up is built, so the hidden one never leaves
+        // overlapping text, buttons or tap targets in the view tree.
         ZStack {
-            front
-                .opacity(showingBack ? 0 : 1)
-                .allowsHitTesting(!showingBack)
-                .accessibilityHidden(showingBack)
-            // Pre-mirrored, so once the card is over it reads the right way
-            // round instead of as its own reflection.
-            back
-                .rotation3DEffect(.degrees(180), axis: (x: 0, y: 1, z: 0))
-                .opacity(showingBack ? 1 : 0)
-                // The hidden face must never steal touches — its source button
-                // sits right where flip taps land.
-                .allowsHitTesting(showingBack)
-                .accessibilityHidden(!showingBack)
+            if showingBack {
+                // Pre-mirrored, so once the card is over it reads the right way
+                // round instead of as its own reflection.
+                back
+                    .rotation3DEffect(.degrees(180), axis: (x: 0, y: 1, z: 0))
+            } else {
+                front
+            }
         }
         // Inside the rotation, so the shadow turns with the card.
         .shadow(color: SidelineTheme.inkPrimary.opacity(0.16), radius: 22, x: 0, y: 12)

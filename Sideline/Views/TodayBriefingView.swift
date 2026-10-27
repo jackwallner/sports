@@ -43,6 +43,7 @@ struct TodayBriefingView: View {
 
     @Environment(\.requestReview) private var requestReview
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     @AppStorage("sideline.hasCompletedOnboarding") private var hasCompletedOnboarding = false
     @AppStorage("sideline.lastPersona") private var lastPersonaRaw = Persona.cocktailParty.rawValue
@@ -264,18 +265,34 @@ struct TodayBriefingView: View {
     // MARK: - Layout
 
     private var mainContent: some View {
-        VStack(spacing: 0) {
-            PersonaRail(selected: viewModel.selectedPersona, isPro: isPro) { persona in
-                Task {
-                    let didSelect = await viewModel.select(persona)
-                    if !didSelect {
-                        activeSheet = .proPreview(persona)
+        // At accessibility sizes the rail alone fills most of the screen, so
+        // the deck keeps a card-sized box and the page scrolls around it.
+        Group {
+            if dynamicTypeSize.isAccessibilitySize {
+                ScrollView {
+                    VStack(spacing: 0) {
+                        rail
+                        stateContent.frame(height: 640)
                     }
                 }
+            } else {
+                VStack(spacing: 0) {
+                    rail
+                    stateContent
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
             }
+        }
+    }
 
-            stateContent
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+    private var rail: some View {
+        PersonaRail(selected: viewModel.selectedPersona, isPro: isPro) { persona in
+            Task {
+                let didSelect = await viewModel.select(persona)
+                if !didSelect {
+                    activeSheet = .proPreview(persona)
+                }
+            }
         }
     }
 
@@ -497,7 +514,7 @@ struct TodayBriefingView: View {
                 activeSheet = .paywall(viewModel.selectedPersona, "sideline_refresh_limit_paywall")
             }
             .buttonStyle(.borderedProminent)
-            .tint(SidelineTheme.brandPrimary)
+            .tint(SidelineTheme.brandFill)
             .padding(.top, 4)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

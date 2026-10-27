@@ -27,6 +27,10 @@ enum SidelineTheme {
         #endif
     }()
 
+    /// Brand green for fills under white text. Brand primary lifts in dark mode,
+    /// which leaves white on it under 3:1, so fills keep the deep green.
+    static let brandFill = Color(red: 0.122, green: 0.361, blue: 0.271)  // #1F5C45
+
     /// The single accent. Reserved for sparks: the SuggestedQuestionCard
     /// tint, the "tie-in" sparkle, small markers. Never the main surface.
     static let brandAccent  = Color(red: 0.773, green: 0.565, blue: 0.102)  // #C5901A

@@ -84,7 +84,7 @@ struct PaywallView: View {
                     }
                 }
             }
-        }
+        }        .tint(SidelineTheme.brandPrimary)
     }
 
     private var loadingState: some View {
@@ -121,19 +121,27 @@ struct PaywallView: View {
     }
 
     private var paywallContent: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            hero
-            trialBanner
-            compactBenefits
-            planCards
-            Spacer(minLength: 0)
-            purchaseSection
+        // Scrolls so large text never truncates a plan or pushes the buy
+        // button off screen; at normal sizes the content fills the height and
+        // the purchase section stays at the bottom.
+        GeometryReader { geo in
+            ScrollView {
+                VStack(alignment: .leading, spacing: 12) {
+                    hero
+                    trialBanner
+                    compactBenefits
+                    planCards
+                    Spacer(minLength: 0)
+                    purchaseSection
+                }
+                .padding(.horizontal, 22)
+                .padding(.top, 8)
+                .padding(.bottom, 14)
+                .frame(maxWidth: 520)
+                .frame(maxWidth: .infinity, minHeight: geo.size.height)
+            }
+            .scrollBounceBehavior(.basedOnSize)
         }
-        .padding(.horizontal, 22)
-        .padding(.top, 8)
-        .padding(.bottom, 14)
-        .frame(maxWidth: 520)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     private var hero: some View {
@@ -152,14 +160,12 @@ struct PaywallView: View {
             Text(paywallHeadline)
                 .font(SidelineTheme.display(24))
                 .foregroundStyle(SidelineTheme.inkPrimary)
-                .lineLimit(2)
-                .minimumScaleFactor(0.9)
+                .fixedSize(horizontal: false, vertical: true)
 
             Text("Fresh takes for every room, all day.")
                 .font(.footnote)
                 .foregroundStyle(SidelineTheme.inkSecondary)
-                .lineLimit(1)
-                .minimumScaleFactor(0.9)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 
@@ -173,15 +179,14 @@ struct PaywallView: View {
                     .font(.footnote.weight(.bold))
                 Text(text)
                     .font(.subheadline.weight(.bold))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
+                    .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 0)
             }
             .foregroundStyle(.white)
             .padding(.horizontal, 14)
             .padding(.vertical, 10)
             .frame(maxWidth: .infinity)
-            .background(SidelineTheme.brandPrimary, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .background(SidelineTheme.brandFill, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
             .accessibilityElement(children: .combine)
         }
     }
@@ -204,8 +209,7 @@ struct PaywallView: View {
             Text(title)
                 .font(.subheadline)
                 .foregroundStyle(SidelineTheme.inkPrimary)
-                .lineLimit(2)
-                .minimumScaleFactor(0.85)
+                .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
         }
     }
@@ -247,27 +251,25 @@ struct PaywallView: View {
                 ZStack {
                     Text(ctaTitle)
                         .font(.headline)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.72)
+                        .fixedSize(horizontal: false, vertical: true)
                         .frame(maxWidth: .infinity)
                         .opacity(isPurchasing ? 0 : 1)
                     if isPurchasing {
                         ProgressView()
                     }
                 }
-                .frame(height: 44)
+                .frame(minHeight: 44)
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
-            .tint(SidelineTheme.brandPrimary)
+            .tint(SidelineTheme.brandFill)
             .disabled(isPurchasing || selectedPackage == nil)
 
             Text(trialReassuranceLine ?? " ")
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(SidelineTheme.brandPrimary)
                 .multilineTextAlignment(.center)
-                .lineLimit(1)
-                .minimumScaleFactor(0.8)
+                .fixedSize(horizontal: false, vertical: true)
                 .frame(minHeight: 18)
                 .opacity(trialReassuranceLine == nil ? 0 : 1)
                 .accessibilityHidden(trialReassuranceLine == nil)
@@ -298,12 +300,18 @@ struct PaywallView: View {
             HStack(spacing: 14) {
                 Button(action: startRestore) {
                     Text(isRestoring ? "Restoring…" : "Restore Purchases")
+                        .frame(minHeight: 44)
+                        .contentShape(Rectangle())
                 }
                 .disabled(isRestoring || isPurchasing)
                 Text("·").foregroundStyle(SidelineTheme.inkTertiary)
-                Link("Terms", destination: PaywallLinks.standardEULA)
+                Link(destination: PaywallLinks.standardEULA) {
+                    Text("Terms").frame(minHeight: 44).contentShape(Rectangle())
+                }
                 Text("·").foregroundStyle(SidelineTheme.inkTertiary)
-                Link("Privacy", destination: PaywallLinks.privacyPolicy)
+                Link(destination: PaywallLinks.privacyPolicy) {
+                    Text("Privacy").frame(minHeight: 44).contentShape(Rectangle())
+                }
             }
             .font(.caption2)
             .foregroundStyle(SidelineTheme.inkTertiary)
@@ -507,7 +515,7 @@ struct PaywallView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
-                .tint(SidelineTheme.brandPrimary)
+                .tint(SidelineTheme.brandFill)
 
                 Button("Restore Purchases") {
                     Task { await entitlement.refresh() }
@@ -538,7 +546,7 @@ struct PaywallView: View {
                     }
                 }
             }
-        }
+        }        .tint(SidelineTheme.brandPrimary)
     }
 
     private func fallbackBenefit(_ title: String) -> some View {
@@ -613,20 +621,21 @@ private struct PaywallPlanCard: View {
                         Text(package.sidelineDisplayName)
                             .font(.subheadline.weight(.bold))
                             .foregroundStyle(SidelineTheme.inkPrimary)
+                            .fixedSize(horizontal: false, vertical: true)
                         if let savings = savingsPercent {
                             Text("SAVE \(savings)%")
                                 .font(.caption2.weight(.bold))
                                 .foregroundStyle(.white)
                                 .padding(.horizontal, 6)
                                 .padding(.vertical, 2)
-                                .background(SidelineTheme.brandPrimary, in: Capsule())
+                                .background(SidelineTheme.brandFill, in: Capsule())
                         } else if isBestValue {
                             Text("BEST VALUE")
                                 .font(.caption2.weight(.bold))
                                 .foregroundStyle(.white)
                                 .padding(.horizontal, 6)
                                 .padding(.vertical, 2)
-                                .background(SidelineTheme.brandPrimary, in: Capsule())
+                                .background(SidelineTheme.brandFill, in: Capsule())
                         }
                     }
                     if showsTrialBadge, let trial = package.sidelineIntroOfferLabel {
@@ -645,6 +654,7 @@ private struct PaywallPlanCard: View {
                 Text(package.sidelinePriceLabel)
                     .font(.subheadline.weight(.bold).monospacedDigit())
                     .foregroundStyle(SidelineTheme.inkPrimary)
+                    .fixedSize()
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 14)
