@@ -21,12 +21,14 @@ struct SidelineApp: App {
         var debugService: (any BriefingServing)?
         #if DEBUG
         DuoScreen.current?.seedDefaults()
-        // Release journeys start from onboarding even when the simulator kept
-        // the previous install's defaults.
+        // Release journeys start from onboarding even when the simulator keeps
+        // a device-level copy of these defaults (a `simctl spawn defaults
+        // write` survives uninstall). Explicit values in the app's own domain
+        // win over it; removing the keys would fall back to it.
         if ProcessInfo.processInfo.arguments.contains("-SidelineFreshOnboarding") {
-            for key in ["sideline.hasCompletedOnboarding", "sideline.hasSwipedDeck", "sideline.lastPersona"] {
-                UserDefaults.standard.removeObject(forKey: key)
-            }
+            UserDefaults.standard.set(false, forKey: "sideline.hasCompletedOnboarding")
+            UserDefaults.standard.set(false, forKey: "sideline.hasSwipedDeck")
+            UserDefaults.standard.set(Persona.cocktailParty.rawValue, forKey: "sideline.lastPersona")
         }
         if ProcessInfo.processInfo.arguments.contains("-SidelineEdgeCases") {
             debugService = EdgeCaseBriefingService()
