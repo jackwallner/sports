@@ -15,7 +15,9 @@ import XCTest
 final class ReleaseJourneysUITests: XCTestCase {
 
     private static let bundle = "com.jackwallner.sports"
-    private static let probe = ["RC_PROBE_USER": "qa-sports-journeys"]
+    // A new Test Store customer per run: a purchase made by any earlier run would
+    // otherwise leave every later run Pro, and a Pro user never sees the preview.
+    private static let probe = ["RC_PROBE_USER": "qa-sports-journeys-\(UUID().uuidString.prefix(8))"]
     private static let freeArgs = ["-SidelineSafeScreenshot", "-rcfunnelprobe"]
 
     func test01OnboardingToFirstBriefing() {
