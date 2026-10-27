@@ -162,7 +162,7 @@ final class ReleaseJourneysUITests: XCTestCase {
 
     private func swipeToNextCard(_ app: XCUIApplication, expecting value: String, journey: String = #function) {
         let deck = deck(app)
-        deck.swipeLeft()
+        QA.swipe(deck)
         let moved = NSPredicate(format: "value == %@", value)
         let result = XCTWaiter.wait(for: [expectation(for: moved, evaluatedWith: deck)], timeout: 5)
         XCTAssertEqual(result, .completed, "swipe did not reach \(value) in \(journey)")

@@ -125,6 +125,16 @@ enum QA {
         }
     }
 
+    /// A horizontal swipe across the element. `XCUIElement.swipeLeft()` lands
+    /// as a vertical drag on an unfolded iPhone Duo, whose inner display is
+    /// rotated against the device; a drag between element coordinates works on
+    /// every device.
+    static func swipe(_ element: XCUIElement, left: Bool = true) {
+        let from = element.coordinate(withNormalizedOffset: CGVector(dx: left ? 0.85 : 0.15, dy: 0.5))
+        let to = element.coordinate(withNormalizedOffset: CGVector(dx: left ? 0.1 : 0.9, dy: 0.5))
+        from.press(forDuration: 0.05, thenDragTo: to, withVelocity: .fast, thenHoldForDuration: 0)
+    }
+
     /// Kills and relaunches without reinstalling: state must survive this.
     static func relaunch(_ app: XCUIApplication, journey: String = #function) {
         system("relaunch", journey: journey) {
