@@ -1,0 +1,17 @@
+# Sports Cheat Sheet: Daily News
+
+> Sports Cheat Sheet is a sports small talk app for people who do not follow sports: a five-minute daily briefing with source-linked talking points. No account.
+
+## App
+
+- [Sports Small Talk App | Sports Cheat Sheet: Daily News](https://jackwallner.com/ios/sports/index.html.md): Sports Cheat Sheet is a sports small talk app for people who do not follow sports: a five-minute daily briefing with source-linked talking points. No account.
+
+## Guides
+
+- [How to Talk About Sports When You Don't Follow Sports](https://jackwallner.com/ios/sports/how-to-talk-about-sports.html.md): Small talk for non-fans: one story to know, one question to ask, sample lines for work and dinner, and what to skip so you never get caught bluffing.
+
+## Optional
+
+- [Gist Privacy Policy](https://jackwallner.com/ios/sports/privacy-policy.html.md): Gist provides sports conversation briefings without accounts, social features, ads, or behavioral tracking.
+- [Gist - Support](https://jackwallner.com/ios/sports/support.html.md): Gist gives non-fans quick sports pop-culture talking points before they walk into the room. No account required.
+- [Gist Terms of Use](https://jackwallner.com/ios/sports/terms.html.md): By using Gist, you agree to these Terms of Use and Apple's Standard Licensed Application End User License Agreement.
