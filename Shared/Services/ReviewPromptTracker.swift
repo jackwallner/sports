@@ -87,10 +87,14 @@ public enum ReviewPromptTracker {
     }
 
     private static var isScreenshotOrUITest: Bool {
+        #if DEBUG
         let args = ProcessInfo.processInfo.arguments
         return args.contains("-SidelineScreenshot")
             || args.contains("-FASTLANE_SNAPSHOT")
             || args.contains("FASTLANE_SNAPSHOT")
+        #else
+        return false
+        #endif
     }
 
     public static func recordAppLaunch(now: Date = .now) {
