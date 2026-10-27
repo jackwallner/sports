@@ -126,7 +126,11 @@ struct PersonaRail: View {
     }
 
     private var isScreenshotMode: Bool {
-        ProcessInfo.processInfo.arguments.contains("-SidelineSafeScreenshot")
+        #if DEBUG
+        return ProcessInfo.processInfo.arguments.contains("-SidelineSafeScreenshot")
+        #else
+        return false
+        #endif
     }
 
     private func foreground(for persona: Persona) -> some ShapeStyle {
