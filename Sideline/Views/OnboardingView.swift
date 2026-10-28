@@ -121,7 +121,8 @@ struct OnboardingView: View {
                     .foregroundStyle(locked ? SidelineTheme.inkTertiary : SidelineTheme.brandPrimary)
                     .frame(width: 28)
                 VStack(alignment: .leading, spacing: 3) {
-                    HStack(spacing: 6) {
+                    let stacked = dynamicTypeSize.isAccessibilitySize
+                    let titleRow = Group {
                         Text(persona.displayName)
                             .font(.headline)
                             .foregroundStyle(SidelineTheme.inkPrimary)
@@ -135,10 +136,19 @@ struct OnboardingView: View {
                                 .foregroundStyle(SidelineTheme.amberText)
                         }
                     }
-                    Text(persona.shortPitch)
-                        .font(.footnote)
-                        .foregroundStyle(SidelineTheme.inkSecondary)
-                        .fixedSize(horizontal: false, vertical: true)
+                    if stacked {
+                        VStack(alignment: .leading, spacing: 6) { titleRow }
+                    } else {
+                        HStack(spacing: 6) { titleRow }
+                    }
+                    // At accessibility sizes the pitch makes each row taller
+                    // than the page, so later rows run under the action bar.
+                    if !stacked {
+                        Text(persona.shortPitch)
+                            .font(.footnote)
+                            .foregroundStyle(SidelineTheme.inkSecondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
                 Spacer()
                 if isSelected {

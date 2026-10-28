@@ -12,7 +12,6 @@ import UIKit
 struct TodayBriefingView: View {
     @State private var viewModel: TodayBriefingViewModel
     @State private var activeSheet: ActiveSheet?
-    @State private var pendingPaywallContext: Persona?
     @State private var deckIndex = 0
     @State private var reviewPromptShownThisSession = false
     /// The briefing whose last story card was reached, so finishing one deck
@@ -221,8 +220,9 @@ struct TodayBriefingView: View {
                             persona: persona,
                             trialAvailable: trialAvailable,
                             onSeePro: {
-                                pendingPaywallContext = persona
-                                activeSheet = nil
+                                // Swap in place: dismissing then presenting
+                                // flashes the preview sliding away first.
+                                activeSheet = .paywall(persona, "sideline_locked_room_paywall_\(persona.rawValue)")
                             },
                             onDismiss: { activeSheet = nil }
                         )
@@ -451,11 +451,6 @@ struct TodayBriefingView: View {
     }
 
     private func handleSheetDismiss() {
-        if let persona = pendingPaywallContext {
-            pendingPaywallContext = nil
-            activeSheet = .paywall(persona, "sideline_locked_room_paywall_\(persona.rawValue)")
-            return
-        }
         // Only a source sheet retries a blocked ask. A paywall or Pro preview
         // dismissal never leads into a rating request.
         if isShowingSource {
