@@ -6,7 +6,7 @@ Web page: https://jackwallner.com/ios/sports/how-to-talk-about-sports.html
 
 ## How to talk about sports when you don't follow sports
 
-By Jack Wallner. Last updated October 18, 2026.
+By Jack Wallner. Last updated October 28, 2026.
 
 You do not need to know sports to talk about sports. Sports small talk is a short exchange that needs only three things: one thing that happened, why people care about it, and one good question for the fan in front of you. People who like sports usually enjoy explaining them, and asking follow-up questions makes a better impression than reciting facts.
 
