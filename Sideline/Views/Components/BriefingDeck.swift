@@ -923,7 +923,7 @@ private struct DeckCardView: View {
         .padding(.horizontal, 9)
         .padding(.vertical, 5)
         .foregroundStyle(.white)
-        .background(.white.opacity(0.20), in: Capsule())
+        .background(.black.opacity(0.5), in: Capsule())
         .overlay(Capsule().stroke(.white.opacity(0.30), lineWidth: 1))
         .accessibilityHidden(true)
     }

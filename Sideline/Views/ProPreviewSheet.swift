@@ -59,6 +59,10 @@ struct ProPreviewSheet: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .background(
                             RoundedRectangle(cornerRadius: SidelineTheme.cardCornerRadius)
+                                .fill(.background)
+                        )
+                        .background(
+                            RoundedRectangle(cornerRadius: SidelineTheme.cardCornerRadius)
                                 .fill(SidelineTheme.brandPrimary.opacity(0.08))
                         )
                         .overlay(
