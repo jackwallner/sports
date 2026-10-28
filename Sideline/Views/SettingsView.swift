@@ -92,10 +92,10 @@ struct SettingsView: View {
 
             Section {
                 Button(isRestoring ? "Restoring…" : "Restore Purchases") {
+                    guard !isRestoring else { return }
                     Task { await runRestore() }
                 }
                 .foregroundStyle(SidelineTheme.inkPrimary)
-                .disabled(isRestoring)
             } footer: {
                 Text("Already subscribed? Restore to unlock Pro on this device.")
                     .foregroundStyle(SidelineTheme.inkSecondary)
