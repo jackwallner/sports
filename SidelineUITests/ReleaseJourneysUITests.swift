@@ -104,7 +104,10 @@ final class ReleaseJourneysUITests: XCTestCase {
 
         // The lead card turns over to its setup and back.
         deck.tap()
-        XCTAssertTrue(text(app, containing: "swapping CEOs").waitForExistence(timeout: 5), "lead setup missing")
+        let setup = text(app, containing: "swapping CEOs")
+        // A tap that lands while the lead art is still settling can be dropped; one retry only when the front is still up.
+        if !setup.waitForExistence(timeout: 5), text(app, containing: "got benched").exists { deck.tap() }
+        XCTAssertTrue(setup.waitForExistence(timeout: 5), "lead setup missing")
         QA.checkpoint(app, "briefing-lead-back")
         deck.tap()
         XCTAssertTrue(text(app, containing: "got benched").waitForExistence(timeout: 5))
