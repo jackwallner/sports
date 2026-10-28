@@ -116,6 +116,9 @@ struct PersonaRail: View {
             .overlay(
                 Capsule().stroke(persona == selected ? Color.clear : SidelineTheme.rule, lineWidth: 1)
             )
+            // A plain button only takes taps on what it draws; an unselected
+            // chip's fill is clear, so a tap between its icon and lock missed.
+            .contentShape(Capsule())
         }
         .buttonStyle(.plain)
         .accessibilityLabel(accessibilityLabel(for: persona))
