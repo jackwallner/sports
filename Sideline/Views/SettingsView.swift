@@ -39,10 +39,16 @@ struct SettingsView: View {
     var body: some View {
         List {
             Section {
-                Button {
-                    showingPaywall = true
-                } label: {
-                    SettingsProRow(isPro: isPro)
+                // A subscriber is never offered the plans they already own.
+                if isPro {
+                    SettingsProRow(isPro: true)
+                        .accessibilityElement(children: .combine)
+                } else {
+                    Button {
+                        showingPaywall = true
+                    } label: {
+                        SettingsProRow(isPro: false)
+                    }
                 }
             }
 

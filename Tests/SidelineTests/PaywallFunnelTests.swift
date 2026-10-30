@@ -111,6 +111,24 @@ final class PaywallFunnelTests: XCTestCase {
         }
     }
 
+    func testEverySurfaceGetsItsOwnAttributeKey() {
+        let surfaces = Persona.allCases.map { "sideline_locked_room_paywall_\($0.rawValue)" } + [
+            "sideline_settings_paywall_sheet",
+            "sideline_free_deck_rooms_paywall",
+            "sideline_free_deck_rooms_card",
+            "sideline_refresh_limit_paywall",
+        ]
+        for id in surfaces {
+            ConversionDiagnostics.recordPitchView(impressionID: id)
+        }
+
+        let keys = ConversionDiagnostics.subscriberAttributes.keys.filter {
+            $0.hasPrefix("pitch_views_") && $0 != "pitch_views_total"
+        }
+        XCTAssertEqual(keys.count, surfaces.count, "surfaces merged: \(keys.sorted())")
+        XCTAssertTrue(keys.allSatisfy { $0.count <= 40 })
+    }
+
     func testNoAttributeCarriesFreeTextOrHealthData() {
         ConversionDiagnostics.recordAppOpen()
         ConversionDiagnostics.recordPitchView(impressionID: "sideline_onboarding_paywall")

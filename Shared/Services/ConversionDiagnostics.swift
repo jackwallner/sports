@@ -127,6 +127,20 @@ public enum ConversionDiagnostics {
         logger.info("Conversion on \(d.string(forKey: Key.convertedOn) ?? "?", privacy: .public) after \(d.integer(forKey: Key.viewsAtConvert)) pitches")
     }
 
+    /// `pitch_views_<surface>`, or when that passes RevenueCat's 40-character
+    /// limit, its first 31 characters and a hash of the whole key, so two
+    /// surfaces sharing a long prefix never land on one attribute.
+    public static func pitchViewsKey(forSurface surface: String) -> String {
+        let key = "pitch_views_\(surface)"
+        guard key.count > 40 else { return key }
+        var hash: UInt32 = 2_166_136_261
+        for byte in key.utf8 {
+            hash ^= UInt32(byte)
+            hash = hash &* 16_777_619
+        }
+        return "\(key.prefix(31))_\(String(format: "%08x", hash))"
+    }
+
     // MARK: - Reading
 
     public static var totalPitchViews: Int { defaults.integer(forKey: Key.totalViews) }
@@ -170,8 +184,7 @@ public enum ConversionDiagnostics {
         guard total > 0 else { return attributes }
         attributes["pitch_views_total"] = String(total)
         for (surface, count) in viewsBySurface {
-            let key = "pitch_views_\(surface)"
-            attributes[String(key.prefix(40))] = String(count)
+            attributes[pitchViewsKey(forSurface: surface)] = String(count)
         }
         if let last = lastSurface { attributes["pitch_last"] = last }
         if let first = firstSeenDate {

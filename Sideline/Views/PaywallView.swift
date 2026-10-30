@@ -425,11 +425,9 @@ struct PaywallView: View {
     }
 
     private func startPurchase() {
+        // No impression here: a purchase tap is not a pitch view, and
+        // `converted_plan` already records the plan.
         guard let package = selectedPackage else { return }
-        store.trackPaywallImpression(
-            id: "\(impressionId)_purchase_\(package.sidelinePackageKind)",
-            oncePerSession: true
-        )
         errorMessage = nil
         restoreMessage = nil
         isPurchasing = true

@@ -347,7 +347,13 @@ public final class StoreService: NSObject, EntitlementProviding {
         defer { purchaseInFlight = false }
 
         let startedTrial = isEligibleForIntroOffer(package)
-        let result = try await Purchases.shared.purchase(package: package)
+        let result: PurchaseResultData
+        do {
+            result = try await Purchases.shared.purchase(package: package)
+        } catch {
+            if let state = SidelinePurchaseState(purchaseError: error) { return state }
+            throw error
+        }
         apply(customerInfo: result.customerInfo)
         if result.userCancelled {
             return .cancelled
@@ -412,6 +418,20 @@ extension StoreService: PurchasesDelegate {
     nonisolated public func purchases(_ purchases: Purchases, receivedUpdated customerInfo: CustomerInfo) {
         Task { @MainActor in
             StoreService.shared.apply(customerInfo: customerInfo)
+        }
+    }
+}
+
+public extension SidelinePurchaseState {
+    /// RevenueCat throws for Ask to Buy (a deferred StoreKit purchase) instead
+    /// of returning, so a request waiting on a parent is not a failure.
+    init?(purchaseError error: Error) {
+        let error = error as NSError
+        guard error.domain == ErrorCode.errorDomain else { return nil }
+        switch ErrorCode(rawValue: error.code) {
+        case .paymentPendingError: self = .pending
+        case .purchaseCancelledError: self = .cancelled
+        default: return nil
         }
     }
 }
