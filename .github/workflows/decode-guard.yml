@@ -1,0 +1,27 @@
+name: Decode guard
+
+# Compiles the briefing models with Swift 6.1 (the Foundation in iOS 17 and 18)
+# and decodes the live Supabase row shape. Simulators all run iOS 26+, whose
+# Foundation accepts dates that older iPhones reject.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Shared/Models/**"
+      - "Shared/Services/SidelineJSON.swift"
+      - "scripts/decode-guard/**"
+      - ".github/workflows/decode-guard.yml"
+  pull_request:
+    paths:
+      - "Shared/Models/**"
+      - "Shared/Services/SidelineJSON.swift"
+      - "scripts/decode-guard/**"
+  workflow_dispatch:
+
+jobs:
+  decode:
+    runs-on: ubuntu-latest
+    container: swift:6.1-noble
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash scripts/decode-guard/run.sh

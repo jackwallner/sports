@@ -32,7 +32,7 @@ final class BriefingDecodingTests: XCTestCase {
           }],
           "suggested_question": "Do you think they made the right call?",
           "source_count": 1,
-          "generated_at": "2026-05-16T12:00:00Z",
+          "generated_at": "2026-05-16T12:00:00.104+00:00",
           "expires_at": "2026-05-17T12:00:00Z"
         }]
         """.data(using: .utf8)!
@@ -42,6 +42,9 @@ final class BriefingDecodingTests: XCTestCase {
         XCTAssertEqual(briefings.first?.persona, .cocktailParty)
         XCTAssertEqual(briefings.first?.bullets.first?.tag, .drama)
         XCTAssertEqual(briefings.first?.sourceCount, 1)
+        // PostgREST prints fractional seconds; plain .iso8601 rejects them before iOS 26.
+        XCTAssertEqual(briefings.first?.generatedAt.timeIntervalSince1970 ?? 0, 1_778_932_800.104, accuracy: 0.001)
+        XCTAssertEqual(briefings.first?.expiresAt?.timeIntervalSince1970, 1_779_019_200)
         XCTAssertEqual(
             briefings.first?.bullets.first?.imageURL,
             URL(string: "https://image.pollinations.ai/prompt/test?seed=1")
@@ -66,6 +69,17 @@ final class BriefingDecodingTests: XCTestCase {
     func testSampleBriefingHasRequiredSourceLinks() throws {
         XCTAssertFalse(Briefing.sample.bullets.isEmpty)
         XCTAssertTrue(Briefing.sample.bullets.allSatisfy { $0.sourceURL.scheme == "https" })
+    }
+
+    func testAskToBuyIsPendingNotAFailure() {
+        // RevenueCat's public errors: domain "RevenueCat.ErrorCode", code = ErrorCode raw value.
+        let pending = NSError(domain: "RevenueCat.ErrorCode", code: 20)
+        let cancelled = NSError(domain: "RevenueCat.ErrorCode", code: 1)
+        let network = NSError(domain: "RevenueCat.ErrorCode", code: 10)
+        XCTAssertEqual(SidelinePurchaseState(purchaseError: pending), .pending)
+        XCTAssertEqual(SidelinePurchaseState(purchaseError: cancelled), .cancelled)
+        XCTAssertNil(SidelinePurchaseState(purchaseError: network))
+        XCTAssertNil(SidelinePurchaseState(purchaseError: URLError(.notConnectedToInternet)))
     }
 
     func testPaywallPackagePriorityLeadsWithSubscriptions() {

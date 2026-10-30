@@ -106,20 +106,3 @@ public struct SampleBriefingService: BriefingServing {
         return briefing
     }
 }
-
-public extension JSONDecoder {
-    static var sideline: JSONDecoder {
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        return decoder
-    }
-}
-
-public extension JSONEncoder {
-    static var sideline: JSONEncoder {
-        let encoder = JSONEncoder()
-        encoder.dateEncodingStrategy = .iso8601
-        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-        return encoder
-    }
-}

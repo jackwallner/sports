@@ -54,6 +54,11 @@ offline. Keep generation on that side of the line.
   with `x-cron-secret` read from Vault. Check runs in `cron.job_run_details` and
   `net._http_response`. `.github/workflows/sideline-cron.yml` is manual only.
   Backend env keys are listed in `README.md`.
+- **Live rows decode on iOS 17 and 18 too.** Their Foundation rejects
+  fractional seconds under plain `.iso8601`, and simulators all run iOS 26+, so
+  `JSONDecoder.sideline` (`Shared/Services/SidelineJSON.swift`) parses dates
+  itself and `briefings` stores `timestamptz(0)`. The `Decode guard` workflow
+  (`scripts/decode-guard/run.sh`) decodes the live shape on Swift 6.1.
 - **Every briefing is source-cited and written for a non-fan.** No team, league
   or athlete imagery in the app's own art (`CardArt`), and nothing should read as
   a prediction or a betting angle.
