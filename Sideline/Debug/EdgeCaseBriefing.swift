@@ -86,6 +86,17 @@ struct EdgeCaseBriefingService: BriefingServing {
     }
 }
 
+/// `-SidelineSlowNetwork` holds each debug briefing for 600 ms, like a real
+/// fetch, so a room switch passes through the loading skeleton. DEBUG only.
+struct SlowBriefingService: BriefingServing {
+    let wrapped: any BriefingServing
+
+    func latestBriefing(persona: Persona, scope: BriefingScope) async throws -> Briefing {
+        try await Task.sleep(nanoseconds: 600_000_000)
+        return try await wrapped.latestBriefing(persona: persona, scope: scope)
+    }
+}
+
 /// Screenshot helper: `-DuoScreen <surface>` opens one store surface, read
 /// once at launch. Pair it with `-SidelineSafeScreenshot -SidelineForcePro`
 /// so every room has its seeded briefing. DEBUG only.

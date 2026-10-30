@@ -123,10 +123,14 @@ struct BriefingDeck: View {
 
             pageDots(count: count)
         }
+        // Buying Pro on the rooms card removes it; keep the index on the deck.
+        .onChange(of: count) { _, newCount in
+            if index >= newCount { index = max(newCount - 1, 0) }
+        }
         .onChange(of: index) { _, newIndex in
             flippedPosition = nil
             #if canImport(RevenueCat)
-            if cards[newIndex].isRoomsCard {
+            if cards.indices.contains(newIndex), cards[newIndex].isRoomsCard {
                 StoreService.shared.trackPaywallImpression(
                     id: "sideline_free_deck_rooms_card",
                     oncePerSession: true

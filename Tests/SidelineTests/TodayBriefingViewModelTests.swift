@@ -56,6 +56,108 @@ final class TodayBriefingViewModelTests: XCTestCase {
         XCTAssertNil(vm.lastBriefing)
     }
 
+    // MARK: - Foreground reload
+
+    func testForegroundReloadSwapsInANewerRow() async {
+        let service = MockService()
+        service.result = .success(makeBriefing(tlDR: "Morning"))
+        let vm = TodayBriefingViewModel(service: service, entitlement: LocalEntitlementStore())
+        await vm.load()
+
+        service.result = .success(makeBriefing(tlDR: "Evening"))
+        await vm.reloadIfStale(olderThan: 0)
+
+        guard case .populated(let briefing, isOffline: false) = vm.state else {
+            return XCTFail("Expected .populated, got \(vm.state)")
+        }
+        XCTAssertEqual(briefing.tlDR, "Evening")
+    }
+
+    func testForegroundReloadKeepsTheDeckForTheSameRow() async {
+        let service = MockService()
+        let morning = makeBriefing(tlDR: "Morning")
+        service.result = .success(morning)
+        let vm = TodayBriefingViewModel(service: service, entitlement: LocalEntitlementStore())
+        await vm.load()
+
+        await vm.reloadIfStale(olderThan: 0)
+
+        XCTAssertEqual(vm.state, .populated(morning, isOffline: false))
+    }
+
+    func testForegroundReloadSkipsARecentFetch() async {
+        let service = MockService()
+        let morning = makeBriefing(tlDR: "Morning")
+        service.result = .success(morning)
+        let vm = TodayBriefingViewModel(service: service, entitlement: LocalEntitlementStore())
+        await vm.load()
+
+        service.result = .success(makeBriefing(tlDR: "Evening"))
+        await vm.reloadIfStale()
+
+        XCTAssertEqual(vm.state, .populated(morning, isOffline: false))
+    }
+
+    func testForegroundReloadFailureKeepsTheBriefingOnScreen() async {
+        let service = MockService()
+        let morning = makeBriefing(tlDR: "Morning")
+        service.result = .success(morning)
+        let vm = TodayBriefingViewModel(service: service, entitlement: LocalEntitlementStore())
+        await vm.load()
+
+        service.result = .failure(BriefingServiceError.network(underlying: URLError(.notConnectedToInternet)))
+        await vm.reloadIfStale(olderThan: 0)
+
+        XCTAssertEqual(vm.state, .populated(morning, isOffline: false))
+    }
+
+    // MARK: - Entitlement changes
+
+    func testBuyingProOpensTheRoomTheUserWasUnlocking() async {
+        let service = MockService()
+        service.result = .success(makeBriefing())
+        let entitlement = LocalEntitlementStore(isPro: false)
+        let vm = TodayBriefingViewModel(service: service, entitlement: entitlement)
+        await vm.load()
+
+        let selected = await vm.select(.dateNight)
+        XCTAssertFalse(selected)
+        entitlement.setProForDebug(true)
+        await vm.entitlementDidChange(storedPersona: .cocktailParty)
+
+        XCTAssertEqual(vm.selectedPersona, .dateNight)
+        XCTAssertNil(vm.roomAwaitingUnlock)
+    }
+
+    func testClosingThePreviewForgetsTheRoom() async {
+        let service = MockService()
+        service.result = .success(makeBriefing())
+        let entitlement = LocalEntitlementStore(isPro: false)
+        let vm = TodayBriefingViewModel(service: service, entitlement: entitlement)
+        await vm.load()
+
+        _ = await vm.select(.dateNight)
+        vm.clearRoomAwaitingUnlock()
+        entitlement.setProForDebug(true)
+        await vm.entitlementDidChange(storedPersona: .officeWatercooler)
+
+        XCTAssertEqual(vm.selectedPersona, .officeWatercooler)
+    }
+
+    func testLapsedProLeavesThePaidRoom() async {
+        let service = MockService()
+        service.result = .success(makeBriefing())
+        let entitlement = LocalEntitlementStore(isPro: true)
+        let vm = TodayBriefingViewModel(service: service, entitlement: entitlement)
+        _ = await vm.select(.dateNight)
+        XCTAssertEqual(vm.selectedPersona, .dateNight)
+
+        entitlement.setProForDebug(false)
+        await vm.entitlementDidChange(storedPersona: .dateNight)
+
+        XCTAssertEqual(vm.selectedPersona, .cocktailParty)
+    }
+
     // MARK: - Load
 
     func testLoadPopulatesBriefing() async {

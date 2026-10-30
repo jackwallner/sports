@@ -13,6 +13,10 @@ struct TodayBriefingView: View {
     @State private var viewModel: TodayBriefingViewModel
     @State private var activeSheet: ActiveSheet?
     @State private var deckIndex = 0
+    /// The briefing `deckIndex` belongs to. A room switch rebuilds the deck
+    /// through the loading skeleton, where `onChange` never fires, so the
+    /// index is reset on appear too, but only for a different briefing.
+    @State private var deckBriefingID: UUID?
     @State private var reviewPromptShownThisSession = false
     /// The briefing whose last story card was reached, so finishing one deck
     /// counts as one positive moment however often the user swipes past it.
@@ -43,6 +47,7 @@ struct TodayBriefingView: View {
     @Environment(\.requestReview) private var requestReview
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.scenePhase) private var scenePhase
 
     @AppStorage("sideline.hasCompletedOnboarding") private var hasCompletedOnboarding = false
     @AppStorage("sideline.lastPersona") private var lastPersonaRaw = Persona.cocktailParty.rawValue
@@ -109,6 +114,11 @@ struct TodayBriefingView: View {
             guard completed else { return }
             applyUsablePersonaFromStorage()
             Task { await viewModel.load() }
+        }
+        // A suspended app comes back to the briefing it left; pick up a newer run.
+        .onChange(of: scenePhase) { _, phase in
+            guard phase == .active, hasCompletedOnboarding else { return }
+            Task { await viewModel.reloadIfStale() }
         }
     }
 
@@ -205,6 +215,7 @@ struct TodayBriefingView: View {
                         #if DEBUG
                         if let start = Self.debugDeckStart() ?? DuoScreen.current?.deckCard {
                             // Deck order: 0 = lead TL;DR, 1..n = stories, n+1 = "Your move".
+                            deckBriefingID = viewModel.lastBriefing?.id
                             deckIndex = min(start, (viewModel.lastBriefing?.bullets.count ?? 0) + 1)
                         }
                         if DuoScreen.current == .settings {
@@ -242,16 +253,12 @@ struct TodayBriefingView: View {
                 }
                 // Entitlements load async: on a cold launch a Pro user's stored
                 // room fails canUse before customerInfo arrives and selection
-                // self-corrects to Cocktail Party. When Pro confirms, put them
-                // back in the room they actually left off in.
-                .onChange(of: isPro) { wasPro, nowPro in
-                    guard !wasPro, nowPro else { return }
-                    guard let stored = Persona(rawValue: lastPersonaRaw),
-                          stored != viewModel.selectedPersona,
-                          entitlement.canUse(persona: stored)
-                    else { return }
-                    viewModel.selectedPersona = stored
-                    Task { await viewModel.load() }
+                // self-corrects to Cocktail Party. When Pro confirms, open the
+                // room they just unlocked, else the one they left off in. A
+                // lapse moves a paid room back to the free one.
+                .onChange(of: isPro) { _, _ in
+                    let stored = Persona(rawValue: lastPersonaRaw)
+                    Task { await viewModel.entitlementDidChange(storedPersona: stored) }
                 }
                 .onReceive(NotificationCenter.default.publisher(for: .sidelinePositiveMomentForReview)) { _ in
                     scheduleReviewRequestAfterPositiveMoment()
@@ -341,12 +348,10 @@ struct TodayBriefingView: View {
         }
         .padding(.top, 4)
         // A room switch passes through loading, which rebuilds this view, so
-        // a linked card is picked up on appear as well as on a change.
-        .onAppear { applyPendingDeckCard(briefing) }
-        .onChange(of: briefing.id) { _, _ in
-            deckIndex = 0
-            applyPendingDeckCard(briefing)
-        }
+        // a new briefing and a linked card are picked up on appear as well as
+        // on a change. Returning from Settings keeps the user's place.
+        .onAppear { showDeck(for: briefing) }
+        .onChange(of: briefing.id) { _, _ in showDeck(for: briefing) }
     }
 
     @ViewBuilder
@@ -384,6 +389,14 @@ struct TodayBriefingView: View {
                 applyPendingDeckCard(briefing)
             }
         }
+    }
+
+    private func showDeck(for briefing: Briefing) {
+        if deckBriefingID != briefing.id {
+            deckBriefingID = briefing.id
+            deckIndex = 0
+        }
+        applyPendingDeckCard(briefing)
     }
 
     private func applyPendingDeckCard(_ briefing: Briefing) {
@@ -451,6 +464,11 @@ struct TodayBriefingView: View {
     }
 
     private func handleSheetDismiss() {
+        // Preview to paywall swaps the sheet in place; only a closed sheet
+        // without Pro gives up on the room.
+        if activeSheet == nil, !isPro {
+            viewModel.clearRoomAwaitingUnlock()
+        }
         // Only a source sheet retries a blocked ask. A paywall or Pro preview
         // dismissal never leads into a rating request.
         if isShowingSource {

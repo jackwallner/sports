@@ -15,6 +15,11 @@ public final class TodayBriefingViewModel {
     public var selectedPersona: Persona = TodayBriefingViewModel.initialPersona()
     public var state: LoadState = .idle
     public private(set) var lastBriefing: Briefing?
+    /// When the last successful fetch landed, so coming back to the app
+    /// refetches only once the briefing on screen may have been replaced.
+    public private(set) var lastFetchedAt: Date?
+    /// The locked room the user last asked for, opened once Pro unlocks it.
+    public private(set) var roomAwaitingUnlock: Persona?
 
     private static let lastPersonaKey = "sideline.lastPersona"
     private static let lastFreeRefreshKey = "sideline.lastFreeRefreshDay"
@@ -70,6 +75,7 @@ public final class TodayBriefingViewModel {
             try? cache?.save(briefing)
             #endif
             lastBriefing = briefing
+            lastFetchedAt = Date()
             state = .populated(briefing, isOffline: false)
             notifyPositiveMomentIfRequested()
         } catch {
@@ -87,16 +93,81 @@ public final class TodayBriefingViewModel {
         }
     }
 
+    /// Coming back to the app. Keeps the deck on screen while it fetches and
+    /// swaps only when a different row lands; a failed fetch changes nothing.
+    /// A failed screen retries with a full load.
+    public func reloadIfStale(olderThan interval: TimeInterval = 5 * 60) async {
+        let current: Briefing
+        switch state {
+        case .idle, .loading, .refreshLimit:
+            return
+        case .failed:
+            await load()
+            return
+        case .populated(let briefing, let isOffline):
+            if !isOffline, let lastFetchedAt, Date().timeIntervalSince(lastFetchedAt) < interval {
+                return
+            }
+            current = briefing
+        }
+
+        loadGeneration += 1
+        let generation = loadGeneration
+        guard let briefing = try? await service.latestBriefing(persona: selectedPersona, scope: .national),
+              generation == loadGeneration
+        else { return }
+        lastFetchedAt = Date()
+        #if canImport(SwiftData)
+        try? cache?.save(briefing)
+        #endif
+        if case .populated(_, isOffline: false) = state, briefing.id == current.id {
+            return
+        }
+        lastBriefing = briefing
+        state = .populated(briefing, isOffline: false)
+    }
+
     public func select(_ persona: Persona) async -> Bool {
         guard entitlement.canUse(persona: persona) else {
+            roomAwaitingUnlock = persona
             return false
         }
+        roomAwaitingUnlock = nil
 
         selectedPersona = persona
         UserDefaults.standard.set(persona.rawValue, forKey: Self.lastPersonaKey)
         shouldRecordPositiveMomentOnNextSuccess = true
         await load()
         return true
+    }
+
+    public func clearRoomAwaitingUnlock() {
+        roomAwaitingUnlock = nil
+    }
+
+    /// Pro changed. Gaining it opens the room the user was unlocking, else the
+    /// stored room a cold launch fell back from before entitlements arrived.
+    /// Losing it moves a paid room back to the free one.
+    public func entitlementDidChange(storedPersona: Persona?) async {
+        guard entitlement.isPro else {
+            roomAwaitingUnlock = nil
+            if !entitlement.canUse(persona: selectedPersona) {
+                await open(.cocktailParty)
+            }
+            return
+        }
+        let target = roomAwaitingUnlock ?? storedPersona
+        roomAwaitingUnlock = nil
+        guard let target, target != selectedPersona, entitlement.canUse(persona: target) else { return }
+        await open(target)
+    }
+
+    /// Switches room without counting a positive moment: this follows a
+    /// paywall, which never leads into a rating ask.
+    private func open(_ persona: Persona) async {
+        selectedPersona = persona
+        UserDefaults.standard.set(persona.rawValue, forKey: Self.lastPersonaKey)
+        await load()
     }
 
     public func refresh() async {

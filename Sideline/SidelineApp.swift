@@ -37,6 +37,9 @@ struct SidelineApp: App {
         } else if ProcessInfo.processInfo.arguments.contains("-SidelineScreenshotDemo") {
             debugService = SampleBriefingService()
         }
+        if let service = debugService, ProcessInfo.processInfo.arguments.contains("-SidelineSlowNetwork") {
+            debugService = SlowBriefingService(wrapped: service)
+        }
         #endif
 
         if let debugService {

@@ -23,11 +23,20 @@ struct FreshnessFooter: View {
         #endif
     }
 
+    /// The age is redrawn every minute: SwiftUI never re-runs a body because
+    /// time passed, and the app can sit suspended for hours.
     private var freshnessContent: some View {
-        VStack(alignment: .center, spacing: 4) {
-            Label(text, systemImage: isOffline ? "wifi.slash" : iconName)
+        TimelineView(.periodic(from: .now, by: 60)) { context in
+            content(now: context.date)
+        }
+    }
+
+    private func content(now: Date) -> some View {
+        let stale = isStale(now: now)
+        return VStack(alignment: .center, spacing: 4) {
+            Label(text(now: now), systemImage: isOffline ? "wifi.slash" : iconName(isStale: stale))
                 .font(.caption)
-                .foregroundStyle(isStale ? SidelineTheme.amberText : SidelineTheme.inkTertiary)
+                .foregroundStyle(stale ? SidelineTheme.amberText : SidelineTheme.inkTertiary)
 
             if !isOffline, isPro {
                 Text(briefing.refreshWindow.nextUpdateHint)
@@ -38,38 +47,40 @@ struct FreshnessFooter: View {
         .multilineTextAlignment(.center)
         .frame(maxWidth: .infinity, alignment: .center)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(accessibilityText)
+        .accessibilityLabel(accessibilityText(now: now))
     }
 
-    private var iconName: String {
+    private func iconName(isStale: Bool) -> String {
         isStale ? "exclamationmark.triangle" : "clock"
     }
 
-    private var isStale: Bool {
-        Date().timeIntervalSince(briefing.generatedAt) > 24 * 60 * 60
+    private func isStale(now: Date) -> Bool {
+        now.timeIntervalSince(briefing.generatedAt) > 24 * 60 * 60
     }
 
-    private var text: String {
+    private func text(now: Date) -> String {
         if isOffline {
             return "Offline. Showing your last saved briefing."
         }
-        if isStale {
-            return "Updated \(relativeDate). Double-check before quoting."
+        if isStale(now: now) {
+            return "Updated \(relativeDate(now: now)). Double-check before quoting."
         }
-        return "Updated \(relativeDate) · \(briefing.sourceCount) sources"
+        return "Updated \(relativeDate(now: now)) · \(briefing.sourceCount) sources"
     }
 
-    private var accessibilityText: String {
+    private func accessibilityText(now: Date) -> String {
         if isOffline {
             return "Offline, showing your last saved briefing."
         }
-        if isStale {
-            return "Updated \(relativeDate). May be out of date, double-check before quoting."
+        if isStale(now: now) {
+            return "Updated \(relativeDate(now: now)). May be out of date, double-check before quoting."
         }
-        return "Updated \(relativeDate), \(briefing.sourceCount) sources"
+        return "Updated \(relativeDate(now: now)), \(briefing.sourceCount) sources"
     }
 
-    private var relativeDate: String {
-        RelativeDateTimeFormatter().localizedString(for: briefing.generatedAt, relativeTo: Date())
+    /// Clamped to now, so a device clock behind the server never reads
+    /// "Updated in 2 minutes".
+    private func relativeDate(now: Date) -> String {
+        RelativeDateTimeFormatter().localizedString(for: min(briefing.generatedAt, now), relativeTo: now)
     }
 }
