@@ -1,15 +1,33 @@
-Someone brings up last night's game. You want more than a score, and less than an hour of scrolling.
+Sports Cheat Sheet is a daily sports news briefing for people who don't follow sports but want to keep up when it comes up. In about five minutes you get what happened, why people care, and something to say. The daily briefing is free, with no account.
 
-Get a short sports cheat sheet: what happened, why people care, the background you missed, and a useful way into the conversation. Built for people who want to join in without following every game.
+THE DAILY BRIEFING
+• A short deck of the sports stories people are talking about, one card each
+• Each card leads with one line you can say, and you tap for the backstory
+• Every story links to the news report it comes from
+• The deck ends with a conversation starter
+• Briefings are built from current sports news and refreshed three times a day
 
-YOUR FREE DAILY CATCH-UP
-Open the Cocktail Party briefing for a five-minute read. Swipe through the stories, tap for backstory and source links, and finish with a conversation starter. One general briefing is free each day.
+FOUR KINDS OF CONVERSATION
+• Cocktail Party: broad stories that are easy to bring up anywhere
+• Sports Talk for Moms: warm prompts for talking with a sports-obsessed kid
+• Office Watercooler: safe, current topics for coworkers
+• Date Night: one good story and a follow-up question
 
-PREPARE FOR YOUR KIND OF CONVERSATION
-The paid upgrade adds briefings for work, family and date night, with refreshes up to three times daily. Choose the setting and get a more relevant talking point, rather than another endless news feed.
+WHAT IT IS NOT
+• No live scores, betting picks or fantasy advice
+• It covers the stories people mention, not every game or event
+• Briefings are in English
 
-Briefings are in English. This is editorial context and conversation preparation, not live scores, betting picks, fantasy advice or a comprehensive report of every event.
+PRIVACY
+• No account, no ads and no cross-app tracking
+• Your last briefing is saved on your iPhone, so it opens without a connection
 
-Both subscriptions renew automatically, and each offers a 7-day free trial when eligible. Apple charges your Apple Account when you confirm the purchase or after an eligible trial. If you are not eligible, Apple charges at confirmation. The renewal charge is made within 24 hours before the current period ends. Manage or cancel in Settings › Apple Account › Subscriptions at least 24 hours before the period ends. Prices vary by region and are shown before purchase.
-Privacy Policy: https://jackwallner.github.io/sports/privacy-policy.html
-Terms of Use (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+FREE AND PRO
+The Cocktail Party briefing is free every day, with one refresh a day, and does not expire. Pro is an optional upgrade, as a monthly or yearly subscription or a one-time lifetime purchase. It adds:
+• All four conversation types
+• Refresh any time, with new briefings up to three times a day
+
+Subscriptions include a free trial for eligible new subscribers, and the app shows its length before you start. Prices appear in the app before you buy and vary by region. Subscriptions renew automatically unless canceled at least 24 hours before the current period ends. Manage or cancel in Settings > Apple ID > Subscriptions.
+
+Terms (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+Privacy: https://jackwallner.com/ios/sports/privacy-policy.html
