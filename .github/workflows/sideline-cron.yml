@@ -14,7 +14,7 @@ on:
 jobs:
   pipeline:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 120
     env:
       URL: ${{ secrets.SUPABASE_FUNCTIONS_URL }}
       CS: ${{ secrets.CRON_SECRET }}
@@ -27,9 +27,9 @@ jobs:
             -H "x-cron-secret: $CS"
           echo
 
-      # Gemini free tier allows 20 requests/day per model. With 4 personas and
-      # 3 daily windows the baseline is 12 requests; the function falls back
-      # to other free models (GEMINI_FALLBACK_MODELS) on 503s and quota 429s.
+      # Gemini can return regional 500/503 outages across every fallback model.
+      # Six attempts with capped backoff give the vendor time to recover; each
+      # function call has a shared 90-second model-chain budget.
       - name: Generate national briefings (per persona)
         run: |
           set -uo pipefail
@@ -38,7 +38,7 @@ jobs:
           for P in $PERSONAS; do
             echo "=== $P ==="
             OK=0
-            for attempt in 1 2 3; do
+            for attempt in 1 2 3 4 5 6; do
               echo "Attempt $attempt"
               R=$(curl -fsS -X POST "$URL/generate-briefings" \
                 -H "content-type: application/json" \
@@ -51,7 +51,12 @@ jobs:
                 echo "Gemini quota exhausted for $P; not retrying immediately."
                 break
               fi
-              sleep 5
+              if (( attempt < 6 )); then
+                BACKOFF=$((30 << (attempt - 1)))
+                if (( BACKOFF > 300 )); then BACKOFF=300; fi
+                echo "Transient failure for $P; retrying in ${BACKOFF}s."
+                sleep "$BACKOFF"
+              fi
             done
             if [ "$OK" -ne 1 ]; then FAILED=1; fi
           done
