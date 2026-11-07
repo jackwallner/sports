@@ -9,6 +9,7 @@ Developer notes and historical audits for this repository. The published site re
 - [ios27Sideline.md](audits/ios27Sideline.md): iOS 27 compatibility audit: Sideline
 - [state-machines-2026-11-06.md](audits/state-machines-2026-11-06.md): State machine audit: 5 bugs (2 proved by test, 3 code path), repro suite alongside
 - [state-machines-2026-11-06-review.md](audits/state-machines-2026-11-06-review.md): Independent review of that audit: 3 confirmed, 0 rejected, 2 unverified
+- [state-machines-2026-11-06-fixes.md](audits/state-machines-2026-11-06-fixes.md): Fixes for that review: 4 fixed, 2 held for Jack, 0 skipped
 
 ## Marketing
 
