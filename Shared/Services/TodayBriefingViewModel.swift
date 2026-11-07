@@ -81,6 +81,9 @@ public final class TodayBriefingViewModel {
             notifyPositiveMomentIfRequested()
         } catch {
             guard generation == loadGeneration else { return }
+            // A saved copy is not a positive moment, and the flag must not
+            // survive to a later load (a room opened after a paywall).
+            shouldRecordPositiveMomentOnNextSuccess = false
             #if canImport(SwiftData)
             if let cached = try? cache?.load(persona: persona, scope: .national) {
                 lastBriefing = cached
@@ -90,7 +93,6 @@ public final class TodayBriefingViewModel {
             #endif
 
             state = .failed(friendlyMessage(for: error))
-            shouldRecordPositiveMomentOnNextSuccess = false
         }
     }
 

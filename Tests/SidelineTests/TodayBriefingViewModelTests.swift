@@ -485,4 +485,83 @@ final class TodayBriefingViewModelTests: XCTestCase {
         }
         XCTAssertEqual(BriefingFreshness(briefing: briefing, savedBecause: .offline).iconName(now: now), "wifi.slash")
     }
+
+    // MARK: - Positive moments
+
+    /// Runs `body` with no pending moment, restoring the tracker afterwards.
+    private func withCleanMoments(_ body: () async -> Void) async {
+        let pending = ReviewPromptTracker.hasPendingPositiveMoment
+        let moments = ReviewPromptTracker.positiveMomentCount
+        ReviewPromptTracker.hasPendingPositiveMoment = false
+        await body()
+        ReviewPromptTracker.hasPendingPositiveMoment = pending
+        ReviewPromptTracker.positiveMomentCount = moments
+    }
+
+    /// The shipping route: offline, the user taps the selected free chip and
+    /// gets the saved copy; later, online, they tap a locked chip and buy.
+    /// The room the paywall opens must not count a positive moment.
+    func testOfflineChipTapThenPurchaseCountsNoPositiveMoment() async {
+        await withCleanMoments {
+            let service = MockService()
+            service.result = .success(makeBriefing())
+            let entitlement = LocalEntitlementStore(isPro: false)
+            let vm = TodayBriefingViewModel(service: service, entitlement: entitlement)
+            await vm.load()
+
+            service.result = .failure(noConnection)
+            let opened = await vm.select(.cocktailParty)
+            XCTAssertTrue(opened)
+            let moments = ReviewPromptTracker.positiveMomentCount
+
+            service.result = .success(makeBriefing())
+            let unlocked = await vm.select(.dateNight)
+            XCTAssertFalse(unlocked)
+            XCTAssertEqual(vm.roomAwaitingUnlock, .dateNight)
+            entitlement.setProForDebug(true)
+            await vm.entitlementDidChange(storedPersona: .cocktailParty)
+
+            XCTAssertEqual(vm.selectedPersona, .dateNight)
+            XCTAssertFalse(ReviewPromptTracker.hasPendingPositiveMoment)
+            XCTAssertEqual(ReviewPromptTracker.positiveMomentCount, moments)
+        }
+    }
+
+    /// The same leak used to survive leaving the app and a live foreground
+    /// reload, then fire on a Pro lapse.
+    func testOfflineChipTapLeavesNoMomentForALaterLapse() async {
+        await withCleanMoments {
+            let service = MockService()
+            service.result = .success(makeBriefing(persona: .officeWatercooler))
+            let entitlement = LocalEntitlementStore(isPro: true)
+            let vm = TodayBriefingViewModel(service: service, entitlement: entitlement)
+            _ = await vm.select(.officeWatercooler)
+            ReviewPromptTracker.hasPendingPositiveMoment = false
+
+            service.result = .failure(noConnection)
+            _ = await vm.select(.officeWatercooler)
+            service.result = .success(makeBriefing(tlDR: "Later", persona: .officeWatercooler))
+            await vm.reloadIfStale(olderThan: 0)
+            let moments = ReviewPromptTracker.positiveMomentCount
+
+            entitlement.setProForDebug(false)
+            await vm.entitlementDidChange(storedPersona: .officeWatercooler)
+
+            XCTAssertEqual(vm.selectedPersona, .cocktailParty)
+            XCTAssertFalse(ReviewPromptTracker.hasPendingPositiveMoment)
+            XCTAssertEqual(ReviewPromptTracker.positiveMomentCount, moments)
+        }
+    }
+
+    /// Control: a live chip tap still counts.
+    func testLiveChipTapCountsAPositiveMoment() async {
+        await withCleanMoments {
+            let service = MockService()
+            service.result = .success(makeBriefing())
+            let vm = TodayBriefingViewModel(service: service, entitlement: LocalEntitlementStore(isPro: false))
+            await vm.load()
+            _ = await vm.select(.cocktailParty)
+            XCTAssertTrue(ReviewPromptTracker.hasPendingPositiveMoment)
+        }
+    }
 }
