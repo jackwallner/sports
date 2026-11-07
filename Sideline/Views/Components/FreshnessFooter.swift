@@ -39,7 +39,7 @@ struct FreshnessFooter: View {
                 .foregroundStyle(freshness.isStale(now: now) ? SidelineTheme.amberText : SidelineTheme.inkTertiary)
 
             if isPro, freshness.showsNextRefreshHint(now: now) {
-                Text(briefing.refreshWindow.nextUpdateHint)
+                Text(RefreshSchedule.nextRefreshHint(now: now))
                     .font(.caption2)
                     .foregroundStyle(SidelineTheme.inkTertiary)
             }

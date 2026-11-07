@@ -564,4 +564,52 @@ final class TodayBriefingViewModelTests: XCTestCase {
             XCTAssertTrue(ReviewPromptTracker.hasPendingPositiveMoment)
         }
     }
+
+    // MARK: - Next refresh
+
+    private func utc(_ day: Int, _ hour: Int, _ minute: Int = 0) -> Date {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "UTC")!
+        return calendar.date(from: DateComponents(year: 2026, month: 11, day: day, hour: hour, minute: minute))!
+    }
+
+    func testNextRefreshIsTheNextRunInUTC() {
+        XCTAssertEqual(RefreshSchedule.nextRefresh(after: utc(6, 10)), utc(6, 14, 30))
+        XCTAssertEqual(RefreshSchedule.nextRefresh(after: utc(6, 14, 45)), utc(6, 19, 30))
+        XCTAssertEqual(RefreshSchedule.nextRefresh(after: utc(6, 20)), utc(6, 23, 30))
+        XCTAssertEqual(RefreshSchedule.nextRefresh(after: utc(6, 23, 45)), utc(7, 14, 30))
+    }
+
+    /// London reads the 14:05 UTC run at a quarter to three: the next run is
+    /// half past seven that evening, not "midday".
+    func testHintReadsTheNextRunInTheUsersZone() {
+        let enUS = Locale(identifier: "en_US")
+        let london = RefreshSchedule.nextRefreshHint(
+            now: utc(6, 14, 45), timeZone: TimeZone(identifier: "Europe/London")!, locale: enUS
+        )
+        XCTAssertTrue(london.hasPrefix("Next refresh around 7:30"), london)
+        XCTAssertTrue(london.hasSuffix("PM"), london)
+
+        let sydneyLate = RefreshSchedule.nextRefreshHint(
+            now: utc(6, 12), timeZone: TimeZone(identifier: "Australia/Sydney")!, locale: enUS
+        )
+        XCTAssertTrue(sydneyLate.hasPrefix("Next refresh tomorrow around 1:30"), sydneyLate)
+
+        let pacific = RefreshSchedule.nextRefreshHint(
+            now: utc(6, 23, 45), timeZone: TimeZone(identifier: "America/Los_Angeles")!, locale: enUS
+        )
+        XCTAssertTrue(pacific.hasPrefix("Next refresh tomorrow around 6:30"), pacific)
+        XCTAssertTrue(pacific.hasSuffix("AM"), pacific)
+    }
+
+    /// A live row past the stale mark means the runs are failing: no next
+    /// time beside "Double-check before quoting".
+    func testNextRefreshHintOnlyForAFreshLiveRow() {
+        let now = Date()
+        let fresh = makeBriefing(generatedAt: now.addingTimeInterval(-3_600))
+        let stale = makeBriefing(generatedAt: now.addingTimeInterval(-2 * 86_400))
+        XCTAssertTrue(BriefingFreshness(briefing: fresh, savedBecause: nil).showsNextRefreshHint(now: now))
+        XCTAssertFalse(BriefingFreshness(briefing: stale, savedBecause: nil).showsNextRefreshHint(now: now))
+        XCTAssertFalse(BriefingFreshness(briefing: fresh, savedBecause: .offline).showsNextRefreshHint(now: now))
+    }
 }

@@ -10,14 +10,38 @@ public enum RefreshWindow: String, Codable, CaseIterable, Sendable {
     case morning
     case midday
     case evening
+}
 
-    public var nextUpdateHint: String {
-        switch self {
-        case .daily: return "Next briefing tomorrow morning"
-        case .morning: return "Next refresh midday"
-        case .midday: return "Next refresh this evening"
-        case .evening: return "Next briefing tomorrow morning"
+/// When new briefings land. pg_cron starts every run at 14:05, 19:05 and
+/// 23:05 UTC and the last room is written by about half past
+/// (`supabase/migrations/20261013000000_pg_cron_pipeline.sql`), so the next
+/// refresh is a fixed UTC time read in the user's own zone.
+public enum RefreshSchedule {
+    static let utcSlots: [DateComponents] = [14, 19, 23].map { DateComponents(hour: $0, minute: 30) }
+
+    public static func nextRefresh(after now: Date) -> Date {
+        var utc = Calendar(identifier: .gregorian)
+        utc.timeZone = TimeZone(identifier: "UTC") ?? .gmt
+        let upcoming = utcSlots.compactMap {
+            utc.nextDate(after: now, matching: $0, matchingPolicy: .nextTime)
         }
+        return upcoming.min() ?? now.addingTimeInterval(12 * 60 * 60)
+    }
+
+    public static func nextRefreshHint(
+        now: Date,
+        timeZone: TimeZone = .current,
+        locale: Locale = .current
+    ) -> String {
+        let next = nextRefresh(after: now)
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = timeZone
+        let style = Date.FormatStyle(date: .omitted, time: .shortened, locale: locale, calendar: calendar, timeZone: timeZone)
+        let time = next.formatted(style)
+        if calendar.isDate(next, inSameDayAs: now) {
+            return "Next refresh around \(time)"
+        }
+        return "Next refresh tomorrow around \(time)"
     }
 }
 
@@ -91,9 +115,10 @@ public struct BriefingFreshness: Sendable {
         return "Updated \(relativeDate(now: now)), \(briefing.sourceCount) sources"
     }
 
-    /// Only a fresh fetch knows a newer run is coming.
+    /// Only a fresh fetch knows a newer run is coming, and a row past the
+    /// stale mark means the runs are failing, so no next time is promised.
     public func showsNextRefreshHint(now: Date) -> Bool {
-        savedBecause == nil
+        savedBecause == nil && !isStale(now: now)
     }
 
     /// Clamped to now, so a device clock behind the server never reads
