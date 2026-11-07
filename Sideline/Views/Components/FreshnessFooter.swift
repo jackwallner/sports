@@ -8,7 +8,7 @@ enum SidelineBrand {
 
 struct FreshnessFooter: View {
     let briefing: Briefing
-    let isOffline: Bool
+    let savedBecause: SavedCopyReason?
     var isPro: Bool = false
 
     var body: some View {
@@ -32,13 +32,13 @@ struct FreshnessFooter: View {
     }
 
     private func content(now: Date) -> some View {
-        let stale = isStale(now: now)
+        let freshness = BriefingFreshness(briefing: briefing, savedBecause: savedBecause)
         return VStack(alignment: .center, spacing: 4) {
-            Label(text(now: now), systemImage: isOffline ? "wifi.slash" : iconName(isStale: stale))
+            Label(freshness.text(now: now), systemImage: freshness.iconName(now: now))
                 .font(.caption)
-                .foregroundStyle(stale ? SidelineTheme.amberText : SidelineTheme.inkTertiary)
+                .foregroundStyle(freshness.isStale(now: now) ? SidelineTheme.amberText : SidelineTheme.inkTertiary)
 
-            if !isOffline, isPro {
+            if isPro, freshness.showsNextRefreshHint(now: now) {
                 Text(briefing.refreshWindow.nextUpdateHint)
                     .font(.caption2)
                     .foregroundStyle(SidelineTheme.inkTertiary)
@@ -47,40 +47,6 @@ struct FreshnessFooter: View {
         .multilineTextAlignment(.center)
         .frame(maxWidth: .infinity, alignment: .center)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(accessibilityText(now: now))
-    }
-
-    private func iconName(isStale: Bool) -> String {
-        isStale ? "exclamationmark.triangle" : "clock"
-    }
-
-    private func isStale(now: Date) -> Bool {
-        now.timeIntervalSince(briefing.generatedAt) > 24 * 60 * 60
-    }
-
-    private func text(now: Date) -> String {
-        if isOffline {
-            return "Offline. Showing your last saved briefing."
-        }
-        if isStale(now: now) {
-            return "Updated \(relativeDate(now: now)). Double-check before quoting."
-        }
-        return "Updated \(relativeDate(now: now)) · \(briefing.sourceCount) sources"
-    }
-
-    private func accessibilityText(now: Date) -> String {
-        if isOffline {
-            return "Offline, showing your last saved briefing."
-        }
-        if isStale(now: now) {
-            return "Updated \(relativeDate(now: now)). May be out of date, double-check before quoting."
-        }
-        return "Updated \(relativeDate(now: now)), \(briefing.sourceCount) sources"
-    }
-
-    /// Clamped to now, so a device clock behind the server never reads
-    /// "Updated in 2 minutes".
-    private func relativeDate(now: Date) -> String {
-        RelativeDateTimeFormatter().localizedString(for: min(briefing.generatedAt, now), relativeTo: now)
+        .accessibilityLabel(freshness.accessibilityText(now: now))
     }
 }
