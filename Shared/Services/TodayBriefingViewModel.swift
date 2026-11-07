@@ -7,7 +7,8 @@ public final class TodayBriefingViewModel {
     public enum LoadState: Equatable {
         case idle
         case loading
-        case populated(Briefing, isOffline: Bool)
+        /// `savedBecause` is nil for a fresh fetch, else why the saved copy is shown.
+        case populated(Briefing, savedBecause: SavedCopyReason?)
         case failed(String)
         case refreshLimit
     }
@@ -76,14 +77,14 @@ public final class TodayBriefingViewModel {
             #endif
             lastBriefing = briefing
             lastFetchedAt = Date()
-            state = .populated(briefing, isOffline: false)
+            state = .populated(briefing, savedBecause: nil)
             notifyPositiveMomentIfRequested()
         } catch {
             guard generation == loadGeneration else { return }
             #if canImport(SwiftData)
             if let cached = try? cache?.load(persona: persona, scope: .national) {
                 lastBriefing = cached
-                state = .populated(cached, isOffline: true)
+                state = .populated(cached, savedBecause: SavedCopyReason(error: error))
                 return
             }
             #endif
@@ -104,8 +105,8 @@ public final class TodayBriefingViewModel {
         case .failed:
             await load()
             return
-        case .populated(let briefing, let isOffline):
-            if !isOffline, let lastFetchedAt, Date().timeIntervalSince(lastFetchedAt) < interval {
+        case .populated(let briefing, let savedBecause):
+            if savedBecause == nil, let lastFetchedAt, Date().timeIntervalSince(lastFetchedAt) < interval {
                 return
             }
             current = briefing
@@ -120,11 +121,11 @@ public final class TodayBriefingViewModel {
         #if canImport(SwiftData)
         try? cache?.save(briefing)
         #endif
-        if case .populated(_, isOffline: false) = state, briefing.id == current.id {
+        if case .populated(_, savedBecause: nil) = state, briefing.id == current.id {
             return
         }
         lastBriefing = briefing
-        state = .populated(briefing, isOffline: false)
+        state = .populated(briefing, savedBecause: nil)
     }
 
     public func select(_ persona: Persona) async -> Bool {
@@ -222,7 +223,7 @@ public final class TodayBriefingViewModel {
     private func notifyPositiveMomentIfRequested() {
         guard shouldRecordPositiveMomentOnNextSuccess else { return }
         shouldRecordPositiveMomentOnNextSuccess = false
-        guard case .populated(_, isOffline: false) = state else { return }
+        guard case .populated(_, savedBecause: nil) = state else { return }
         ReviewPromptTracker.recordPositiveMoment()
     }
 }

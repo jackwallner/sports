@@ -10,9 +10,13 @@ final class TodayBriefingViewModelTests: XCTestCase {
         UserDefaults.standard.removeObject(forKey: "sideline.lastPersona")
     }
 
-    private func makeBriefing(tlDR: String = "Test TLDR") -> Briefing {
+    private func makeBriefing(
+        tlDR: String = "Test TLDR",
+        persona: Persona = .cocktailParty,
+        generatedAt: Date = Date()
+    ) -> Briefing {
         Briefing(
-            persona: .cocktailParty,
+            persona: persona,
             scope: .national,
             refreshWindow: .daily,
             headline: "Test headline",
@@ -26,7 +30,7 @@ final class TodayBriefingViewModelTests: XCTestCase {
             ],
             suggestedQuestion: "Test question?",
             sourceCount: 1,
-            generatedAt: Date()
+            generatedAt: generatedAt
         )
     }
 
@@ -67,7 +71,7 @@ final class TodayBriefingViewModelTests: XCTestCase {
         service.result = .success(makeBriefing(tlDR: "Evening"))
         await vm.reloadIfStale(olderThan: 0)
 
-        guard case .populated(let briefing, isOffline: false) = vm.state else {
+        guard case .populated(let briefing, savedBecause: nil) = vm.state else {
             return XCTFail("Expected .populated, got \(vm.state)")
         }
         XCTAssertEqual(briefing.tlDR, "Evening")
@@ -82,7 +86,7 @@ final class TodayBriefingViewModelTests: XCTestCase {
 
         await vm.reloadIfStale(olderThan: 0)
 
-        XCTAssertEqual(vm.state, .populated(morning, isOffline: false))
+        XCTAssertEqual(vm.state, .populated(morning, savedBecause: nil))
     }
 
     func testForegroundReloadSkipsARecentFetch() async {
@@ -95,7 +99,7 @@ final class TodayBriefingViewModelTests: XCTestCase {
         service.result = .success(makeBriefing(tlDR: "Evening"))
         await vm.reloadIfStale()
 
-        XCTAssertEqual(vm.state, .populated(morning, isOffline: false))
+        XCTAssertEqual(vm.state, .populated(morning, savedBecause: nil))
     }
 
     func testForegroundReloadFailureKeepsTheBriefingOnScreen() async {
@@ -108,7 +112,7 @@ final class TodayBriefingViewModelTests: XCTestCase {
         service.result = .failure(BriefingServiceError.network(underlying: URLError(.notConnectedToInternet)))
         await vm.reloadIfStale(olderThan: 0)
 
-        XCTAssertEqual(vm.state, .populated(morning, isOffline: false))
+        XCTAssertEqual(vm.state, .populated(morning, savedBecause: nil))
     }
 
     // MARK: - Entitlement changes
@@ -167,12 +171,12 @@ final class TodayBriefingViewModelTests: XCTestCase {
 
         await vm.load()
 
-        guard case .populated(let briefing, let isOffline) = vm.state else {
+        guard case .populated(let briefing, let savedBecause) = vm.state else {
             XCTFail("Expected .populated, got \(vm.state)")
             return
         }
         XCTAssertEqual(briefing.tlDR, "Test TLDR")
-        XCTAssertFalse(isOffline)
+        XCTAssertNil(savedBecause)
     }
 
     func testLoadFailureTransitionsToFailed() async {
@@ -393,5 +397,92 @@ final class TodayBriefingViewModelTests: XCTestCase {
 
         XCTAssertEqual(vm.state, .refreshLimit)
         XCTAssertEqual(vm.lastBriefing?.tlDR, "Original")
+    }
+
+    // MARK: - Saved copy
+
+    private let noConnection = BriefingServiceError.network(underlying: URLError(.notConnectedToInternet))
+
+    /// Loads a live Office Watercooler row (cached), then fails the next load
+    /// with `failure` and returns why the saved copy is on screen.
+    private func savedCopyReason(after failure: Error) async -> SavedCopyReason? {
+        let service = MockService()
+        service.result = .success(makeBriefing(persona: .officeWatercooler))
+        let vm = TodayBriefingViewModel(service: service, entitlement: LocalEntitlementStore(isPro: true))
+        vm.selectedPersona = .officeWatercooler
+        await vm.load()
+
+        service.result = .failure(failure)
+        await vm.load()
+        guard case .populated(_, let savedBecause) = vm.state else {
+            XCTFail("Expected the saved copy, got \(vm.state)")
+            return nil
+        }
+        return savedBecause
+    }
+
+    func testNoConnectionShowsTheSavedCopyAsOffline() async {
+        let reason = await savedCopyReason(after: noConnection)
+        XCTAssertEqual(reason, .offline)
+    }
+
+    func testServerErrorIsNotLabelledOffline() async {
+        let reason = await savedCopyReason(after: BriefingServiceError.invalidResponse(statusCode: 503, body: ""))
+        XCTAssertEqual(reason, .serverUnavailable)
+    }
+
+    func testEmptyResultIsNotLabelledOffline() async {
+        let reason = await savedCopyReason(after: BriefingServiceError.emptyResult)
+        XCTAssertEqual(reason, .serverUnavailable)
+    }
+
+    func testUndecodableBodyIsNotLabelledOffline() async {
+        let decodeFailure = DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: "new row shape"))
+        let reason = await savedCopyReason(after: decodeFailure)
+        XCTAssertEqual(reason, .serverUnavailable)
+    }
+
+    func testServerUnavailableBannerDoesNotSayOffline() {
+        XCTAssertFalse(SavedCopyReason.serverUnavailable.bannerText.contains("Offline"))
+        XCTAssertNotEqual(SavedCopyReason.serverUnavailable.bannerIcon, SavedCopyReason.offline.bannerIcon)
+    }
+
+    /// A five-day-old saved row opened offline: the footer gives its age and
+    /// the stale warning, the same as a live row that old.
+    func testOldSavedCopyShowsItsAgeAndTheStaleWarning() async {
+        let service = MockService()
+        service.result = .success(makeBriefing(persona: .dateNight, generatedAt: Date().addingTimeInterval(-5 * 86_400)))
+        let vm = TodayBriefingViewModel(service: service, entitlement: LocalEntitlementStore(isPro: true))
+        vm.selectedPersona = .dateNight
+        await vm.load()
+        service.result = .failure(noConnection)
+        await vm.load()
+        guard case .populated(let briefing, let savedBecause) = vm.state else {
+            return XCTFail("Expected the saved copy, got \(vm.state)")
+        }
+        XCTAssertEqual(savedBecause, .offline)
+
+        let now = Date()
+        let freshness = BriefingFreshness(briefing: briefing, savedBecause: savedBecause)
+        let text = freshness.text(now: now)
+        XCTAssertTrue(freshness.isStale(now: now))
+        XCTAssertTrue(text.hasPrefix("Updated "), text)
+        XCTAssertTrue(text.hasSuffix("Double-check before quoting."), text)
+        XCTAssertFalse(text.contains("Offline"), text)
+        XCTAssertTrue(freshness.accessibilityText(now: now).contains("double-check"))
+        XCTAssertEqual(freshness.iconName(now: now), "exclamationmark.triangle")
+        XCTAssertFalse(freshness.showsNextRefreshHint(now: now))
+    }
+
+    func testRecentSavedCopyShowsItsAge() {
+        let now = Date()
+        let briefing = makeBriefing(generatedAt: now.addingTimeInterval(-2 * 3_600))
+        for reason in [SavedCopyReason.offline, .serverUnavailable] {
+            let freshness = BriefingFreshness(briefing: briefing, savedBecause: reason)
+            XCTAssertFalse(freshness.isStale(now: now))
+            XCTAssertTrue(freshness.text(now: now).hasPrefix("Updated "), freshness.text(now: now))
+            XCTAssertTrue(freshness.accessibilityText(now: now).hasPrefix("Updated "))
+        }
+        XCTAssertEqual(BriefingFreshness(briefing: briefing, savedBecause: .offline).iconName(now: now), "wifi.slash")
     }
 }

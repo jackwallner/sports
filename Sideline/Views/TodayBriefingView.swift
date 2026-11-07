@@ -308,8 +308,8 @@ struct TodayBriefingView: View {
         switch viewModel.state {
         case .idle, .loading:
             skeletonCard
-        case .populated(let briefing, let isOffline):
-            deckArea(briefing, isOffline: isOffline)
+        case .populated(let briefing, let savedBecause):
+            deckArea(briefing, savedBecause: savedBecause)
                 .transition(.opacity)
         case .failed(let message):
             emptyState(message: message)
@@ -318,14 +318,14 @@ struct TodayBriefingView: View {
         }
     }
 
-    private func deckArea(_ briefing: Briefing, isOffline: Bool, caughtUp: Bool = false) -> some View {
+    private func deckArea(_ briefing: Briefing, savedBecause: SavedCopyReason?, caughtUp: Bool = false) -> some View {
         VStack(spacing: 12) {
             if showsDemoBanner {
                 demoBanner.padding(.horizontal, 18)
             } else if caughtUp {
                 caughtUpBanner.padding(.horizontal, 18)
-            } else if isOffline {
-                offlineBanner.padding(.horizontal, 18)
+            } else if let savedBecause {
+                savedCopyBanner(savedBecause).padding(.horizontal, 18)
             }
 
             BriefingDeck(
@@ -342,7 +342,7 @@ struct TodayBriefingView: View {
                 }
             )
 
-            FreshnessFooter(briefing: briefing, isOffline: isOffline, isPro: isPro)
+            FreshnessFooter(briefing: briefing, savedBecause: savedBecause, isPro: isPro)
                 .padding(.horizontal, 26)
                 .padding(.bottom, 6)
         }
@@ -357,7 +357,7 @@ struct TodayBriefingView: View {
     @ViewBuilder
     private var refreshLimitArea: some View {
         if let briefing = viewModel.lastBriefing {
-            deckArea(briefing, isOffline: false, caughtUp: true)
+            deckArea(briefing, savedBecause: nil, caughtUp: true)
         } else {
             caughtUpEmptyState
         }
@@ -563,8 +563,8 @@ struct TodayBriefingView: View {
         .accessibilityLabel("Loading briefing")
     }
 
-    private var offlineBanner: some View {
-        Label("Offline. Showing your last saved briefing.", systemImage: "wifi.slash")
+    private func savedCopyBanner(_ reason: SavedCopyReason) -> some View {
+        Label(reason.bannerText, systemImage: reason.bannerIcon)
             .font(.footnote)
             .foregroundStyle(SidelineTheme.inkSecondary)
             .padding(10)

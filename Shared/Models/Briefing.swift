@@ -21,6 +21,88 @@ public enum RefreshWindow: String, Codable, CaseIterable, Sendable {
     }
 }
 
+/// Why the saved copy of a briefing is on screen instead of a fresh fetch.
+public enum SavedCopyReason: Equatable, Sendable {
+    /// The device could not reach the server.
+    case offline
+    /// The server answered, but not with a usable briefing (an error status,
+    /// no row, or a body that does not decode).
+    case serverUnavailable
+
+    public init(error: any Error) {
+        if let serviceError = error as? BriefingServiceError, case .network = serviceError {
+            self = .offline
+        } else if error is URLError {
+            self = .offline
+        } else {
+            self = .serverUnavailable
+        }
+    }
+
+    public var bannerText: String {
+        switch self {
+        case .offline: return "Offline. Showing your last saved briefing."
+        case .serverUnavailable: return "Couldn't refresh. Showing your last saved briefing."
+        }
+    }
+
+    public var bannerIcon: String {
+        switch self {
+        case .offline: return "wifi.slash"
+        case .serverUnavailable: return "exclamationmark.arrow.triangle.2.circlepath"
+        }
+    }
+}
+
+/// What the footer under the deck says about a briefing's age. A saved copy
+/// follows the same stale rule as a fresh one: the banner above the deck says
+/// why it is saved, the footer says how old it is.
+public struct BriefingFreshness: Sendable {
+    public static let staleAfter: TimeInterval = 24 * 60 * 60
+
+    public let briefing: Briefing
+    public let savedBecause: SavedCopyReason?
+
+    public init(briefing: Briefing, savedBecause: SavedCopyReason?) {
+        self.briefing = briefing
+        self.savedBecause = savedBecause
+    }
+
+    public func isStale(now: Date) -> Bool {
+        now.timeIntervalSince(briefing.generatedAt) > Self.staleAfter
+    }
+
+    public func iconName(now: Date) -> String {
+        if isStale(now: now) { return "exclamationmark.triangle" }
+        return savedBecause == .offline ? "wifi.slash" : "clock"
+    }
+
+    public func text(now: Date) -> String {
+        if isStale(now: now) {
+            return "Updated \(relativeDate(now: now)). Double-check before quoting."
+        }
+        return "Updated \(relativeDate(now: now)) · \(briefing.sourceCount) sources"
+    }
+
+    public func accessibilityText(now: Date) -> String {
+        if isStale(now: now) {
+            return "Updated \(relativeDate(now: now)). May be out of date, double-check before quoting."
+        }
+        return "Updated \(relativeDate(now: now)), \(briefing.sourceCount) sources"
+    }
+
+    /// Only a fresh fetch knows a newer run is coming.
+    public func showsNextRefreshHint(now: Date) -> Bool {
+        savedBecause == nil
+    }
+
+    /// Clamped to now, so a device clock behind the server never reads
+    /// "Updated in 2 minutes".
+    private func relativeDate(now: Date) -> String {
+        RelativeDateTimeFormatter().localizedString(for: min(briefing.generatedAt, now), relativeTo: now)
+    }
+}
+
 public struct Briefing: Identifiable, Codable, Equatable, Sendable {
     public let id: UUID
     public let persona: Persona
