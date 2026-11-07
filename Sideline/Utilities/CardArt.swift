@@ -287,6 +287,7 @@ struct CardArtImage: View {
 
     #if canImport(UIKit)
     @State private var image: UIImage?
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     /// A cached image is there on the first frame; setting it from `.task`
     /// popped the art in over the placeholder a frame later.
@@ -320,7 +321,7 @@ struct CardArtImage: View {
             for url in urls {
                 guard !Task.isCancelled else { return }
                 if let fetched = await CardArtStore.fetch(url), !Task.isCancelled {
-                    withAnimation(.easeIn(duration: 0.35)) { image = fetched }
+                    withAnimation(reduceMotion ? nil : .easeIn(duration: 0.35)) { image = fetched }
                     return
                 }
             }
