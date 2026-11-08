@@ -221,7 +221,7 @@ struct BriefingDeck: View {
                 if flung {
                     fling(direction: dx >= 0 ? 1 : -1, size: size, count: count)
                 } else {
-                    withAnimation(.spring(response: 0.32, dampingFraction: 0.78)) {
+                    withAnimation(reduceMotion ? nil : .spring(response: 0.32, dampingFraction: 0.78)) {
                         drag = .zero
                     }
                 }
@@ -239,17 +239,27 @@ struct BriefingDeck: View {
             width: direction * size.width * 1.5,
             height: drag.height * 1.1
         )
-        withAnimation(reduceMotion ? nil : .easeIn(duration: 0.26)) {
+        // Reduce Motion: no throw. The card is swapped in place, so there is no
+        // intermediate frame with the front card gone.
+        guard !reduceMotion else {
+            finishFling(count: count)
+            return
+        }
+        withAnimation(.easeIn(duration: 0.26)) {
             drag = exit
         } completion: {
-            var t = Transaction()
-            t.disablesAnimations = true
-            withTransaction(t) {
-                index = (index + 1) % count
-                drag = .zero
-                isFlinging = false
-                flippedPosition = nil
-            }
+            finishFling(count: count)
+        }
+    }
+
+    private func finishFling(count: Int) {
+        var t = Transaction()
+        t.disablesAnimations = true
+        withTransaction(t) {
+            index = (index + 1) % count
+            drag = .zero
+            isFlinging = false
+            flippedPosition = nil
         }
     }
 

@@ -23,10 +23,10 @@ struct FreshnessFooter: View {
         #endif
     }
 
-    /// The age is redrawn every minute: SwiftUI never re-runs a body because
+    /// The age is redrawn every five minutes: SwiftUI never re-runs a body because
     /// time passed, and the app can sit suspended for hours.
     private var freshnessContent: some View {
-        TimelineView(.periodic(from: .now, by: 60)) { context in
+        TimelineView(.periodic(from: .now, by: 300)) { context in
             content(now: context.date)
         }
     }
