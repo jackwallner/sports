@@ -277,6 +277,33 @@ final class TodayBriefingViewModelTests: XCTestCase {
         XCTAssertEqual(vm.state, .refreshLimit)
     }
 
+    /// Offline, a free refresh falls back to the saved copy. That must not
+    /// spend the day's one refresh, so a retry once back online still fetches.
+    func testFailedFreeRefreshDoesNotSpendTheDaysRefresh() async {
+        let service = MockService()
+        service.result = .success(makeBriefing(tlDR: "Morning"))
+        let vm = TodayBriefingViewModel(
+            service: service,
+            entitlement: LocalEntitlementStore(isPro: false)
+        )
+        await vm.load()
+
+        service.result = .failure(BriefingServiceError.network(underlying: URLError(.notConnectedToInternet)))
+        await vm.refresh()
+        guard case .populated(_, savedBecause: .offline) = vm.state else {
+            XCTFail("Expected the saved copy offline, got \(vm.state)")
+            return
+        }
+
+        service.result = .success(makeBriefing(tlDR: "Evening"))
+        await vm.refresh()
+        guard case .populated(let briefing, savedBecause: nil) = vm.state else {
+            XCTFail("Retry after a failed free refresh should fetch, got \(vm.state)")
+            return
+        }
+        XCTAssertEqual(briefing.tlDR, "Evening")
+    }
+
     func testRefreshOnLockedPersonaHitsLimitForNonPro() async {
         let service = MockService()
         service.result = .success(makeBriefing())
