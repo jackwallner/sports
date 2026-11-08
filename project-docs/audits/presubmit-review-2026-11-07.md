@@ -26,3 +26,12 @@ bump) to `a3138be` (main, 1.1.6 build 67). Backend (`SupabaseFunctions/`,
 - `TodayBriefingView` skeleton cross-fade and `CardArtImage` fade: animation-only changes.
 - Purchase, paywall, restore and `isPro` gating: no changes since 1.1.5.
 - App Review strings in the diff: no prices, no other platforms, no predictions or betting language, no placeholder or debug UI. `Sideline/Debug/EdgeCaseBriefing.swift` is unchanged since 1.1.5.
+
+## Tests
+
+Not run. `gh-sim test --scheme Sideline --only SidelineTests` (run
+`sports@20261107-225948-dc4d-claude-imacc921-1107-230643-18875`, GitHub Actions
+42457435262) sat queued for 90 minutes with 0 of 5 GitHub Macs running and 24
+fleet runs waiting, then was cancelled. This imac has no Xcode. Run
+`SidelineTests` locally before submitting; the new test is
+`TodayBriefingViewModelTests.testFailedFreeRefreshDoesNotSpendTheDaysRefresh`.
