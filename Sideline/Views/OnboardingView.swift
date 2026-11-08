@@ -30,6 +30,7 @@ struct OnboardingView: View {
             .background(Color.sidelineBackground)
             .safeAreaInset(edge: .bottom) {
                 actionBar
+                    .animation(.default, value: page)
                     .padding(.horizontal, 24)
                     .padding(.top, 10)
                     .padding(.bottom, 12)
@@ -200,14 +201,16 @@ struct OnboardingView: View {
         .tint(SidelineTheme.brandFill)
     }
 
-    @ViewBuilder
+    // Always laid out so the action bar keeps one height across pages;
+    // inserting it on page 2 made the bar, and the page above it, jump.
     private var backButton: some View {
-        if page > 0 {
-            Button("Back") { withAnimation { page -= 1 } }
-                .buttonStyle(.plain)
-                .foregroundStyle(SidelineTheme.inkSecondary)
-                .frame(minHeight: 44)
-        }
+        Button("Back") { withAnimation { page -= 1 } }
+            .buttonStyle(.plain)
+            .foregroundStyle(SidelineTheme.inkSecondary)
+            .frame(minHeight: 44)
+            .opacity(page > 0 ? 1 : 0)
+            .allowsHitTesting(page > 0)
+            .accessibilityHidden(page == 0)
     }
 
     private var primaryLabel: String {
