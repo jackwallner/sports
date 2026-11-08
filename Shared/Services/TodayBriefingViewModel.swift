@@ -182,7 +182,9 @@ public final class TodayBriefingViewModel {
                 return
             }
             await load()
-            if case .populated = state {
+            // Only a fresh fetch spends the day's free refresh; a failed one
+            // that falls back to the saved copy leaves it for a retry.
+            if case .populated(_, savedBecause: nil) = state {
                 UserDefaults.standard.set(Self.todayStamp(), forKey: Self.lastFreeRefreshKey)
             }
             return
