@@ -11,6 +11,7 @@ Developer notes and historical audits for this repository. The published site re
 - [state-machines-2026-11-06-review.md](audits/state-machines-2026-11-06-review.md): Independent review of that audit: 3 confirmed, 0 rejected, 2 unverified
 - [state-machines-2026-11-06-fixes.md](audits/state-machines-2026-11-06-fixes.md): Fixes for that review: 4 fixed, 2 held for Jack, 0 skipped
 - [state-machines-2026-11-06-verify.md](audits/state-machines-2026-11-06-verify.md): Verify of those fixes: PASS, 4 fixed and proved by revert, 2 held, 70 of 70 tests pass
+- [presubmit-review-2026-11-07.md](audits/presubmit-review-2026-11-07.md): Pre-submit review of 1.1.6 since live 1.1.5: 1 P1 fixed, 0 open
 
 ## Marketing
 
