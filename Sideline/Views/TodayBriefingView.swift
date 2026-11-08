@@ -290,6 +290,15 @@ struct TodayBriefingView: View {
                 }
             }
         }
+        // Cross-fade skeleton to deck; a fade is fine under Reduce Motion, a hard cut reads as a jump.
+        .animation(.easeOut(duration: 0.2), value: isShowingSkeleton)
+    }
+
+    private var isShowingSkeleton: Bool {
+        switch viewModel.state {
+        case .idle, .loading: return true
+        default: return false
+        }
     }
 
     private var rail: some View {
