@@ -40,6 +40,7 @@
 		6EEF68B4E3F027E873DF29A2 /* BriefingRundown.swift in Sources */ = {isa = PBXBuildFile; fileRef = B73C3D5EF702754B3E8BC4AA /* BriefingRundown.swift */; };
 		849A494362DE6F80B5000C1E /* AppearanceMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616DBC4A94DF4209503205D0 /* AppearanceMode.swift */; };
 		8940C470F0EB729DA157FC7C /* ProPreviewSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D247B8D538BBCFAE75C10A0 /* ProPreviewSheet.swift */; };
+		8E289ADD259F8FAD0681698E /* IPadCaptureUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BD669A31258DD335EBE7B2 /* IPadCaptureUITests.swift */; };
 		8E2D7A5C8A0ACB9358CBFDB6 /* Entitlements.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE02FEC5275EFE40056DF513 /* Entitlements.swift */; };
 		91CADFAB5B68366507B730BE /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B33FF335FF20D0ECCB46260 /* Theme.swift */; };
 		96BB52E9A4FC7FFF41ACB01A /* UnfoldedSplit.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70609E79A1D8D64096041FB /* UnfoldedSplit.swift */; };
@@ -153,6 +154,7 @@
 		D556ACAE46E034CD09B0A8BA /* SidelineTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SidelineTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DB178A62B8A2646D81F0318F /* ConversionDiagnostics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionDiagnostics.swift; sourceTree = "<group>"; };
 		DE02FEC5275EFE40056DF513 /* Entitlements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entitlements.swift; sourceTree = "<group>"; };
+		E2BD669A31258DD335EBE7B2 /* IPadCaptureUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IPadCaptureUITests.swift; sourceTree = "<group>"; };
 		E3B3F206F2C3A76C63F13D3F /* SafariView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariView.swift; sourceTree = "<group>"; };
 		E70609E79A1D8D64096041FB /* UnfoldedSplit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnfoldedSplit.swift; sourceTree = "<group>"; };
 		F366990136C48B686BC22EC9 /* PaywallScreenshotHarness.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallScreenshotHarness.swift; sourceTree = "<group>"; };
@@ -228,6 +230,7 @@
 			isa = PBXGroup;
 			children = (
 				57C10CDB5DBE80AF423907CD /* BriefingFreshnessUITests.swift */,
+				E2BD669A31258DD335EBE7B2 /* IPadCaptureUITests.swift */,
 				A689D18E13D42D3BC9798E51 /* PaywallFunnelUITests.swift */,
 				F3DA8D19A70BBED3307594CB /* ReleaseJourneysUITests.swift */,
 				2F4C00C4885A2B777DF9970B /* FleetQA */,
@@ -531,6 +534,7 @@
 			files = (
 				609A06E84EDDA6E72CE4F544 /* BriefingFreshnessUITests.swift in Sources */,
 				5D9BD0A80183F66A21802BAC /* FleetQA.swift in Sources */,
+				8E289ADD259F8FAD0681698E /* IPadCaptureUITests.swift in Sources */,
 				0ACBE222FA61F195F94AC8AF /* PaywallFunnelUITests.swift in Sources */,
 				2DF18475395B835020745B78 /* ReleaseJourneysUITests.swift in Sources */,
 			);
@@ -636,7 +640,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.jackwallner.sports;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -676,7 +680,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 64;
+				CURRENT_PROJECT_VERSION = 68;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = YXG4MP6W39;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -697,7 +701,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MARKETING_VERSION = 1.1.4;
+				MARKETING_VERSION = 1.1.6;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -780,7 +784,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.jackwallner.sports;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -820,7 +824,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 64;
+				CURRENT_PROJECT_VERSION = 68;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = YXG4MP6W39;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -835,7 +839,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MARKETING_VERSION = 1.1.4;
+				MARKETING_VERSION = 1.1.6;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -10,6 +10,10 @@ struct OnboardingView: View {
     var isPro: Bool = false
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
+    /// Onboarding reads as one centred column; an iPad page is far wider.
+    private static let pageWidth: CGFloat = 604
 
     @State private var page = 0
     @State private var pickedPersona: Persona = .cocktailParty
@@ -32,8 +36,10 @@ struct OnboardingView: View {
                 actionBar
                     .animation(.default, value: page)
                     .padding(.horizontal, 24)
+                    .frame(maxWidth: Self.pageWidth)
                     .padding(.top, 10)
                     .padding(.bottom, 12)
+                    .frame(maxWidth: .infinity)
                     .background(
                         Color.sidelineBackground
                             .overlay(
@@ -75,38 +81,62 @@ struct OnboardingView: View {
         }
         .padding(.horizontal, 28)
         .padding(.bottom, 36)
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: Self.pageWidth, alignment: .leading)
+        .frame(maxWidth: .infinity)
     }
 
+    @ViewBuilder
     private var personaPick: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Spacer(minLength: 12)
-            Text("Start with your free briefing")
-                .font(SidelineTheme.title)
-                .foregroundStyle(SidelineTheme.inkPrimary)
-                .fixedSize(horizontal: false, vertical: true)
-            // At accessibility sizes this paragraph alone fills the screen and
-            // pushes every room under the action bar.
-            if !dynamicTypeSize.isAccessibilitySize {
-                Text("Cocktail Party gives you today's essential stories. Gist Pro adds briefings made for work, family, and date night.")
-                    .font(.callout)
-                    .foregroundStyle(SidelineTheme.inkSecondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-
-            ScrollView {
-                VStack(spacing: 10) {
-                    ForEach(Persona.allCases) { persona in
-                        personaRow(persona)
+        if horizontalSizeClass == .regular {
+            // iPad: the page is a centred column like the first one.
+            GeometryReader { geo in
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 16) {
+                        personaHeading
+                        personaRows
                     }
+                    .padding(.horizontal, 28)
+                    .padding(.bottom, 36)
+                    .frame(maxWidth: Self.pageWidth, alignment: .leading)
+                    .frame(maxWidth: .infinity, minHeight: geo.size.height)
                 }
-                .padding(.top, 4)
+                .scrollBounceBehavior(.basedOnSize)
+            }
+        } else {
+            VStack(alignment: .leading, spacing: 16) {
+                Spacer(minLength: 12)
+                personaHeading
+                ScrollView { personaRows.padding(.top, 4) }
+            }
+            .padding(.horizontal, 28)
+            // Clear of the page dots, which draw over the bottom of the page.
+            .padding(.bottom, 36)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    @ViewBuilder
+    private var personaHeading: some View {
+        Text("Start with your free briefing")
+            .font(SidelineTheme.title)
+            .foregroundStyle(SidelineTheme.inkPrimary)
+            .fixedSize(horizontal: false, vertical: true)
+        // At accessibility sizes this paragraph alone fills the screen and
+        // pushes every room under the action bar.
+        if !dynamicTypeSize.isAccessibilitySize {
+            Text("Cocktail Party gives you today's essential stories. Gist Pro adds briefings made for work, family, and date night.")
+                .font(.callout)
+                .foregroundStyle(SidelineTheme.inkSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    private var personaRows: some View {
+        VStack(spacing: 10) {
+            ForEach(Persona.allCases) { persona in
+                personaRow(persona)
             }
         }
-        .padding(.horizontal, 28)
-        // Clear of the page dots, which draw over the bottom of the page.
-        .padding(.bottom, 36)
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private func personaRow(_ persona: Persona) -> some View {

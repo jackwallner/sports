@@ -15,7 +15,7 @@ settings:
     SWIFT_VERSION: "6.0"
     DEVELOPMENT_TEAM: YXG4MP6W39
     CODE_SIGN_STYLE: Automatic
-    MARKETING_VERSION: "1.1.6"
+    MARKETING_VERSION: "1.1.7"
     CURRENT_PROJECT_VERSION: "68"
     GENERATE_INFOPLIST_FILE: NO
   configs:
@@ -82,7 +82,7 @@ targets:
         INFOPLIST_FILE: Sideline/Info.plist
         CODE_SIGN_ENTITLEMENTS: Sideline/Sideline.entitlements
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
-        TARGETED_DEVICE_FAMILY: "1"
+        TARGETED_DEVICE_FAMILY: "1,2"
     dependencies:
       - target: Shared
       - package: RevenueCat

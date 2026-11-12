@@ -30,6 +30,14 @@ struct TodayBriefingView: View {
     @State private var pendingDeckCard: Int?
     @State private var isShowingSettings = false
 
+    /// The widest the rooms rail, deck and rundown grow. On an iPad a pane is
+    /// wider than a card reads well, so the content stays this wide and the
+    /// pane's spare room falls to the sides. Phones are narrower than this.
+    private static let readableWidth: CGFloat = 600
+    /// The tallest the deck grows, so a card keeps phone-like proportions on a
+    /// 13-inch iPad held upright.
+    private static let deckMaxHeight: CGFloat = 900
+
     private enum ActiveSheet: Identifiable {
         case proPreview(Persona)
         case paywall(Persona, String)
@@ -173,6 +181,8 @@ struct TodayBriefingView: View {
                 isShowingSource = true
                 activeSheet = .source(url)
             }
+            .frame(maxWidth: Self.readableWidth)
+            .frame(maxWidth: .infinity)
         } else {
             Color.clear
         }
@@ -285,9 +295,12 @@ struct TodayBriefingView: View {
             } else {
                 VStack(spacing: 0) {
                     rail
+                        .frame(maxWidth: Self.readableWidth)
                     stateContent
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .frame(maxWidth: Self.readableWidth, maxHeight: Self.deckMaxHeight)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                 }
+                .frame(maxWidth: .infinity)
             }
         }
         // Cross-fade skeleton to deck; a fade is fine under Reduce Motion, a hard cut reads as a jump.

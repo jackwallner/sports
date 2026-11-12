@@ -75,6 +75,8 @@ offline. Keep generation on that side of the line.
 ## Path rules
 - `.claude/rules/android.md` (`android/**`): the Kotlin/Compose port, its
   build and emulator commands, keys, and Play state.
+- `.claude/rules/ipad-layout.md` (Today view, onboarding, `project.yml`): iPad
+  panes, readable widths, and the portrait and landscape capture test.
 - `.claude/rules/iphone-duo.md` (Today view, rundown, split): the unfolded
   Duo's deck-beside-rundown panes, the `sideline://room` link, Duo captures.
 
