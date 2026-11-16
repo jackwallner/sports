@@ -72,6 +72,9 @@ final class ReleaseJourneysUITests: XCTestCase {
         QA.interrupt(app)
         QA.checkpoint(app, "settings-after-interruption")
 
+        // Terminating while the app is still returning from the background can fail on a slow runner.
+        _ = app.wait(for: .runningForeground, timeout: 15)
+        sleep(2)
         QA.relaunch(app)
         sleep(2)
         QA.checkpoint(app, "after-relaunch")
@@ -166,13 +169,16 @@ final class ReleaseJourneysUITests: XCTestCase {
 
     private func swipeToNextCard(_ app: XCUIApplication, expecting value: String, journey: String = #function) {
         let deck = deck(app)
+        let before = deck.value as? String
         let moved = NSPredicate(format: "value == %@", value)
+        let unmoved = NSPredicate(format: "value == %@", before ?? "")
         QA.swipe(deck)
-        var result = XCTWaiter.wait(for: [expectation(for: moved, evaluatedWith: deck)], timeout: 5)
-        // A swipe that lands while the deck is still settling can be dropped; one retry only when the card has not moved.
-        if result != .completed {
+        // A slow runner can take several seconds to settle a swipe that did land; wait long.
+        var result = XCTWaiter.wait(for: [expectation(for: moved, evaluatedWith: deck)], timeout: 20)
+        // Retry only when the deck still shows the card it started on, never after it advanced.
+        if result != .completed, unmoved.evaluate(with: deck) {
             QA.swipe(deck)
-            result = XCTWaiter.wait(for: [expectation(for: moved, evaluatedWith: deck)], timeout: 5)
+            result = XCTWaiter.wait(for: [expectation(for: moved, evaluatedWith: deck)], timeout: 20)
         }
         XCTAssertEqual(result, .completed, "swipe did not reach \(value) in \(journey)")
     }
