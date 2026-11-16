@@ -121,6 +121,7 @@ final class ReleaseJourneysUITests: XCTestCase {
                       "story 1 backstory missing")
         QA.checkpoint(app, "story-1-back")
         deck.tap()
+        XCTAssertTrue(text(app, containing: "longtime starter").waitForExistence(timeout: 5), "story 1 front missing after flip back")
 
         // Through the remaining stories to "Your move" and the rooms card.
         swipeToNextCard(app, expecting: "Card 3 of 6")
@@ -165,9 +166,14 @@ final class ReleaseJourneysUITests: XCTestCase {
 
     private func swipeToNextCard(_ app: XCUIApplication, expecting value: String, journey: String = #function) {
         let deck = deck(app)
-        QA.swipe(deck)
         let moved = NSPredicate(format: "value == %@", value)
-        let result = XCTWaiter.wait(for: [expectation(for: moved, evaluatedWith: deck)], timeout: 5)
+        QA.swipe(deck)
+        var result = XCTWaiter.wait(for: [expectation(for: moved, evaluatedWith: deck)], timeout: 5)
+        // A swipe that lands while the deck is still settling can be dropped; one retry only when the card has not moved.
+        if result != .completed {
+            QA.swipe(deck)
+            result = XCTWaiter.wait(for: [expectation(for: moved, evaluatedWith: deck)], timeout: 5)
+        }
         XCTAssertEqual(result, .completed, "swipe did not reach \(value) in \(journey)")
     }
 }
