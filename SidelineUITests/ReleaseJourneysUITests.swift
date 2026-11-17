@@ -142,8 +142,12 @@ final class ReleaseJourneysUITests: XCTestCase {
         // Still there after a kill and relaunch: no onboarding, same briefing.
         app.launchArguments.removeAll { $0 == "-SidelineFreshOnboarding" }
         QA.relaunch(app)
+        // A slow runner can stall the first full-tree query after a relaunch; let the app settle and
+        // wait on the narrow text query first, so the deck query below runs against a rendered screen.
+        _ = app.wait(for: .runningForeground, timeout: 30)
+        sleep(3)
+        XCTAssertTrue(text(app, containing: "got benched").waitForExistence(timeout: 60), "briefing gone after relaunch")
         XCTAssertEqual(waitForDeck(app).value as? String, "Card 1 of 6")
-        XCTAssertTrue(text(app, containing: "got benched").waitForExistence(timeout: 5), "briefing gone after relaunch")
         XCTAssertFalse(app.staticTexts["Sports, made simple."].exists, "onboarding came back after relaunch")
         QA.checkpoint(app, "relaunch-briefing")
     }
