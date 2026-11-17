@@ -10,6 +10,7 @@ struct OnboardingView: View {
     var isPro: Bool = false
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     /// Onboarding reads as one centred column; an iPad page is far wider.
@@ -34,7 +35,7 @@ struct OnboardingView: View {
             .background(Color.sidelineBackground)
             .safeAreaInset(edge: .bottom) {
                 actionBar
-                    .animation(.default, value: page)
+                    .animation(reduceMotion ? nil : .default, value: page)
                     .padding(.horizontal, 24)
                     .frame(maxWidth: Self.pageWidth)
                     .padding(.top, 10)
@@ -234,7 +235,7 @@ struct OnboardingView: View {
     // Always laid out so the action bar keeps one height across pages;
     // inserting it on page 2 made the bar, and the page above it, jump.
     private var backButton: some View {
-        Button("Back") { withAnimation { page -= 1 } }
+        Button("Back") { withAnimation(reduceMotion ? nil : .default) { page -= 1 } }
             .buttonStyle(.plain)
             .foregroundStyle(SidelineTheme.inkSecondary)
             .frame(minHeight: 44)
@@ -249,7 +250,7 @@ struct OnboardingView: View {
 
     private func advance() {
         if page == 0 {
-            withAnimation { page = 1 }
+            withAnimation(reduceMotion ? nil : .default) { page = 1 }
         } else {
             finish()
         }
