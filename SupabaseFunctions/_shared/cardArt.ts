@@ -116,35 +116,32 @@ async function storedImageURL(
   }
 }
 
-// Provider chain, all free: Cloudflare Workers AI FLUX.1 schnell (best look,
-// ~173 neurons an image against the free plan's 10,000 neurons/day), then
-// Workers AI SDXL Lightning (0 neurons), then Pollinations if a key with
-// pollen balance is configured. The caller falls back to the legacy
-// on-demand URL if all miss.
+// Provider chain, all free: Cloudflare Workers AI FLUX.2 klein 4B (portrait,
+// seeded, closest to each story's hook), then FLUX.1 schnell if klein errors,
+// then Pollinations if a key with pollen balance is configured. The caller
+// falls back to the legacy on-demand URL if all miss. SDXL Lightning used to
+// sit second; Cloudflare retired it on 2026-11-20.
 //
-// Once the daily allocation is spent Cloudflare refuses every model, SDXL
-// included (4006/429 until 00:00 UTC). So FLUX stops at a count of today's
-// stored images, well under the allocation, and SDXL covers the rest of the
-// day instead of the deck dropping to the legacy URL.
-const FLUX_DAILY_IMAGES = 50;
+// Each Workers AI image costs about 200 neurons against the free plan's
+// 10,000 a day, and once that is spent Cloudflare refuses every model
+// (4006/429 until 00:00 UTC). The deck stores 20 to 27 new images a day, so
+// Workers AI stops at a count of today's stored images that keeps a margin
+// under the allocation, and anything past it uses the legacy URL.
+const WORKERS_AI_DAILY_IMAGES = 40;
 
 async function generateImage(supabase: any, trace_id: string, prompt: string): Promise<Uint8Array> {
   const cfAccount = Deno.env.get("CF_ACCOUNT_ID");
   const cfToken = Deno.env.get("CF_API_TOKEN");
-  if (cfAccount && cfToken) {
+  if (cfAccount && cfToken && await underDailyCap(supabase, trace_id)) {
     try {
-      const storedToday = await imagesStoredToday(supabase);
-      if (storedToday >= FLUX_DAILY_IMAGES) {
-        throw new Error(`daily FLUX cap reached (${storedToday} images today)`);
-      }
+      return await generateWithKlein(prompt, fnv1a32(prompt), cfAccount, cfToken);
+    } catch (error) {
+      logError(trace_id, "card_art_klein_failed", error);
+    }
+    try {
       return await generateWithFlux(prompt, cfAccount, cfToken);
     } catch (error) {
       logError(trace_id, "card_art_flux_failed", error);
-    }
-    try {
-      return await generateWithSDXL(prompt, cfAccount, cfToken);
-    } catch (error) {
-      logError(trace_id, "card_art_sdxl_failed", error);
     }
   }
   const pollinationsKey = Deno.env.get("POLLINATIONS_API_KEY");
@@ -154,9 +151,22 @@ async function generateImage(supabase: any, trace_id: string, prompt: string): P
   throw new Error("No image provider configured or available");
 }
 
+async function underDailyCap(supabase: any, trace_id: string): Promise<boolean> {
+  try {
+    const storedToday = await imagesStoredToday(supabase);
+    if (storedToday < WORKERS_AI_DAILY_IMAGES) {
+      return true;
+    }
+    logInfo(trace_id, "card_art_daily_cap_reached", { storedToday });
+  } catch (error) {
+    logError(trace_id, "card_art_cap_check_failed", error);
+  }
+  return false;
+}
+
 async function imagesStoredToday(supabase: any): Promise<number> {
   const { data, error } = await supabase.storage.from(BUCKET).list("", {
-    limit: FLUX_DAILY_IMAGES,
+    limit: WORKERS_AI_DAILY_IMAGES,
     sortBy: { column: "created_at", order: "desc" },
   });
   if (error) {
@@ -170,11 +180,47 @@ function workersAIURL(accountId: string, model: string): string {
   return `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/${model}`;
 }
 
-/// FLUX.1 schnell on Workers AI. Returns base64 JSON; square 1024px output.
-/// The model now rejects any field besides prompt and steps with a 400, which
-/// is why every card fell back to the legacy URL after a `seed` was sent.
-/// Four steps is the model's default
-/// and costs about half of eight with no visible loss at card size.
+/// FLUX.2 klein 4B on Workers AI. Unlike FLUX.1 schnell it takes the card's
+/// portrait shape and a seed, so a story keeps the same picture if redrawn.
+/// FLUX.2 models only accept multipart form data and return base64 JSON.
+/// The output safety filter sometimes flags a harmless scene (error 3030);
+/// a different seed usually clears it, so that gets one retry.
+async function generateWithKlein(
+  prompt: string,
+  seed: number,
+  accountId: string,
+  token: string,
+): Promise<Uint8Array> {
+  for (let attempt = 0; ; attempt++) {
+    const form = new FormData();
+    form.append("prompt", prompt);
+    form.append("width", "768");
+    form.append("height", "960");
+    form.append("seed", String((seed + attempt) & 0x7fffffff));
+    const response = await fetch(workersAIURL(accountId, "@cf/black-forest-labs/flux-2-klein-4b"), {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: form,
+    });
+    if (!response.ok) {
+      const body = (await response.text()).slice(0, 200);
+      if (attempt === 0 && body.includes("3030")) {
+        continue;
+      }
+      throw new Error(`Workers AI klein returned ${response.status}: ${body}`);
+    }
+    const payload = await response.json();
+    const b64 = payload?.result?.image;
+    if (typeof b64 !== "string" || !b64) {
+      throw new Error("Workers AI klein returned no image");
+    }
+    return Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+  }
+}
+
+/// FLUX.1 schnell on Workers AI, the fallback when klein errors. Square
+/// 1024px output that the card crops. The model rejects any field besides
+/// prompt and steps with a 400. Four steps is the model's default.
 async function generateWithFlux(prompt: string, accountId: string, token: string): Promise<Uint8Array> {
   const response = await fetch(workersAIURL(accountId, "@cf/black-forest-labs/flux-1-schnell"), {
     method: "POST",
@@ -190,25 +236,6 @@ async function generateWithFlux(prompt: string, accountId: string, token: string
     throw new Error("Workers AI flux returned no image");
   }
   return Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
-}
-
-/// SDXL Lightning on Workers AI. Returns raw image bytes in the card's
-/// portrait shape. Unlike FLUX it honours a negative prompt, which is where
-/// the no-text rule does the most good.
-async function generateWithSDXL(prompt: string, accountId: string, token: string): Promise<Uint8Array> {
-  const response = await fetch(workersAIURL(accountId, "@cf/bytedance/stable-diffusion-xl-lightning"), {
-    method: "POST",
-    headers: { Authorization: `Bearer ${token}`, "content-type": "application/json" },
-    body: JSON.stringify({ prompt, negative_prompt: NEGATIVE, width: 768, height: 960 }),
-  });
-  if (!response.ok) {
-    throw new Error(`Workers AI sdxl returned ${response.status}: ${(await response.text()).slice(0, 200)}`);
-  }
-  const bytes = new Uint8Array(await response.arrayBuffer());
-  if (bytes.length < 1024) {
-    throw new Error("Workers AI sdxl returned no image");
-  }
-  return bytes;
 }
 
 /// Bursts of generations can trip the gateway's rate limit (402/429); those
@@ -245,20 +272,20 @@ function contentType(bytes: Uint8Array): string {
 // cartoon great dane in a football helmet. Gemini supplies only the scene
 // (the WHAT); this supplies the entire look (the HOW).
 //
-// Words like "poster" and "magazine" make FLUX paint headlines, borders and
-// artist signatures, so the style names neither and asks for a wordless,
-// full-bleed picture. The darker ground at the bottom blends into the card's
-// green text panel, which fades up over the lower third of the art.
-const STYLE_PREFIX = "Mid-century editorial gouache illustration:";
-const STYLE = "Bold simplified shapes, visible brush texture and screen-print grain, " +
-  "rich deep navy and forest green shadows with warm cream and antique gold highlights, " +
-  "cinematic low angle, strong rim light, one hero subject large and centered, " +
-  "darker ground fading toward the bottom edge, full-bleed artwork running edge to edge. " +
+// The look is flat color fields, soft gradients and silhouettes in Gist's
+// teal, forest green and amber. Words like "poster", "magazine", "print" or
+// "full-bleed" make the models paint headlines, signatures and paper borders,
+// so the style names none of them and says the scene runs past every edge.
+// The darker ground at the bottom blends into the card's green text panel,
+// which fades up over the lower third of the art.
+const STYLE_PREFIX = "Flat minimalist illustration:";
+const STYLE = "Smooth flat color fields with soft gradients, clean simple shapes, subtle grain, " +
+  "muted deep teal and forest green with warm amber and cream light, " +
+  "cinematic low angle, glowing backlight, one hero subject large and centered, " +
+  "figures as silhouettes, darker ground fading toward the bottom edge, " +
+  "the scene continues past every edge of the picture. " +
   "Wordless image with blank surfaces: no lettering, no signage, plain unmarked clothing " +
-  "and gear, no logos, no signature, no border, faces turned away or in shadow.";
-const NEGATIVE = "text, letters, words, typography, headline, caption, signature, " +
-  "watermark, logo, numbers, border, frame, realistic face, photo";
-
+  "and gear, no logos.";
 const FALLBACK_SCENE = "packed sports stadium at night under floodlights, " +
   "crowd in silhouette, confetti in the air";
 
