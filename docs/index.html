@@ -43,11 +43,11 @@
       "alternateName": "Sports Cheat Sheet",
       "description": "Sports Cheat Sheet: Daily News is a sports small talk app for people who do not follow sports. Each short briefing explains what happened, why it matters, and gives a talking point with a source link, plus one good question to ask a fan. One daily briefing is free, with no account, and an optional Pro upgrade adds more conversation settings.",
       "applicationCategory": "SportsApplication",
-      "operatingSystem": "iOS 17+",
+      "operatingSystem": "iOS 17+, Android 8.0+",
       "url": "https://jackwallner.com/ios/sports/",
-      "downloadUrl": "https://apps.apple.com/us/app/id6770138156",
-      "installUrl": "https://apps.apple.com/us/app/id6770138156",
-      "sameAs": "https://apps.apple.com/us/app/id6770138156",
+      "downloadUrl": ["https://apps.apple.com/us/app/id6770138156", "https://play.google.com/store/apps/details?id=com.jackwallner.sports"],
+      "installUrl": ["https://apps.apple.com/us/app/id6770138156", "https://play.google.com/store/apps/details?id=com.jackwallner.sports"],
+      "sameAs": ["https://apps.apple.com/us/app/id6770138156", "https://play.google.com/store/apps/details?id=com.jackwallner.sports"],
       "screenshot": [
         "https://jackwallner.github.io/sports/screenshots/store-1-deck-lead.png",
         "https://jackwallner.github.io/sports/screenshots/store-2-talking-point.png",
@@ -613,6 +613,14 @@
             color: #9e6b00;
         }
             summary > h2.faq-q { display: inline; margin: 0; font: inherit; letter-spacing: inherit; color: inherit; }
+.store-badges { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; }
+.store-badges.start { justify-content: flex-start; }
+.play-badge { display: inline-flex; transition: opacity 0.15s; }
+.play-badge:hover { opacity: 0.85; }
+.play-badge img { display: block; height: 46px; width: auto; }
+.nav-actions { display: flex; align-items: center; gap: 10px; }
+.nav-actions .play-badge img { height: 36px; }
+@media (max-width: 480px) { .nav-actions .play-badge { display: none; } }
 </style>
   </head>
   <body>
@@ -622,11 +630,12 @@
           <img src="icon_64.webp" alt="" width="32" height="32">
           <span>Sports Cheat Sheet</span>
         </a>
-        <a
+        <div class="nav-actions"><a
           class="nav-link"
           href="https://apps.apple.com/us/app/sports-cheat-sheet-daily-news/id6770138156?pt=128748779&amp;ct=jw-sports-home&amp;mt=8"
           >Download</a
         >
+<a class="play-badge" href="https://play.google.com/store/apps/details?id=com.jackwallner.sports" rel="noopener"><img src="google-play-badge.webp" alt="Get it on Google Play" width="121" height="36"></a></div>
       </div>
     </nav>
 
@@ -636,12 +645,13 @@
         Sports Cheat Sheet is a sports small talk app for non-fans: the sports everyone is talking about,
         explained in five minutes, so you can keep up without watching every game.
       </p>
-      <p class="platforms">iPhone · Sports briefing · No account required</p>
-      <a
+      <p class="platforms">iPhone · Android · Sports briefing · No account required</p>
+      <div class="store-badges"><a
         class="download-btn"
         href="https://apps.apple.com/us/app/sports-cheat-sheet-daily-news/id6770138156?pt=128748779&amp;ct=jw-sports-home&amp;mt=8"
         >Download on the App Store</a
       >
+<a class="play-badge" href="https://play.google.com/store/apps/details?id=com.jackwallner.sports" rel="noopener"><img src="google-play-badge.webp" alt="Get it on Google Play" width="155" height="46"></a></div>
     </section>
 
     <section class="showcase">
@@ -883,11 +893,12 @@
         Prices are shown in the app before you buy and vary by
         region.
       </p>
-      <a
+      <div class="store-badges"><a
         class="download-btn"
         href="https://apps.apple.com/us/app/sports-cheat-sheet-daily-news/id6770138156?pt=128748779&amp;ct=jw-sports-home&amp;mt=8"
         >Download on the App Store</a
       >
+<a class="play-badge" href="https://play.google.com/store/apps/details?id=com.jackwallner.sports" rel="noopener"><img src="google-play-badge.webp" alt="Get it on Google Play" width="155" height="46"></a></div>
     </section>
 
     <footer>

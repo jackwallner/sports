@@ -9,7 +9,7 @@ Web page: https://jackwallner.com/ios/sports/
 Sports Cheat Sheet is a sports small talk app for non-fans: the sports everyone is talking about,
 explained in five minutes, so you can keep up without watching every game.
 
-iPhone · Sports briefing · No account required
+iPhone · Android · Sports briefing · No account required
 
 [Download on the App Store](https://apps.apple.com/us/app/sports-cheat-sheet-daily-news/id6770138156?pt=128748779&ct=jw-sports-home&mt=8)
 
