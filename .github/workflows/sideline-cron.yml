@@ -10,14 +10,24 @@ on:
         description: 'Skip ingest-rss (only generate)'
         type: boolean
         default: false
+      refresh_window:
+        description: 'Window to generate (auto uses current UTC time)'
+        type: choice
+        options:
+          - auto
+          - morning
+          - midday
+          - evening
+        default: auto
 
 jobs:
   pipeline:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 240
     env:
       URL: ${{ secrets.SUPABASE_FUNCTIONS_URL }}
       CS: ${{ secrets.CRON_SECRET }}
+      REFRESH_WINDOW: ${{ inputs.refresh_window }}
     steps:
       - name: Ingest RSS
         if: ${{ inputs.skip_ingest != true }}
@@ -28,8 +38,8 @@ jobs:
           echo
 
       # Gemini can return regional 500/503 outages across every fallback model.
-      # Six attempts with capped backoff give the vendor time to recover; each
-      # function call has a shared 90-second model-chain budget.
+      # Eight attempts with capped backoff give each missing persona about an
+      # hour to recover. Each call has a shared 90-second model-chain budget.
       - name: Generate national briefings (per persona)
         run: |
           set -uo pipefail
@@ -38,12 +48,17 @@ jobs:
           for P in $PERSONAS; do
             echo "=== $P ==="
             OK=0
-            for attempt in 1 2 3 4 5 6; do
+            for attempt in 1 2 3 4 5 6 7 8; do
               echo "Attempt $attempt"
+              BODY="{\"personas\":[\"$P\"],\"missing_only\":true"
+              if [ "$REFRESH_WINDOW" != "auto" ]; then
+                BODY="$BODY,\"refresh_window\":\"$REFRESH_WINDOW\""
+              fi
+              BODY="$BODY}"
               R=$(curl -fsS -X POST "$URL/generate-briefings" \
                 -H "content-type: application/json" \
                 -H "x-cron-secret: $CS" \
-                -d "{\"personas\":[\"$P\"],\"missing_only\":true}") || R='{"error":"curl failed"}'
+                -d "$BODY") || R='{"error":"curl failed"}'
               echo "$R"
               if echo "$R" | grep -q '"status":"succeeded"'; then OK=1; break; fi
               if echo "$R" | grep -q '"skipped":"all_fresh"'; then OK=1; break; fi
@@ -51,9 +66,9 @@ jobs:
                 echo "Gemini quota exhausted for $P; not retrying immediately."
                 break
               fi
-              if (( attempt < 6 )); then
+              if (( attempt < 8 )); then
                 BACKOFF=$((30 << (attempt - 1)))
-                if (( BACKOFF > 300 )); then BACKOFF=300; fi
+                if (( BACKOFF > 900 )); then BACKOFF=900; fi
                 echo "Transient failure for $P; retrying in ${BACKOFF}s."
                 sleep "$BACKOFF"
               fi
