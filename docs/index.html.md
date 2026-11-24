@@ -32,10 +32,10 @@ check the original reporting in one tap.
 The app keeps the last successful briefing on-device, so you are not
 stuck if the elevator has no signal.
 
-### All 5 contexts
+### All 4 conversation types
 
 Office Watercooler, Date Night, Sports Talk for Moms, Cocktail
-Party, and Local Team.
+Party.
 
 Included with Pro
 
@@ -43,13 +43,6 @@ Included with Pro
 
 Morning, midday, and evening refreshes for when the sports world
 moves faster than your group chat.
-
-Included with Pro
-
-### Local Team
-
-Talking points for the teams people around you
-actually care about.
 
 Included with Pro
 
@@ -119,11 +112,11 @@ Read one short briefing, remember one line, and ask one good question. Sports Ch
 
 ## Can I use it for sports talk at work or at a party?
 
-Yes. The briefing comes in conversation settings for cocktail party, office watercooler, date night, sports talk for moms and your local team, so the talking points fit the room.
+Yes. The briefing comes in conversation settings for cocktail party, office watercooler, date night and sports talk for moms, so the talking points fit the room.
 
 ## Is Sports Cheat Sheet free?
 
-Yes. The Cocktail Party briefing is free every day. The optional Pro upgrade unlocks all five settings, up to three refreshes a day and Local Team, and prices are shown in the app before you buy and vary by region.
+Yes. The Cocktail Party briefing is free every day. The optional Pro upgrade unlocks all four conversation types and refreshes any time, with new briefings up to three times a day, and prices are shown in the app before you buy and vary by region.
 
 ## Is it a scores or sports news app?
 
@@ -136,8 +129,8 @@ The app keeps the last successful briefing on your iPhone, so you can still read
 ## Download on iPhone
 
 Free Cocktail Party briefing. The Pro upgrade is available monthly, yearly, or
-as a one-time lifetime purchase, with all contexts, 3 daily refreshes,
-and Local Team. Prices are shown in the app before you buy and vary by
+as a one-time lifetime purchase, with all four conversation types and refreshes any time.
+Prices are shown in the app before you buy and vary by
 region.
 
 [Download on the App Store](https://apps.apple.com/us/app/sports-cheat-sheet-daily-news/id6770138156?pt=128748779&ct=jw-sports-home&mt=8)
