@@ -49,9 +49,12 @@ offline. Keep generation on that side of the line.
   them from the bundle, or from the environment in tests. A missing file gives a
   build with no backend, not a compile error.
 - **Briefings are refreshed three times a day** by pg_cron in Supabase
-  (`supabase/migrations/20261013000000_pg_cron_pipeline.sql`, 14:05, 19:05 and
-  23:05 UTC, one persona every 4 minutes after ingest), which calls the functions
-  with `x-cron-secret` read from Vault. Check runs in `cron.job_run_details` and
+  (`supabase/migrations/20261125000000_earlier_morning_run.sql`, 12:05, 19:05 and
+  23:05 UTC, one persona every 4 minutes after ingest, then `missing_only`
+  retries every 10 minutes from 12:30 to 13:50 UTC because Gemini's free tier
+  returns 503 at the US morning peak), which calls the functions with
+  `x-cron-secret` read from Vault. Migration history has a duplicate
+  `20261030000000`, so apply new cron SQL with `supabase db query --remote -f`. Check runs in `cron.job_run_details` and
   `net._http_response`. `.github/workflows/sideline-cron.yml` is manual only.
   Backend env keys are listed in `README.md`.
 - **Live rows decode on iOS 17 and 18 too.** Their Foundation rejects
