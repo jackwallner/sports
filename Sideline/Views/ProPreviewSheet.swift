@@ -8,6 +8,8 @@ struct ProPreviewSheet: View {
     /// When the user still has an unused free trial, every door into Pro
     /// should say "try free", not "unlock". Free beats locked.
     var trialAvailable: Bool = false
+    /// The trial button's wording arm (offering metadata `trial_cta`).
+    var trialCTA: TrialCTA = .control
     let onSeePro: () -> Void
     let onDismiss: () -> Void
 
@@ -82,7 +84,7 @@ struct ProPreviewSheet: View {
                 Button {
                     onSeePro()
                 } label: {
-                    Text(trialAvailable ? "Try \(persona.displayName) Free" : "Unlock \(persona.displayName)")
+                    Text(trialCTA.previewTitle(room: persona.displayName, trialAvailable: trialAvailable))
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)

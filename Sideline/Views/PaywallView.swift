@@ -355,11 +355,10 @@ struct PaywallView: View {
         guard let package = selectedPackage else { return "Continue" }
         if package.sidelinePackageKind == .lifetime { return "Unlock Lifetime" }
         // Naming the trial in the button itself ("what am I agreeing to?")
-        // converts better than a generic "Subscribe".
-        if store.isEligibleForIntroOffer(package), let trial = package.sidelineIntroOfferLabel {
-            return "Start My \(trial.capitalized)"
-        }
-        return "Subscribe"
+        // converts better than a generic "Subscribe". The wording arm comes
+        // from the offering metadata `trial_cta`; control is the original copy.
+        let trial = store.isEligibleForIntroOffer(package) ? package.sidelineIntroOfferLabel : nil
+        return store.trialCTAArm.paywallTitle(trialLabel: trial)
     }
 
     // Free-trial length in days, read straight from the intro offer.

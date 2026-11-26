@@ -240,6 +240,7 @@ struct TodayBriefingView: View {
                         ProPreviewSheet(
                             persona: persona,
                             trialAvailable: trialAvailable,
+                            trialCTA: store.trialCTAArm,
                             onSeePro: {
                                 // Swap in place: dismissing then presenting
                                 // flashes the preview sliding away first.
@@ -468,6 +469,7 @@ struct TodayBriefingView: View {
     private func scheduleReviewRequestAfterPositiveMoment() {
         guard !isDemo,
               hasCompletedOnboarding,
+              store.isOn(.ratingPrompt),
               ReviewPromptTracker.shouldRequestAfterPositiveMoment(hasCompletedSetup: hasCompletedOnboarding),
               !reviewPromptShownThisSession,
               isBriefingClear
@@ -476,6 +478,7 @@ struct TodayBriefingView: View {
         Task { @MainActor in
             try? await Task.sleep(nanoseconds: 3_500_000_000)
             guard isBriefingClear,
+                  store.isOn(.ratingPrompt),
                   !reviewPromptShownThisSession,
                   ReviewPromptTracker.shouldRequestAfterPositiveMoment(hasCompletedSetup: hasCompletedOnboarding)
             else { return }

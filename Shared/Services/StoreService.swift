@@ -195,6 +195,9 @@ public final class StoreService: NSObject, EntitlementProviding {
     public private(set) var isPro = false
     public private(set) var products: [Package] = []
     public private(set) var currentOffering: Offering?
+    /// Metadata of RevenueCat's current offering, so a running Experiment's
+    /// variant is what is read. Not `currentOffering`, which prefers `default`.
+    public private(set) var remoteMetadata: [String: Any]?
     public private(set) var purchaseInFlight = false
     public private(set) var isLoadingProducts = false
     public private(set) var lastError: String?
@@ -237,6 +240,7 @@ public final class StoreService: NSObject, EntitlementProviding {
             let offerings = try await Purchases.shared.offerings()
             let offering = offerings.sidelinePaywallOffering
             currentOffering = offering
+            remoteMetadata = offerings.current?.metadata
             products = offering?.sidelineSortedPackages ?? []
             if products.isEmpty {
                 let offeringIDs = offerings.all.keys.sorted().joined(separator: ", ")
@@ -330,6 +334,12 @@ public final class StoreService: NSObject, EntitlementProviding {
     /// `setAttributes` only queues. RevenueCat uploads when the app backgrounds
     /// or folds the queue into the POST that creates a customer, so a probe run
     /// has to background the app before reading anything back.
+    public var trialCTAArm: TrialCTA { TrialCTA.from(metadata: remoteMetadata) }
+
+    public func isOn(_ remoteSwitch: RemoteSwitch) -> Bool {
+        RemoteConfig.isOn(remoteSwitch, in: remoteMetadata)
+    }
+
     public func syncConversionAttributes() {
         guard Purchases.isConfigured else { return }
         var attributes = ConversionDiagnostics.subscriberAttributes
@@ -337,6 +347,8 @@ public final class StoreService: NSObject, EntitlementProviding {
         if let offering = currentOffering?.identifier {
             attributes["offering_id"] = offering
         }
+        // The wording arm the customer saw, so a test reads by attribute too.
+        attributes[TrialCTA.metadataKey] = trialCTAArm.rawValue
         Purchases.shared.attribution.setAttributes(attributes)
     }
 

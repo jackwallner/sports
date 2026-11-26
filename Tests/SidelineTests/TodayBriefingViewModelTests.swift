@@ -580,6 +580,18 @@ final class TodayBriefingViewModelTests: XCTestCase {
         }
     }
 
+    /// A failed load is never a good result: nothing is left pending for the
+    /// rating ask.
+    func testFailedRefreshCountsNoPositiveMoment() async {
+        await withCleanMoments {
+            let service = MockService()
+            service.result = .failure(noConnection)
+            let vm = TodayBriefingViewModel(service: service, entitlement: LocalEntitlementStore(isPro: true))
+            await vm.refresh()
+            XCTAssertFalse(ReviewPromptTracker.hasPendingPositiveMoment)
+        }
+    }
+
     /// Control: a live chip tap still counts.
     func testLiveChipTapCountsAPositiveMoment() async {
         await withCleanMoments {

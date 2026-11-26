@@ -71,7 +71,15 @@ offline. Keep generation on that side of the line.
   about 3.5s later if no sheet is up and the deck is not on the rooms pitch
   card (from the 2nd launch, 30-day cooldown). A source sheet's dismissal
   retries a blocked ask; a paywall or Pro preview never does. Settings has
-  separate "Send Feedback" and "Rate Gist" rows. App Store ID above.
+  separate "Send Feedback" and "Rate Gist" rows. App Store ID above. The
+  moments are a fresh (not saved-copy) briefing from a refresh or room switch,
+  and the "Your move" card; offering metadata `rating_prompt` = `off` pauses
+  the ask.
+- **Remote config:** `Shared/Services/RemoteConfig.swift` reads RevenueCat's
+  current offering metadata (`StoreService.remoteMetadata`). Wording tests go
+  through offering metadata `trial_cta` (`seven_day` = control, `my`, `your`),
+  and keys a switch reads must be set the same on every offering. DEBUG pin:
+  `-sideline.rc.<key> <value>`.
 - The marketing site is this repo's `docs/`, served by GitHub Pages from
   `jackwallner/sports`. Keyword reasoning is in `project-docs/marketing/aso-plan.md`.
 
